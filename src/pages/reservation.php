@@ -1,12 +1,9 @@
 <?php
 session_start();
 require_once '../includes/db.php';
+require_once '../includes/functions.php';
 
-// On vérifie juste si le client est là
-if (!isset($_SESSION['id_user'])) {
-    header('Location: ../auth/login.php');
-    exit();
-}
+require_login("../pages/reservation.php");
 
 $id_chambre = intval($_GET['id']);
 $id_client = $_SESSION['id_client'];

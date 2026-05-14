@@ -1,0 +1,2 @@
+- modifier base de donee pour que dans client adresse, numtel, niveauski, taille, poids, pointure soit nulable
+c utile pour le formulaire
