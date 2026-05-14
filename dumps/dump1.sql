@@ -55,7 +55,7 @@ CREATE TABLE chambre (
 );
 
 CREATE TABLE client (
-    id_client SERIAL PRIMARY KEY,
+    id_client BIGSERIAL PRIMARY KEY,
     nom VARCHAR(48) NOT NULL,
     prenom VARCHAR(48) NOT NULL,
     date_naissance DATE NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE compte_utilisateur (
     username VARCHAR(50) UNIQUE NOT NULL,
     mdp_hash VARCHAR(255) NOT NULL,
     role role_compte NOT NULL,
-    id_client BIGINT REFERENCES client(id_client) ON DELETE SET NULL
+    id_client BIGSERIAL REFERENCES client(id_client) ON DELETE SET NULL
 );
 
 -- ==========================================================
@@ -85,21 +85,21 @@ CREATE TABLE compte_utilisateur (
 -- ==========================================================
 
 CREATE TABLE sejour (
-    id_client BIGINT REFERENCES client(id_client),
+    id_client BIGSERIAL REFERENCES client(id_client),
     nom_groupe VARCHAR(48) REFERENCES groupe(nom_groupe),
     debut DATE REFERENCES semaine(debut),
     PRIMARY KEY (id_client, nom_groupe, debut)
 );
 
 CREATE TABLE attribution_chambre (
-    id_client BIGINT REFERENCES client(id_client),
+    id_client BIGSERIAL REFERENCES client(id_client),
     num_chambre BIGINT REFERENCES chambre(num_chambre),
     debut DATE REFERENCES semaine(debut),
     PRIMARY KEY (id_client, num_chambre, debut)
 );
 
 CREATE TABLE tarif_formule (
-    id_client BIGINT REFERENCES client(id_client),
+    id_client BIGSERIAL REFERENCES client(id_client),
     debut DATE REFERENCES semaine(debut),
     type_formule VARCHAR(24) REFERENCES formule(type_formule),
     formule_prix_final INTEGER NOT NULL,
@@ -107,8 +107,8 @@ CREATE TABLE tarif_formule (
 );
 
 CREATE TABLE preference (
-    fk_id_client_emmeteur BIGINT REFERENCES client(id_client),
-    fk_id_client_receveur BIGINT REFERENCES client(id_client),
+    fk_id_client_emmeteur BIGSERIAL REFERENCES client(id_client),
+    fk_id_client_receveur BIGSERIAL REFERENCES client(id_client),
     niveau_preference pref_level,
     PRIMARY KEY (fk_id_client_emmeteur, fk_id_client_receveur)
 );
