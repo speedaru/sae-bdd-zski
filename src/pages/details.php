@@ -4,6 +4,17 @@ require_once '../includes/header.php';
 
 $id_chambre = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
+// --- LOGIQUE DE REDIRECTION POUR LE BOUTON ---
+$target_page = "reservation.php?id=" . $id_chambre;
+if (!isset($_SESSION['id_user'])) {
+    // Si pas connecté, on vise le dossier auth/ et on passe l'URL de retour
+    // Note : on met ../ car login.php est dans auth/ et doit remonter pour trouver reservation.php
+    $reservation_link = "../auth/login.php?redirect=" . urlencode("../pages/" . $target_page);
+} else {
+    // Si connecté, lien direct
+    $reservation_link = $target_page;
+}
+
 // Récupération de la chambre
 $stmt = $pdo->prepare("SELECT * FROM chambre WHERE num_chambre = ?");
 $stmt->execute([$id_chambre]);
@@ -42,7 +53,10 @@ if (!$chambre) {
 
     <div style="margin-top:20px;">
         <a href="recherche.php">Retour</a>
-        <a href="reservation.php?id=<?php echo $id_chambre; ?>">Réserver maintenant</a>
+        <!-- <a href="reservation.php?id=<?php echo $id_chambre; ?>">Réserver maintenant</a> -->
+        <a href="<?php echo $reservation_link; ?>" class="btn btn-primary btn-lg shadow-sm">
+            <i class="fas fa-calendar-check me-2"></i>Réserver maintenant
+        </a>
     </div>
 </main>
 

@@ -9,6 +9,16 @@ session_start();
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/header.php';
 
+// 1. Déterminer la destination de redirection
+// On vérifie d'abord en POST (si le formulaire vient d'être soumis) puis en GET (arrivée initiale)
+$redirect_to = $_POST['redirect'] ?? $_GET['redirect'] ?? '../index.php';
+
+// SÉCURITÉ : Protection contre les redirections vers des sites 
+// On s'assure que la redirection est interne (ne commence pas par http, https ou //)
+if (preg_match('/^https?:\/\/|^\/\//i', $redirect_to)) {
+    $redirect_to = '../index.php';
+}
+
 $error = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -31,9 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
 
-                // Redirection vers index.php situé dans src/
-                header("Location: ../index.php");
-                echo "<h2>id client: " . $_SESSION['id_client'] . "</h2>";
+                // Redirection finale vers la page donee en parametre
+                header("Location: " . $redirect_to);
                 exit;
             } else {
                 $error = "Identifiants invalides.";
@@ -63,6 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endif; ?>
 
                     <form action="login.php" method="POST">
+                        <!-- CHAMP CACHÉ : On conserve la destination pendant la soumission du formulaire -->
+                        <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($redirect_to); ?>">
+
                         <div class="mb-3">
                             <label for="username" class="form-label">Nom d'utilisateur</label>
                             <input type="text" name="username" id="username" class="form-control" placeholder="Votre pseudo" value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>" required>
