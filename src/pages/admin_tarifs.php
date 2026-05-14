@@ -3,78 +3,87 @@ session_start();
 require_once '../includes/db.php';
 require_once '../includes/header.php';
 
-// Vérification du rôle : seuls les admins ou gestionnaires peuvent entrer ici
-if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'gestionnaire')) {
+if (isset($_SESSION['role']) == false) {
     header('Location: ../index.php');
     exit();
 }
 
-// Traitement du formulaire quand on clique sur "Mettre à jour"
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['valider_changement'])) {
-    
-    // On récupère les données du formulaire
-    $nouveau_prix = intval($_POST['nouveau_prix']);
-    $nom_formule = $_POST['formule_concernee'];
-    
-    // Requête SQL pour modifier le prix dans la table 'formule'
-    $sql_update = "UPDATE formule SET prix_base = ? WHERE type_formule = ?";
-    $preparation = $pdo->prepare($sql_update);
-    $preparation->execute([$nouveau_prix, $nom_formule]);
-    
-    $message_confirmation = "Le tarif de la formule " . htmlspecialchars($nom_formule) . " a bien été modifié.";
+$ma_variable_de_role = $_SESSION['role'];
+
+if ($ma_variable_de_role != 'admin') {
+    if ($ma_variable_de_role != 'gestionnaire') {
+        header('Location: ../index.php');
+        exit();
+    }
 }
 
-// On récupère la liste des formules pour l'affichage
-$requete_affichage = $pdo->query("SELECT * FROM formule");
-$liste_formules = $requete_affichage->fetchAll();
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['valider_changement']) == true) {
+
+        $donnee_du_prix_post = $_POST['nouveau_prix'];
+        $prix_en_chiffre_entier = intval($donnee_du_prix_post);
+
+        $nom_de_la_prestation_post = $_POST['formule_concernee'];
+
+        $phrase_sql_pour_modifier = "UPDATE formule SET prix_base = ? WHERE type_formule = ?";
+        
+        $preparation_de_la_commande = $pdo->prepare($phrase_sql_pour_modifier);
+
+        $liste_des_donnees_a_envoyer = array();
+        $liste_des_donnees_a_envoyer[] = $prix_en_chiffre_entier;
+        $liste_des_donnees_a_envoyer[] = $nom_de_la_prestation_post;
+
+        $preparation_de_la_commande->execute($liste_des_donnees_a_envoyer);
+
+        $phrase_pour_dire_que_ca_a_marche = "Le nouveau prix de la formule " . $nom_de_la_prestation_post . " est maintenant de " . $prix_en_chiffre_entier . " euros.";
+    }
+}
+
+$phrase_sql_pour_lire_les_prix = "SELECT * FROM formule";
+$mon_execution_de_lecture = $pdo->query($phrase_sql_pour_lire_les_prix);
+$le_tableau_avec_tous_les_prix = $mon_execution_de_lecture->fetchAll();
+
+echo "<br>";
+echo "<br>";
+echo "<center><h1><u>PAGE DE MODIFICATION DES PRIX (ADMIN)</u></h1></center>";
+echo "<br>";
+
+if (isset($phrase_pour_dire_que_ca_a_marche) == true) {
+    echo "<center><font color='blue'><b>MESSAGE : " . $phrase_pour_dire_que_ca_a_marche . "</b></font></center>";
+    echo "<br>";
+}
+
+echo "<table border='10' align='center' cellpadding='20' cellspacing='0'>";
+echo "<tr bgcolor='#999999'>";
+    echo "<td><b><font color='white'>NOM DE LA FORMULE</font></b></td>";
+    echo "<td><b><font color='white'>PRIX DANS LA BASE</font></b></td>";
+    echo "<td><b><font color='white'>TAPER LE NOUVEAU CHIFFRE</font></b></td>";
+    echo "<td><b><font color='white'>CLIQUER POUR ENREGISTRER</font></b></td>";
+echo "</tr>";
+
+foreach ($le_tableau_avec_tous_les_prix as $chaque_ligne_de_prix) {
+    echo "<tr>";
+        echo "<td>" . $chaque_ligne_de_prix['type_formule'] . "</td>";
+        echo "<td>" . $chaque_ligne_de_prix['prix_base'] . " €</td>";
+
+        echo "<form method='POST' action='admin_tarifs.php'>";
+            echo "<td>";
+                echo "Entrez le prix : <input type='number' name='nouveau_prix' value='" . $chaque_ligne_de_prix['prix_base'] . "'>";
+                echo "<input type='hidden' name='formule_concernee' value='" . $chaque_ligne_de_prix['type_formule'] . "'>";
+            echo "</td>";
+            echo "<td>";
+                echo "<input type='submit' name='valider_changement' value='METTRE A JOUR'>";
+            echo "</td>";
+        echo "</form>";
+    echo "</tr>";
+}
+
+echo "</table>";
+
+echo "<br>";
+echo "<br>";
+echo "<center><a href='../index.php'>Retourner sur la page d'accueil de Zarza-Ski</a></center>";
+echo "<br>";
+
+require_once '../includes/footer.php';
 ?>
-
-<main>
-    <h1>Gestion des tarifs de la station</h1>
-    
-    <?php if (isset($message_confirmation)): ?>
-        <p style="color: green; font-weight: bold; background: #e0ffe0; padding: 10px; border: 1px solid green;">
-            <?php echo $message_confirmation; ?>
-        </p>
-    <?php endif; ?>
-
-    <p>Utilisez ce tableau pour ajuster les prix de base des prestations Zarza-Ski :</p>
-
-    <table border="1" cellpadding="10">
-        <thead>
-            <tr>
-                <th>Type de prestation</th>
-                <th>Prix actuel</th>
-                <th>Modifier le prix</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($liste_formules as $une_formule): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($une_formule['type_formule']); ?></td>
-                    <td><?php echo htmlspecialchars($une_formule['prix_base']); ?> €</td>
-                    
-                    <form method="POST">
-                        <td>
-                            <input type="number" name="nouveau_prix" min="0" required 
-                                   value="<?php echo $une_formule['prix_base']; ?>">
-                            
-                            <input type="hidden" name="formule_concernee" 
-                                   value="<?php echo htmlspecialchars($une_formule['type_formule']); ?>">
-                        </td>
-                        <td>
-                            <button type="submit" name="valider_changement">Mettre à jour</button>
-                        </td>
-                    </form>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-
-    <p style="margin-top: 20px;">
-        <a href="../index.php">Retour à l'accueil</a>
-    </p>
-</main>
-
-<?php require_once '../includes/footer.php'; ?>
