@@ -6,18 +6,14 @@
 
 session_start();
 
-require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/header.php';
+require_once '../includes/db.php';
+require_once '../includes/header.php';
+require_once '../includes/functions.php';
 
 // 1. Déterminer la destination de redirection
 // On vérifie d'abord en POST (si le formulaire vient d'être soumis) puis en GET (arrivée initiale)
 $redirect_to = $_POST['redirect'] ?? $_GET['redirect'] ?? '../index.php';
-
-// SÉCURITÉ : Protection contre les redirections vers des sites 
-// On s'assure que la redirection est interne (ne commence pas par http, https ou //)
-if (preg_match('/^https?:\/\/|^\/\//i', $redirect_to)) {
-    $redirect_to = '../index.php';
-}
+$redirect_to = sanitize_redirect_url($redirect_to);
 
 echo "redirect_to: " . $redirect_to;
 
@@ -107,4 +103,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </main>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once '../includes/footer.php'; ?>

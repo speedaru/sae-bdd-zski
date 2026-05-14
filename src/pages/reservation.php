@@ -2,12 +2,9 @@
 session_start();
 require_once '../includes/db.php';
 require_once '../includes/header.php';
+require_once '../includes/functions.php';
 
-if (isset($_SESSION['id_client']) == false) {
-    echo "Erreur : vous n'êtes pas connecté.";
-    echo "<br><a href='../auth/login.php'>Cliquez ici pour vous connecter</a>";
-    exit();
-}
+require_login("../pages/reservation.php");
 
 $id_de_la_chambre = intval($_GET['id']);
 $id_du_client = $_SESSION['id_client'];

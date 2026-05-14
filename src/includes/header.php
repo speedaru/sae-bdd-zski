@@ -48,13 +48,13 @@ if (session_status() === PHP_SESSION_NONE) {
                             <a class="btn btn-primary btn-sm me-2" href="/pages/espace_client.php">Mon Espace</a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-outline-danger btn-sm" href="/auth/logout.php" title="Déconnexion">
+                            <a class="btn btn-outline-danger btn-sm" href="/auth/logout.php?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>" title="Déconnexion">
                                 <i class="fas fa-power-off"></i>
                             </a>
                         </li>
                     <?php else: ?>
                         <!-- Menu Visiteur -->
-                        <li class="nav-item"><a class="nav-link" href="/auth/login.php">Connexion</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/auth/login.php?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>">Connexion</a></li>
                         <li class="nav-item">
                             <a class="btn btn-outline-light btn-sm ms-lg-2" href="/auth/register.php">Inscription</a>
                         </li>

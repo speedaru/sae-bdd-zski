@@ -5,10 +5,14 @@
  * Sécurise la fin de session en nettoyant les données côté serveur et client.
  */
 
-// 1. Initialiser la session pour pouvoir la manipuler
+require_once '../includes/functions.php';
+
 session_start();
 
-// 2. Vider toutes les variables de session en mémoire
+$redirect_to = $_POST['redirect'] ?? $_GET['redirect'] ?? '../index.php';
+$redirect_to = sanitize_redirect_url($redirect_to);
+
+// Vider toutes les variables de session en mémoire
 $_SESSION = array();
 
 // 3. Détruire le cookie de session dans le navigateur du client
@@ -26,9 +30,9 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
-// 4. Détruire la session sur le serveur
+// Détruire la session sur le serveur
 session_destroy();
 
-// 5. Redirection vers la page d'accueil (située dans src/)
-header("Location: ../index.php");
+// Redirection vers la page ou on etait deja
+header("Location: " . $redirect_to);
 exit;

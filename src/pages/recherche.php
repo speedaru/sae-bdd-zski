@@ -2,9 +2,8 @@
 require_once '../includes/db.php';
 require_once '../includes/header.php';
 
-$sql = "SELECT * FROM chambre WHERE 1=1";
+$sql = "SELECT * FROM chambre";
 $parametres = [];
-
 
 if (isset($_GET['vue'])) {
     if ($_GET['vue'] != "") {
@@ -26,7 +25,6 @@ if (isset($_GET['nb_lits'])) {
         $parametres[] = $_GET['nb_lits'];
     }
 }
-
 
 $prepa = $pdo->prepare($sql);
 $prepa->execute($parametres);
