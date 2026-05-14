@@ -3,17 +3,14 @@ session_start();
 require_once '../includes/db.php';
 require_once '../includes/header.php';
 
-
 if (isset($_SESSION['id_client']) == false) {
     echo "Erreur : vous n'êtes pas connecté.";
     echo "<br><a href='../auth/login.php'>Cliquez ici pour vous connecter</a>";
     exit();
 }
 
-
 $id_de_la_chambre = intval($_GET['id']);
 $id_du_client = $_SESSION['id_client'];
-
 
 $sql_formules = "SELECT * FROM formule";
 $reponse_formules = $pdo->query($sql_formules);
@@ -21,20 +18,13 @@ $tableau_formules = $reponse_formules->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    
     $la_date_saisie = $_POST['date_debut'];
     $le_nom_du_groupe = $_POST['nom_groupe'];
     $la_formule_choisie = $_POST['type_formule'];
     
-    
     $timestamp_debut = strtotime($la_date_saisie);
     $timestamp_fin = $timestamp_debut + (7 * 24 * 60 * 60);
     $la_date_de_fin = date('Y-m-d', $timestamp_fin);
-
-  
-    $numero_du_jour = date('w', $timestamp_debut);
-    
-    
     $numero_jour = date('w', $timestamp_debut);
     
     if ($numero_jour != 6) {
@@ -42,29 +32,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
        
         try {
-           
             $pdo->beginTransaction();
 
-          
             $sql_verif = "SELECT id_reservation FROM reservation WHERE date_debut = ? AND date_fin = ?";
             $req_verif = $pdo->prepare($sql_verif);
             $req_verif->execute([$la_date_saisie, $la_date_de_fin]);
             $id_trouve = $req_verif->fetchColumn();
 
             if ($id_trouve == false) {
-            
                 $sql_ajout_date = "INSERT INTO reservation (date_debut, date_fin) VALUES (?, ?)";
                 $req_ajout_date = $pdo->prepare($sql_ajout_date);
                 $req_ajout_date->execute([$la_date_saisie, $la_date_de_fin]);
-                
-               
                 $id_reservation_finale = $pdo->lastInsertId();
             } else {
-             
                 $id_reservation_finale = $id_trouve;
             }
 
-       
             $sql_double = "SELECT * FROM reserver WHERE num_chambre = ? AND id_reservation = ? FOR UPDATE";
             $req_double = $pdo->prepare($sql_double);
             $req_double->execute([$id_de_la_chambre, $id_reservation_finale]);
@@ -88,16 +71,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $req_final = $pdo->prepare($sql_final);
             $req_final->execute([$id_du_client, $le_nom_du_groupe, $id_de_la_chambre, $la_formule_choisie, $id_reservation_finale, $prix_a_payer]);
 
-     
             $pdo->commit();
             
-      
             echo "<p style='color:green;'>Réservation réussie !</p>";
             echo "<a href='mes_reservations.php'>Voir mes réservations</a>";
             exit();
 
         } catch (Exception $e) {
-   
             $pdo->rollBack();
             $mon_erreur = $e->getMessage();
         }

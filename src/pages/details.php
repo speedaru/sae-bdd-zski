@@ -2,7 +2,6 @@
 require_once '../includes/db.php';
 require_once '../includes/header.php';
 
-
 $donnee_recue_dans_url = $_GET['id'];
 $identifiant_chambre_propre = intval($donnee_recue_dans_url);
 
@@ -24,6 +23,7 @@ if ($ma_ligne_de_chambre == false) {
     echo "<a href='recherche.php'>Retourner à la recherche</a></center>";
     exit();
 }
+
 
 echo "<br>";
 echo "<center>";
@@ -72,7 +72,7 @@ echo "</table>";
 echo "<br><br>";
 
 echo "<table width='100%'>";
-    echo "tr>";
+    echo "<tr>"; 
         echo "<td align='center'>";
             echo "<a href='recherche.php'><button>RETOUR A LA LISTE</button></a>";
             echo " &nbsp;&nbsp;&nbsp;&nbsp; ";
