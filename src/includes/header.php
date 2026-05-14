@@ -19,15 +19,16 @@ if (session_status() === PHP_SESSION_NONE) {
             <ul class="nav-links">
                 <li><a href="/index.php">Accueil</a></li>
                 <li><a href="/pages/recherche.php">Rechercher une chambre</a></li>
-                
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <li><a href="/pages/reservation.php">Mes Réservations</a></li>
+                <?php if (isset($_SESSION['id_user'])): ?>
+                    <li><a href="/pages/mes_reservations.php">Mes Réservations</a></li>
                     
                     <?php if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'gestionnaire'): ?>
                         <li><a href="/pages/admin_tarifs.php">Gestion Tarifs</a></li>
                     <?php endif; ?>
                     
-                    <li class="auth-link"><a href="/auth/logout.php">Déconnexion (<?php echo htmlspecialchars($_SESSION['username']); ?>)</a></li>
+                    <li class="auth-link">
+                        <a href="/auth/logout.php">Déconnexion (<?php echo htmlspecialchars($_SESSION['username']); ?>)</a>
+                    </li>
                 <?php else: ?>
                     <li class="auth-link"><a href="/auth/login.php">Connexion</a></li>
                     <li><a href="/auth/register.php">Inscription</a></li>
