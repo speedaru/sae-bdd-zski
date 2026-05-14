@@ -6,6 +6,15 @@ require_once '../includes/header.php';
 // On utilise intval pour être sûr d'avoir un nombre entier
 $numero_selectionne = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
+// --- LOGIQUE DE REDIRECTION POUR LE BOUTON ---
+$target_page = "reservation.php?id=" . $numero_selectionne;
+if (!isset($_SESSION['id_user'])) {
+    $reservation_link = "../auth/login.php?redirect=" . urlencode("../pages/" . $target_page);
+} else {
+    // Si connecté, lien direct
+    $reservation_link = $target_page;
+}
+
 // 2. On prépare la requête pour trouver les infos de CETTE chambre
 $sql_chambre = "SELECT * FROM chambre WHERE num_chambre = ?";
 $prepare_chambre = $pdo->prepare($sql_chambre);
@@ -16,7 +25,6 @@ $infos_chambre = $prepare_chambre->fetch();
 $sql_formules = "SELECT * FROM formule";
 $requete_prix = $pdo->query($sql_formules);
 $toutes_les_formules = $requete_prix->fetchAll();
-
 
 // 4. Sécurité : si la chambre n'existe pas, on retourne au catalogue
 if (!$infos_chambre) {
@@ -65,7 +73,7 @@ if (!$infos_chambre) {
 
     <div style="margin-top:20px;">
         <a href="recherche.php">Retour</a>
-        <a href="reservation.php?id=<?php echo $id_chambre; ?>">Réserver maintenant</a>
+        <a href="<?php echo $reservation_link; ?>">Réserver maintenant</a>
     </div>
 </main>
 

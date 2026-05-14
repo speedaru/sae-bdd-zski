@@ -3,23 +3,23 @@ session_start();
 require_once '../includes/db.php';
 require_once '../includes/header.php';
 
-// On vérifie que l'utilisateur est bien connecté en tant que client
-if (!isset($_SESSION['id_client'])) {
-    header('Location: ../auth/login.php');
+$id_client = $_SESSION['id_client'];
+
+if (!isset($_SESSION['id_user'])) {
+    $login_redirect = "../auth/login.php?redirect=" . urlencode(__DIR__ . "mes_reservations.php");
+    header('Location: ' . $login_redirect);
     exit();
 }
 
-$id_client = $_SESSION['id_client'];
-
 // Requête avec jointures simples entre les 3 tables pour récupérer toutes les infos
-$sql = "SELECT reservation.date_debut, reserver.num_chambre, reserver.nom_groupe, reserver.formule_prix_final, chambre.batiment
+$query = "SELECT reservation.date_debut, reserver.num_chambre, reserver.nom_groupe, reserver.formule_prix_final, chambre.batiment
         FROM reserver
         JOIN reservation ON reserver.id_reservation = reservation.id_reservation
         JOIN chambre ON reserver.num_chambre = chambre.num_chambre
         WHERE reserver.id_client = ?
         ORDER BY reservation.date_debut DESC";
 
-$requete = $pdo->prepare($sql);
+$requete = $pdo->prepare($query);
 $requete->execute([$id_client]);
 $liste_reservations = $requete->fetchAll();
 ?>

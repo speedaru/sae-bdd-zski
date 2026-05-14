@@ -3,7 +3,7 @@ session_start();
 require_once '../includes/db.php';
 
 // On vérifie juste si le client est là
-if (!isset($_SESSION['id_client'])) {
+if (!isset($_SESSION['id_user'])) {
     header('Location: ../auth/login.php');
     exit();
 }

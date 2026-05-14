@@ -94,6 +94,59 @@ footer {
     text-decoration: underline;
 }
 
+/* Layout Global Espace Client */
+.espace-client-wrapper {
+    display: flex;
+    min-height: calc(100vh - 160px); /* Ajuste selon la hauteur du header/footer */
+}
+
+/* Sidebar */
+.sidebar-client {
+    width: 280px;
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    padding: 2rem 1rem;
+    flex-shrink: 0;
+}
+
+.sidebar-client .nav-link {
+    color: #495057;
+    padding: 0.8rem 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s;
+}
+
+.sidebar-client .nav-link:hover {
+    background-color: #e9ecef;
+    color: #0d6efd;
+}
+
+.sidebar-client .nav-link.active {
+    background-color: #0d6efd;
+    color: white;
+    font-weight: 600;
+}
+
+/* Zone de contenu */
+.content-client {
+    flex-grow: 1;
+    padding: 2rem 3rem;
+    background-color: #ffffff;
+}
+
+/* Responsivité */
+@media (max-width: 768px) {
+    .espace-client-wrapper {
+        flex-direction: column;
+    }
+    .sidebar-client {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+    }
+}
+
 /* Tableaux pour les résultats SQL */
 table {
     width: 100%;

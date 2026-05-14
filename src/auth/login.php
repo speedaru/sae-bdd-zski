@@ -19,6 +19,8 @@ if (preg_match('/^https?:\/\/|^\/\//i', $redirect_to)) {
     $redirect_to = '../index.php';
 }
 
+echo "redirect_to: " . $redirect_to;
+
 $error = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
