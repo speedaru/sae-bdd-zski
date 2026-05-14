@@ -20,7 +20,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li><a href="/index.php">Accueil</a></li>
                 <li><a href="/pages/recherche.php">Rechercher une chambre</a></li>
                 
-                <?php if (isset($_SESSION['user_id'])): ?>
+                <?php if (isset($_SESSION['id_user'])): ?>
                     <li><a href="/pages/reservation.php">Mes Réservations</a></li>
                     
                     <?php if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'gestionnaire'): ?>

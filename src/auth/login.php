@@ -6,8 +6,8 @@
 
 session_start();
 
-// Inclusion de la connexion (remonte d'un niveau vers src/ puis entre dans includes/)
 require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/header.php';
 
 $error = null;
 
@@ -19,14 +19,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Veuillez remplir tous les champs.";
     } else {
         try {
-            $stmt = $pdo->prepare("SELECT id_user, username, mdp_hash, role FROM compte_utilisateur WHERE username = :username");
+            $stmt = $pdo->prepare("SELECT id_user, id_client, username, mdp_hash, role FROM compte_utilisateur WHERE username = :username");
             $stmt->execute(['username' => $username]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user && password_verify($password, $user['mdp_hash'])) {
                 session_regenerate_id();
 
-                $_SESSION['user_id'] = $user['id_user'];
+                $_SESSION['id_user'] = $user['id_user'];
+                $_SESSION['id_client'] = $client['id_client'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
 
@@ -42,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <main class="container py-5">
