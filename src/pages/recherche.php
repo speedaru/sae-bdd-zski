@@ -1,82 +1,94 @@
 <?php
-// Inclusion de la connexion avec le bon chemin relatif
 require_once '../includes/db.php';
 require_once '../includes/header.php';
 
-// Initialisation de la requête de base sur la table chambre
-$query = "SELECT * FROM chambre WHERE 1=1";
-$params = [];
+// On commence avec une requête de base pour voir toutes les chambres
+$sql_recherche = "SELECT * FROM chambre WHERE 1=1";
+$filtres = [];
 
-// Construction dynamique selon les filtres du sujet Zarza-Ski
+// Si l'utilisateur a choisi une vue précise dans le menu
 if (!empty($_GET['vue'])) {
-    $query .= " AND type_vue = ?";
-    $params[] = $_GET['vue'];
-}
-if (!empty($_GET['batiment'])) {
-    $query .= " AND batiment = ?";
-    $params[] = $_GET['batiment'];
-}
-if (!empty($_GET['nb_lits'])) {
-    $query .= " AND nb_lits >= ?";
-    $params[] = intval($_GET['nb_lits']);
+    $sql_recherche = $sql_recherche . " AND type_vue = ?";
+    $filtres[] = $_GET['vue'];
 }
 
-// Exécution via PDO pour récupérer les données du dump
-$stmt = $pdo->prepare($query);
-$stmt->execute($params);
-$chambres = $stmt->fetchAll();
+// Si l'utilisateur a choisi un bâtiment précis
+if (!empty($_GET['batiment'])) {
+    $sql_recherche = $sql_recherche . " AND batiment = ?";
+    $filtres[] = $_GET['batiment'];
+}
+
+// Si l'utilisateur veut un minimum de lits
+if (!empty($_GET['nb_lits'])) {
+    $sql_recherche = $sql_recherche . " AND nb_lits >= ?";
+    $filtres[] = intval($_GET['nb_lits']);
+}
+
+// On prépare et on exécute la recherche avec nos filtres
+$preparation = $pdo->prepare($sql_recherche);
+$preparation->execute($filtres);
+$liste_des_chambres = $preparation->fetchAll();
 ?>
 
 <main>
-    <h1>Rechercher un hébergement</h1>
+    <h1>Trouver mon hébergement Zarza-Ski</h1>
     
-    <form method="GET" action="recherche.php">
-        <label for="vue">Vue :</label>
-        <select name="vue" id="vue">
-            <option value="">Toutes</option>
-            <option value="pistes">Sur les pistes</option>
-            <option value="parking">Sur le parking</option>
-        </select>
-        
-        <label for="batiment">Bâtiment :</label>
-        <select name="batiment" id="batiment">
-            <option value="">Tous</option>
-            <option value="A">Bâtiment A</option>
-            <option value="B">Bâtiment B</option>
-        </select>
-        
-        <label for="nb_lits">Nombre de lits min. :</label>
-        <input type="number" name="nb_lits" id="nb_lits" min="1" value="<?php echo isset($_GET['nb_lits']) ? htmlspecialchars($_GET['nb_lits']) : ''; ?>">
-        
-        <button type="submit">Filtrer</button>
-    </form>
+    <section style="background: #f4f4f4; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <form method="GET" action="recherche.php">
+            
+            <label>Vue souhaitée :</label>
+            <select name="vue">
+                <option value="">Peu importe</option>
+                <option value="pistes" <?php if(isset($_GET['vue']) && $_GET['vue'] == 'pistes') echo 'selected'; ?>>Vue sur les pistes</option>
+                <option value="parking" <?php if(isset($_GET['vue']) && $_GET['vue'] == 'parking') echo 'selected'; ?>>Vue sur le parking</option>
+            </select>
 
-    <table border="1">
+            <label>Bâtiment :</label>
+            <select name="batiment">
+                <option value="">Tous les bâtiments</option>
+                <option value="A" <?php if(isset($_GET['batiment']) && $_GET['batiment'] == 'A') echo 'selected'; ?>>Bâtiment A</option>
+                <option value="B" <?php if(isset($_GET['batiment']) && $_GET['batiment'] == 'B') echo 'selected'; ?>>Bâtiment B</option>
+            </select>
+
+            <label>Nombre de lits :</label>
+            <input type="number" name="nb_lits" min="1" value="<?php echo isset($_GET['nb_lits']) ? htmlspecialchars($_GET['nb_lits']) : ''; ?>">
+
+            <button type="submit">Lancer la recherche</button>
+        </form>
+    </section>
+
+    <table border="1" style="width: 100%; border-collapse: collapse;">
         <thead>
-            <tr>
-                <th>N° Chambre</th>
+            <tr style="background: #eee;">
+                <th>Numéro</th>
                 <th>Bâtiment</th>
                 <th>Étage</th>
                 <th>Vue</th>
-                <th>Lits</th>
-                <th>Détails</th>
+                <th>Capacité</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            <?php if ($chambres): ?>
-                <?php foreach ($chambres as $chambre): ?>
+            <?php if (count($liste_des_chambres) > 0): ?>
+                <?php foreach ($liste_des_chambres as $une_chambre): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($chambre['num_chambre']); ?></td>
-                        <td><?php echo htmlspecialchars($chambre['batiment']); ?></td>
-                        <td><?php echo htmlspecialchars($chambre['etage']); ?></td>
-                        <td><?php echo htmlspecialchars($chambre['type_vue']); ?></td>
-                        <td><?php echo htmlspecialchars($chambre['nb_lits']); ?></td>
-                        <td><a href="details.php?id=<?php echo $chambre['num_chambre']; ?>">Consulter</a></td>
+                        <td>n°<?php echo htmlspecialchars($une_chambre['num_chambre']); ?></td>
+                        <td><?php echo htmlspecialchars($une_chambre['batiment']); ?></td>
+                        <td><?php echo htmlspecialchars($une_chambre['etage']); ?></td>
+                        <td><?php echo htmlspecialchars($une_chambre['type_vue']); ?></td>
+                        <td><?php echo htmlspecialchars($une_chambre['nb_lits']); ?> lits</td>
+                        <td>
+                            <a href="details.php?id=<?php echo $une_chambre['num_chambre']; ?>">
+                                Voir la fiche
+                            </a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="6">Aucun résultat pour ces critères.</td>
+                    <td colspan="6" style="text-align: center; padding: 20px;">
+                        Aucune chambre ne correspond à vos critères.
+                    </td>
                 </tr>
             <?php endif; ?>
         </tbody>

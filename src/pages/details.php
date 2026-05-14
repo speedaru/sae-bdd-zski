@@ -2,47 +2,81 @@
 require_once '../includes/db.php';
 require_once '../includes/header.php';
 
-$id_chambre = isset($_GET['id']) ? intval($_GET['id']) : 0;
+// 1. On récupère le numéro de la chambre dans l'adresse URL
+// On utilise intval pour être sûr d'avoir un nombre entier
+$numero_selectionne = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// Récupération de la chambre
-$stmt = $pdo->prepare("SELECT * FROM chambre WHERE num_chambre = ?");
-$stmt->execute([$id_chambre]);
-$chambre = $stmt->fetch();
+// 2. On prépare la requête pour trouver les infos de CETTE chambre
+$sql_chambre = "SELECT * FROM chambre WHERE num_chambre = ?";
+$prepare_chambre = $pdo->prepare($sql_chambre);
+$prepare_chambre->execute([$numero_selectionne]);
+$infos_chambre = $prepare_chambre->fetch();
 
-// Récupération de toutes les formules de prix
-$stmt_formules = $pdo->query("SELECT * FROM formule");
-$formules = $stmt_formules->fetchAll();
+// 3. On récupère aussi la liste des prix (table formule)
+$sql_formules = "SELECT * FROM formule";
+$requete_prix = $pdo->query($sql_formules);
+$toutes_les_formules = $requete_prix->fetchAll();
 
-if (!$chambre) {
-    echo "<main><p>Chambre introuvable.</p></main>";
-    require_once '../includes/footer.php';
+
+// 4. Sécurité : si la chambre n'existe pas, on retourne au catalogue
+if (!$infos_chambre) {
+    header('Location: recherche.php');
     exit;
 }
 ?>
 
 <main>
-    <h1>Détails de la chambre n°<?php echo htmlspecialchars($chambre['num_chambre']); ?></h1>
+    <h1>Détails de la chambre n°<?php echo htmlspecialchars($infos_chambre['num_chambre']); ?></h1>
     
-    <div class="infos-techniques">
-        <p>Bâtiment <?php echo htmlspecialchars($chambre['batiment']); ?> - Étage <?php echo htmlspecialchars($chambre['etage']); ?></p>
-        <p>Superficie : <?php echo htmlspecialchars($chambre['superficie']); ?> m² (<?php echo htmlspecialchars($chambre['nb_lits']); ?> lits)</p>
-        <p>Vue : <?php echo htmlspecialchars($chambre['type_vue']); ?> / Balcon : <?php echo $chambre['balcon_present'] ? 'Oui' : 'Non'; ?></p>
-    </div>
+    <section class="infos-logement">
+        <p>
+            Cette chambre se trouve dans le <strong>Bâtiment <?php echo htmlspecialchars($infos_chambre['batiment']); ?></strong>, 
+            au niveau de l'étage n°<?php echo htmlspecialchars($infos_chambre['etage']); ?>.
+        </p>
+        <p>
+            Elle possède une surface de <?php echo htmlspecialchars($infos_chambre['superficie']); ?> m² 
+            et peut accueillir des voyageurs sur ses <?php echo htmlspecialchars($infos_chambre['nb_lits']); ?> lits.
+        </p>
+        <p>
+            Atout de la chambre : une vue dégagée sur <?php echo htmlspecialchars($infos_chambre['type_vue']); ?>. 
+            Présence d'un balcon : <?php echo $infos_chambre['balcon_present'] ? 'Oui' : 'Non'; ?>.
+        </p>
+    </section>
 
-    <h3>Tarifs par formule (prix de base)</h3>
-    <table border="1">
-        <tr><th>Formule</th><th>Prix</th></tr>
-        <?php foreach ($formules as $f): ?>
+    <hr>
+
+    <h3>Grille tarifaire Zarza-Ski (par personne)</h3>
+    <table border="1" style="width: 100%; text-align: left;">
+        <thead>
             <tr>
-                <td><?php echo htmlspecialchars($f['type_formule']); ?></td>
-                <td><?php echo htmlspecialchars($f['prix_base']); ?> €</td>
+                <th>Nom de la formule</th>
+                <th>Prix de base</th>
             </tr>
-        <?php endforeach; ?>
+        </thead>
+        <tbody>
+            <?php foreach ($toutes_les_formules as $une_formule): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($une_formule['type_formule']); ?></td>
+                    <td><?php echo htmlspecialchars($une_formule['prix_base']); ?> €</td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
     </table>
 
+<<<<<<< Updated upstream
     <div style="margin-top:20px;">
         <a href="recherche.php">Retour</a>
         <a href="reservation.php?id=<?php echo $id_chambre; ?>">Réserver maintenant</a>
+=======
+    <div style="margin-top: 40px; display: flex; gap: 20px;">
+        <a href="recherche.php" style="text-decoration: none; color: gray;">
+            ← Retour à la liste
+        </a>
+        <a href="reservation.php?id=<?php echo $numero_selectionne; ?>" 
+           style="background-color: #007bff; color: white; padding: 10px; text-decoration: none; border-radius: 5px;">
+            Réserver cette chambre
+        </a>
+>>>>>>> Stashed changes
     </div>
 </main>
 
