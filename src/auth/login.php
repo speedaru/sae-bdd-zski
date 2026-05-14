@@ -27,12 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 session_regenerate_id();
 
                 $_SESSION['id_user'] = $user['id_user'];
-                $_SESSION['id_client'] = $client['id_client'];
+                $_SESSION['id_client'] = $user['id_client'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
 
                 // Redirection vers index.php situé dans src/
                 header("Location: ../index.php");
+                echo "<h2>id client: " . $_SESSION['id_client'] . "</h2>";
                 exit;
             } else {
                 $error = "Identifiants invalides.";
