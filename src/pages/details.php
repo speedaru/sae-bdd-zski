@@ -63,20 +63,9 @@ if (!$infos_chambre) {
         </tbody>
     </table>
 
-<<<<<<< Updated upstream
     <div style="margin-top:20px;">
         <a href="recherche.php">Retour</a>
         <a href="reservation.php?id=<?php echo $id_chambre; ?>">Réserver maintenant</a>
-=======
-    <div style="margin-top: 40px; display: flex; gap: 20px;">
-        <a href="recherche.php" style="text-decoration: none; color: gray;">
-            ← Retour à la liste
-        </a>
-        <a href="reservation.php?id=<?php echo $numero_selectionne; ?>" 
-           style="background-color: #007bff; color: white; padding: 10px; text-decoration: none; border-radius: 5px;">
-            Réserver cette chambre
-        </a>
->>>>>>> Stashed changes
     </div>
 </main>
 
