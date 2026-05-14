@@ -3,6 +3,7 @@ session_start();
 require_once '../includes/db.php';
 require_once '../includes/header.php';
 
+// On vérifie que l'utilisateur est bien connecté en tant que client
 if (!isset($_SESSION['id_client'])) {
     header('Location: ../auth/login.php');
     exit();
@@ -10,47 +11,52 @@ if (!isset($_SESSION['id_client'])) {
 
 $id_client = $_SESSION['id_client'];
 
-// Jointure entre l'attribution et la chambre pour avoir les infos complètes
-$query = "SELECT ac.debut, c.num_chambre, c.batiment, c.etage, c.type_vue 
-          FROM attribution_chambre ac
-          JOIN chambre c ON ac.num_chambre = c.num_chambre
-          WHERE ac.id_client = ?
-          ORDER BY ac.debut DESC";
+// Requête avec jointures simples entre les 3 tables pour récupérer toutes les infos
+$sql = "SELECT reservation.date_debut, reserver.num_chambre, reserver.nom_groupe, reserver.formule_prix_final, chambre.batiment
+        FROM reserver
+        JOIN reservation ON reserver.id_reservation = reservation.id_reservation
+        JOIN chambre ON reserver.num_chambre = chambre.num_chambre
+        WHERE reserver.id_client = ?
+        ORDER BY reservation.date_debut DESC";
 
-$stmt = $pdo->prepare($query);
-$stmt->execute([$id_client]);
-$reservations = $stmt->fetchAll();
+$requete = $pdo->prepare($sql);
+$requete->execute([$id_client]);
+$liste_reservations = $requete->fetchAll();
 ?>
 
 <main>
-    <h1>Mes Réservations Zarza-Ski</h1>
+    <h1>Mes réservations effectuées</h1>
 
-    <?php if (count($reservations) > 0): ?>
+    <?php if (count($liste_reservations) > 0): ?>
         <table border="1">
             <thead>
                 <tr>
                     <th>Semaine du</th>
-                    <th>Chambre</th>
+                    <th>N° Chambre</th>
                     <th>Bâtiment</th>
-                    <th>Étage</th>
-                    <th>Vue</th>
+                    <th>Nom du groupe</th>
+                    <th>Tarif payé</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($reservations as $res): ?>
+                <?php foreach ($liste_reservations as $ligne): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($res['debut']); ?></td>
-                        <td>n°<?php echo htmlspecialchars($res['num_chambre']); ?></td>
-                        <td><?php echo htmlspecialchars($res['batiment']); ?></td>
-                        <td><?php echo htmlspecialchars($res['etage']); ?></td>
-                        <td><?php echo htmlspecialchars($res['type_vue']); ?></td>
+                        <td><?php echo htmlspecialchars($ligne['date_debut']); ?></td>
+                        <td>Chambre <?php echo htmlspecialchars($ligne['num_chambre']); ?></td>
+                        <td>Bâtiment <?php echo htmlspecialchars($ligne['batiment']); ?></td>
+                        <td><?php echo htmlspecialchars($ligne['nom_groupe']); ?></td>
+                        <td><?php echo htmlspecialchars($ligne['formule_prix_final']); ?> €</td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     <?php else: ?>
-        <p>Aucune réservation trouvée. <a href="recherche.php">Voir le catalogue</a></p>
+        <p>Vous n'avez pas encore de réservations enregistrées sur Zarza-Ski.</p>
     <?php endif; ?>
+
+    <p style="margin-top: 20px;">
+        <a href="recherche.php">Retourner au catalogue des chambres</a>
+    </p>
 </main>
 
-<?php require_once '../includes/footer.php'; ?>{\rtf1}
+<?php require_once '../includes/footer.php'; ?>
