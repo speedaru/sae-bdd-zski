@@ -15,11 +15,13 @@ DROP TABLE IF EXISTS client CASCADE;
 DROP TABLE IF EXISTS semaine CASCADE;
 DROP TABLE IF EXISTS groupe CASCADE;
 DROP TABLE IF EXISTS formule CASCADE;
+DROP TABLE IF EXISTS compte_utilisateur CASCADE;
 
 -- Suppression des types personnalisés s'ils existent
 DROP TYPE IF EXISTS pref_level CASCADE;
 DROP TYPE IF EXISTS ski_level CASCADE;
 DROP TYPE IF EXISTS vue_type CASCADE;
+DROP TYPE IF EXISTS role_compte CASCADE;
 
 -- ==========================================================
 -- 2. CRÉATION DES TYPES (ENUMERATIONS)
@@ -27,6 +29,7 @@ DROP TYPE IF EXISTS vue_type CASCADE;
 CREATE TYPE pref_level AS ENUM ('impératif', 'Souhaitable', 'Pas souhaitable', 'Interdit');
 CREATE TYPE ski_level AS ENUM ('débutant', 'moyen', 'confirmé');
 CREATE TYPE vue_type AS ENUM ('parking', 'pistes');
+CREATE TYPE role_compte AS ENUM ('admin', 'gestionnaire', 'client');
 
 -- ==========================================================
 -- 3. CRÉATION DES TABLES
@@ -67,6 +70,14 @@ CREATE TABLE client (
 CREATE TABLE formule (
     type_formule VARCHAR(24) PRIMARY KEY,
     prix_base INTEGER NOT NULL
+);
+
+CREATE TABLE compte_utilisateur (
+    id_user SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    mdp_hash VARCHAR(255) NOT NULL,
+    role role_compte NOT NULL,
+    id_client BIGINT REFERENCES client(id_client) ON DELETE SET NULL
 );
 
 -- ==========================================================
@@ -148,3 +159,6 @@ INSERT INTO tarif_formule VALUES
 (1, '2020-12-20', 'Tout compris', 510), 
 (2, '2020-12-20', 'Tout compris', 510), 
 (3, '2020-12-20', 'Tout compris', 408);
+
+INSERT INTO compte_utilisateur (username, mdp_hash, role, id_client) VALUES
+('j.durand', '$2y$10$e0MYzXy..6L.88H1L7L9e.lE5QO.mX5I.mX5I.mX5I.mX5I.mX5I.', 'client', 1);
