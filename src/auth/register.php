@@ -1,6 +1,6 @@
 <?php
 /**
- * page d'inscription - zarza-ski
+ * page d'inscription
  * gère la création de comptes utilisateurs
  */
 
