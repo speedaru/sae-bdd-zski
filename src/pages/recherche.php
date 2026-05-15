@@ -2,7 +2,7 @@
 require_once '../includes/db.php';
 require_once '../includes/header.php';
 
-$sql = "SELECT * FROM chambre";
+$sql = "SELECT * FROM chambre WHERE 1=1"; // WHERE pour pas casser les options
 $parametres = [];
 
 if (isset($_GET['vue'])) {
