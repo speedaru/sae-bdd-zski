@@ -1,0 +1,41 @@
+
+/**
+ * Zarza-Ski - Style Profil
+ * Optimisation des formulaires de saisie
+ */
+
+.form-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    margin-bottom: 0.4rem;
+}
+
+.form-control, .form-select {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.65rem 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--ski-blue-primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.input-group-text {
+    background-color: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    color: #64748b;
+    font-weight: 600;
+}
+
+/* Section Divider */
+.profile-section-title {
+    border-bottom: 2px solid var(--ski-blue-snow);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    color: var(--ski-dark-slate);
+}

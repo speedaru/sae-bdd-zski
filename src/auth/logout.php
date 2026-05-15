@@ -5,7 +5,7 @@
  * Sécurise la fin de session en nettoyant les données côté serveur et client.
  */
 
-require_once '../includes/functions.php';
+require_once '../includes/init.php';
 
 session_start();
 

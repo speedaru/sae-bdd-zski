@@ -1,0 +1,37 @@
+
+/**
+ * Zarza-Ski - Style Carnet de Voyageurs
+ * Mise en page des listes et formulaires voyageurs
+ */
+
+.voyageur-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #e2e8f0;
+}
+
+.voyageur-info h5 {
+    margin-bottom: 0.2rem;
+    font-weight: 700;
+}
+
+.voyageur-badge {
+    background-color: var(--ski-blue-snow);
+    color: var(--ski-blue-primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Style spécifique pour le bouton d'ajout flottant ou fixe */
+.btn-add-voyageur {
+    border-radius: 50px;
+    padding: 10px 25px;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+}

@@ -1,0 +1,59 @@
+/**
+ * Zarza-Ski - Styles Globaux & Layout
+ * Version avec Sticky Footer
+ */
+
+:root {
+    --ski-blue-primary: #2563eb;
+    --ski-blue-snow: #f0f9ff;
+    --ski-dark-slate: #1e293b;
+    --ski-white-snow: #ffffff;
+    --ski-success-green: #10b981;
+    --ski-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* 1. CONFIGURATION DU LAYOUT FLEXBOX */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column; /* Aligne les éléments verticalement */
+    min-height: 100vh;      /* Prend au moins toute la hauteur de l'écran */
+    background-color: var(--ski-blue-snow);
+    color: var(--ski-dark-slate);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+header {
+    flex-shrink: 0; /* Empêche le header de s'écraser */
+}
+
+main {
+    flex: 1 0 auto; /* Force le contenu principal à prendre tout l'espace disponible */
+}
+
+footer {
+    flex-shrink: 0; /* Empêche le footer de remonter */
+}
+
+/* 2. PERSONNALISATION DES ÉLÉMENTS */
+.navbar {
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--ski-shadow);
+}
+
+.btn-primary {
+    background-color: var(--ski-blue-primary);
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+}

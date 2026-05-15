@@ -3,9 +3,69 @@
  * bibliotheque de fonctions reutilisables
  */
 
-// verifie si l'utilisateur est connecte
-function is_logged_in() {
-    return isset($_SESSION['id_user']);
+/**
+ * Nettoie une chaîne pour éviter les failles XSS
+ */
+function h($string) {
+    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+}
+
+/**
+ * Affiche une alerte Bootstrap stylisée
+ * @param string $message Le texte à afficher
+ * @param string $type success, danger, warning, info
+ */
+function alert($message, $type = 'info') {
+    if (!$message) return '';
+    $icon = [
+        'success' => 'check-circle',
+        'danger'  => 'exclamation-triangle',
+        'warning' => 'exclamation-circle',
+        'info'    => 'info-circle'
+    ];
+    return "
+    <div class='alert alert-{$type} alert-dismissible fade show' role='alert'>
+        <i class='fas fa-{$icon[$type]} me-2'></i> {$message}
+        <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+    </div>";
+}
+
+/**
+ * Formate une date SQL (YYYY-MM-DD) vers le format français (DD/MM/YYYY)
+ */
+function date_fr($date_sql) {
+    return date('d/m/Y', strtotime($date_sql));
+}
+
+function folder_in_curr_path($folder_name) {
+    return strpos($_SERVER['PHP_SELF'], '/' . $folder_name . '/') !== false;
+}
+
+function folders_in_curr_path(array $folder_names) {
+    $curr_path = $_SERVER['PHP_SELF'];
+    echo $curr_path;
+    foreach ($folder_names as $name) {
+        $name_present = strpos($curr_path, '/' . $name . '/') !== false;
+        if ($name_present) { // renvoie vrai si dossier present, sinon continue de regarder les autres
+            return true;
+        }
+    }
+    return false;
+}
+
+function get_relative_base_url() {
+    $curr_path = $_SERVER['PHP_SELF'];
+    $depth = substr_count($curr_path, "/");
+    if ($depth <= 1) { // php root
+        return "./";
+    }
+    
+    $rel_base = "";
+    while ($depth-- > 1) {
+        $rel_base = $rel_base . "../";
+    }
+    
+    return $rel_base;
 }
 
 /**
@@ -21,46 +81,9 @@ function add_current_args($url) {
     return $full_url;
 }
 
-function sanitize_redirect_url($redirect_url) {
-    // SÉCURITÉ : Protection contre les redirections vers des sites 
-    // On s'assure que la redirection est interne (ne commence pas par http, https ou //)
-    if (preg_match('/^https?:\/\/|^\/\//i', $redirect_url)) {
-        $redirect_url = '../index.php';
-    }
-    return $redirect_url;
-}
-
 /**
- * force la connexion et conserve les paramètres d'url (get)
- * @param string $path_from_auth chemin relatif depuis le dossier auth/ vers la page cible
+ * same as add_current_args() but uses current page by default
  */
-function require_login($path_from_auth) {
-    if (!isset($_SESSION['id_user'])) {
-        $full_redirect = add_current_args($path_from_auth);
-        
-        // redirection vers login avec le paramètre redirect encodé
-        header("Location: ../auth/login.php?redirect=" . urlencode($full_redirect));
-        exit;
-    }
-}
-
-// 3. Vérifie les rôles (ex: admin, gestionnaire)
-function require_role($roles_autorises = []) {
-    if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $roles_autorises)) {
-        header("Location: /index.php"); // Ou une page d'erreur 403
-        exit;
-    }
-}
-
-// 4. Génère un lien de redirection vers login proprement
-function get_auth_link($target) {
-    if (is_logged_in()) return $target;
-    return "/auth/login.php?redirect=" . urlencode($target);
-}
-
-// 5. Affiche une alerte Bootstrap uniformisée
-function display_alert($message, $type = 'danger') {
-    if (!$message) return '';
-    $icon = ($type === 'success') ? 'fa-check-circle' : 'fa-exclamation-triangle';
-    return "<div class='alert alert-{$type} shadow-sm'><i class='fas {$icon} me-2'></i>" . htmlspecialchars($message) . "</div>";
+function add_current_url_with_args() {
+    return add_current_args($_SERVER['PHP_SELF']);
 }
