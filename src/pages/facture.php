@@ -24,13 +24,19 @@ $total_f = 0;
 $nb_occupe = 0;
 
 foreach ($liste as $ligne) {
-    $prix = $ligne['formule_prix_final'];
-    $total_f = $total_f + $prix;
+    $prix_paye = $ligne['formule_prix_final'];
+    $total_f = $total_f + $prix_paye;
     
-    $lit = $ligne['occupe_lit'];
-    if ($lit == 1) {
-        $nb_occupe = $nb_occupe + 1;
-    }
+    // On va chercher le prix unitaire de la formule dans la base
+    $sql3 = "SELECT prix_base FROM formule WHERE type_formule = ?";
+    $q3 = $pdo->prepare($sql3);
+    $q3->execute(array($ligne['type_formule']));
+    $f_info = $q3->fetch();
+    $prix_base_unitaire = $f_info['prix_base'];
+    
+    // On trouve le nombre de personnes en divisant le total payé par le prix unitaire
+    $personnes_dans_le_groupe = $prix_paye / $prix_base_unitaire;
+    $nb_occupe = $nb_occupe + $personnes_dans_le_groupe;
 }
 
 $nb_total = $chambre['nb_lits'];
@@ -58,7 +64,7 @@ foreach ($liste as $p) {
     echo "<li>";
     echo "Client " . $p['id_client'];
     echo " - Formule " . $p['type_formule'];
-    echo " : " . $p['formule_prix_final'] . " €";
+    echo " : " . $p['formule_prix_final'] . " € (pour " . $nb_occupe . " personne(s))";
     echo "</li>";
 }
 echo "</ul>";
