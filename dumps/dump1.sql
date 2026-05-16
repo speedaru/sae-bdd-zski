@@ -36,7 +36,8 @@ CREATE TABLE client (
     niveau_ski ski_level NOT NULL,
     taille NUMERIC(3,2) NOT NULL,
     poids SMALLINT NOT NULL,
-    pointure NUMERIC(3,1) NOT NULL
+    pointure NUMERIC(3,1) NOT NULL,
+    date_naissance DATE NOT NULL
 );
 
 CREATE TABLE formule (
@@ -83,7 +84,7 @@ CREATE TABLE reservation (
     id_reservation SERIAL PRIMARY KEY,
     date_debut DATE NOT NULL,
     date_fin DATE NOT NULL,
-    nom_groupe VARCHAR(48) NOT NULL REFERENCES groupe(nom_groupe) ON DELETE CASCADE,
+    nom_groupe VARCHAR(48) NOT NULL REFERENCES groupe(nom_groupe) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT check_dates CHECK (date_fin > date_debut)
 );
 
@@ -121,8 +122,8 @@ CREATE TABLE preference (
 
 -- 1. Création des clients physiques
 INSERT INTO client (nom, prenom, adresse, num_tel, niveau_ski, taille, poids, pointure) VALUES
-('Durand', 'Jean', '12 rue des Pins, Paris', '0601020304', 'moyen', 1.80, 75, 43.0),
-('Durand', 'Marie', '12 rue des Pins, Paris', '0605060708', 'confirmé', 1.65, 60, 38.0);
+('Durand', 'Jean', '12 rue des Pins, Paris', '0601020304', 'moyen', 1.80, 75, 43.0, '1985-04-12'),
+('Durand', 'Marie', '12 rue des Pins, Paris', '0605060708', 'confirmé', 1.65, 60, 38.0, '1990-11-23');
 
 -- 2. Création du compte pour Jean
 INSERT INTO compte_utilisateur (username, mdp_hash, role, id_client) VALUES

@@ -24,6 +24,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <i class="fas fa-book me-2"></i>Carnet de Voyageurs
     </a>
     
+    <a href="/pages/groupes.php" 
+       class="list-group-item list-group-item-action <?php echo ($current_page == 'groupes') ? 'active' : ''; ?>">
+        <i class="fas fa-users-cog me-2"></i>Mes Groupes
+    </a>
+    
     <a href="/pages/mes_reservations.php" 
        class="list-group-item list-group-item-action <?php echo ($current_page == 'mes_reservations.php') ? 'active' : ''; ?>">
         <i class="fas fa-skiing me-2"></i>Mes Réservations

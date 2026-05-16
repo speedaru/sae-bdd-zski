@@ -2,7 +2,7 @@
 /**
  * Action PHP - Supprimer un voyageur du carnet
  * Emplacement : src/actions/supprimer_voyageur.php
- * Supprime de manière sécurisée un client du carnet et de la table physique client.
+ * Supprime de manière sécurisée le lien d'un voyageur de la tribu (conserve la fiche client pour l'historique).
  */
 
 require_once __DIR__ . '/../includes/init.php';
@@ -39,9 +39,6 @@ try {
         exit();
     }
 
-    // 4. TRANSACTION POSTGRESQL : Suppression propre et coordonnée
-    $pdo->beginTransaction();
-
     // Suppression du lien d'appartenance dans la table de pivot
     $stmtDeleteLink = $pdo->prepare("DELETE FROM gestion_voyageurs WHERE id_user = :id_user AND id_client = :id_client");
     $stmtDeleteLink->execute([
@@ -49,7 +46,6 @@ try {
         'id_client' => $client_id_to_delete
     ]);
 
-    $pdo->commit();
     $_SESSION['success'] = "Le voyageur a été supprimé de votre tribu avec succès.";
 
 } catch (PDOException $e) {
