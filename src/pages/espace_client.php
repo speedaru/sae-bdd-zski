@@ -3,15 +3,9 @@
  * Accueil Espace Client - Zarza-Ski
  * Sert de conteneur principal pour les fonctionnalités membres.
  */
-session_start();
-
-// Protection de l'accès
-if (!isset($_SESSION['id_user'])) {
-    header("Location: /auth/login.php?redirect=" . urlencode("/pages/espace_client.php"));
-    exit;
-}
-
 require_once __DIR__ . '/../includes/header.php';
+
+require_login("../pages/espace_client.php");
 ?>
 
 <div class="row mt-4">

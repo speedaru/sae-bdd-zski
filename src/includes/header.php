@@ -45,7 +45,6 @@ require_once 'init.php';
 
                 <ul class="navbar-nav ms-auto align-items-center">
                     <?php if (is_logged_in()): ?>
-                    <h2 style="color: #FFFFFF"> logged in </h2>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-user-circle me-1"></i> <?php echo h($_SESSION['username']); ?>

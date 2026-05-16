@@ -3,15 +3,9 @@
  * Page de gestion du profil client - Zarza-Ski
  * Emplacement : src/pages/profil.php
  */
-session_start();
+require_once __DIR__ . '/../includes/header.php';
 
-// Protection de l'accès
-if (!isset($_SESSION['id_user'])) {
-    header("Location: /auth/login.php");
-    exit;
-}
-
-require_once __DIR__ . '/../includes/db.php';
+require_login("../pages/espace_client.php");
 
 $user_id = $_SESSION['id_user'];
 $client_id = $_SESSION['id_client'] ?? null;
@@ -84,8 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-
-require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="row mt-4">

@@ -19,6 +19,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <i class="fas fa-user-edit me-2"></i>Mon Profil Skieur
     </a>
     
+    <a href="/pages/carnet.php" 
+       class="list-group-item list-group-item-action <?php echo ($current_page == 'carnet.php') ? 'active' : ''; ?>">
+        <i class="fas fa-book me-2"></i>Carnet de Voyageurs
+    </a>
+    
     <a href="/pages/mes_reservations.php" 
        class="list-group-item list-group-item-action <?php echo ($current_page == 'mes_reservations.php') ? 'active' : ''; ?>">
         <i class="fas fa-skiing me-2"></i>Mes Réservations
@@ -28,8 +33,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
        class="list-group-item list-group-item-action <?php echo ($current_page == 'preferences.php') ? 'active' : ''; ?>">
         <i class="fas fa-heart me-2"></i>Préférences séjour
     </a>
-
+    
     <a href="/auth/logout.php" class="list-group-item list-group-item-action text-danger mt-2">
         <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
     </a>
+    
 </div>
