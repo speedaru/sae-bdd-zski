@@ -6,28 +6,24 @@
 
 require_once '../includes/header.php';
 
-// 1. Déterminer la destination de redirection
-// On vérifie d'abord en POST (si le formulaire vient d'être soumis) puis en GET (arrivée initiale)
-$redirect_to = $_POST['redirect'] ?? $_GET['redirect'] ?? '../index.php';
-$redirect_to = sanitize_redirect_url($redirect_to);
+$url = $_POST['redirect'] ?? $_GET['redirect'] ?? '../index.php';
+$url = sanitize_redirect_url($url);
 
-echo "redirect_to: " . $redirect_to;
-
-$error = null;
+$err = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
+    $u = trim($_POST['username'] ?? '');
+    $p = $_POST['password'] ?? '';
 
-    if (empty($username) || empty($password)) {
-        $error = "Veuillez remplir tous les champs.";
+    if (empty($u) || empty($p)) {
+        $err = "Veuillez remplir tous les champs.";
     } else {
         try {
-            $stmt = $pdo->prepare("SELECT id_user, id_client, username, mdp_hash, role FROM compte_utilisateur WHERE username = :username");
-            $stmt->execute(['username' => $username]);
+            $stmt = $pdo->prepare("SELECT id_user, id_client, username, mdp_hash, role FROM compte_utilisateur WHERE username = ?");
+            $stmt->execute([$u]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($user && password_verify($password, $user['mdp_hash'])) {
+            if ($user && password_verify($p, $user['mdp_hash'])) {
                 session_regenerate_id();
 
                 $_SESSION['id_user'] = $user['id_user'];
@@ -35,68 +31,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
 
-                // Redirection finale vers la page donee en parametre
-                header("Location: " . $redirect_to);
-                exit;
+                header("Location: " . $url);
+                exit();
             } else {
-                $error = "Identifiants invalides.";
+                $err = "Identifiants invalides.";
             }
         } catch (PDOException $e) {
-            $error = "Une erreur technique est survenue.";
+            $err = "Une erreur technique est survenue.";
         }
     }
 }
-
 ?>
 
-<main class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm border-0 rounded-3">
-                <div class="card-body p-4">
-                    <div class="text-center mb-4">
-                        <h2 class="fw-bold">Connexion</h2>
-                        <p class="text-muted">Accédez à votre espace Zarza-Ski</p>
-                    </div>
+<link rel="stylesheet" type="text/css" href="../css/login.css">
 
-                    <?php if ($error): ?>
-                        <div class="alert alert-danger mb-3 py-2" role="alert">
-                            <i class="fas fa-exclamation-triangle me-2"></i> <?php echo htmlspecialchars($error); ?>
-                        </div>
-                    <?php endif; ?>
+<main class="bloc-page">
+    <div class="boite-login">
+        <center>
+            <h2>Connexion</h2>
+            <p>Accédez à votre espace Zarza-Ski</p>
+        </center>
 
-                    <form action="login.php" method="POST">
-                        <!-- CHAMP CACHÉ : On conserve la destination pendant la soumission du formulaire -->
-                        <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($redirect_to); ?>">
-
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Nom d'utilisateur</label>
-                            <input type="text" name="username" id="username" class="form-control" placeholder="Votre pseudo" value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>" required>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="password" class="form-label">Mot de passe</label>
-                            <input type="password" name="password" id="password" class="form-control" placeholder="Votre mot de passe" required>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 py-2 mb-3 shadow-sm">Se connecter</button>
-
-                        <hr class="my-4 text-muted">
-
-                        <div class="text-center">
-                            <p class="mb-0 text-muted">Pas encore de compte ?</p>
-                            <a href="register.php" class="text-primary fw-bold text-decoration-none">Créer un compte station</a>
-                        </div>
-                    </form>
-                </div>
+        <?php if ($err): ?>
+            <div class="boite-erreur">
+                <b>Attention :</b> <?php echo htmlspecialchars($err); ?>
             </div>
-            <div class="text-center mt-4">
-                <a href="../index.php" class="text-muted text-decoration-none small">
-                    <i class="fas fa-arrow-left me-1"></i> Retour à l'accueil
-                </a>
-            </div>
-        </div>
+        <?php endif; ?>
+
+        <form action="login.php" method="POST">
+            <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($url); ?>">
+
+            <p>
+                <label for="username"><b>Nom d'utilisateur :</b></label><br>
+                <input type="text" name="username" id="username" placeholder="Votre pseudo" value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>" required>
+            </p>
+
+            <p>
+                <label for="password"><b>Mot de passe :</b></label><br>
+                <input type="password" name="password" id="password" placeholder="Votre mot de passe" required>
+            </p>
+
+            <p>
+                <input type="submit" value="Se connecter" class="btn-validation">
+            </p>
+        </form>
+
+        <hr>
+
+        <center>
+            <p>Pas encore de compte ?</p>
+            <a href="register.php"><b>Créer un compte station</b></a>
+        </center>
     </div>
+
+    <br>
+    <center>
+        <a href="../index.php">Retour à l'accueil</a>
+    </center>
 </main>
 
 <?php require_once '../includes/footer.php'; ?>

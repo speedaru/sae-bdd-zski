@@ -1,0 +1,68 @@
+.bloc-page {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 10px;
+    font-family: sans-serif;
+}
+
+.boite-register {
+    border: 3px solid black;
+    background-color: #fafafa;
+    padding: 30px;
+}
+
+.boite-register h2 {
+    margin-top: 0;
+    color: blue;
+}
+
+.boite-register p {
+    color: #555555;
+}
+
+.boite-erreur {
+    background-color: #ffe0e0;
+    color: red;
+    border: 1px solid red;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.boite-succes {
+    background-color: #e0ffe0;
+    color: green;
+    border: 1px solid green;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.boite-register input[type="text"],
+.boite-register input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    box-sizing: border-box;
+    margin-top: 5px;
+}
+
+.btn-validation {
+    width: 100%;
+    padding: 12px;
+    background-color: blue;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.boite-register hr {
+    border: 0;
+    border-top: 1px solid #cccccc;
+    margin: 20px 0;
+}
+
+.boite-register a {
+    color: blue;
+    text-decoration: none;
+}

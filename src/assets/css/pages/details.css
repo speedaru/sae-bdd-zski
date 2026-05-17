@@ -1,0 +1,93 @@
+.conteneur-principal {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: sans-serif;
+}
+
+.fil-ariane {
+    font-size: 14px;
+    color: #555555;
+}
+
+.titre-page {
+    text-align: center;
+}
+
+.barre-separation {
+    width: 100px;
+    height: 3px;
+    background-color: blue;
+    margin: 10px auto 0 auto;
+    border-radius: 2px;
+}
+
+.table-presentation {
+    width: 100%;
+}
+
+.colonne-technique {
+    width: 50%;
+}
+
+.colonne-tarifs {
+    width: 50%;
+}
+
+.titre-section {
+    color: white;
+    padding: 10px;
+    margin-top: 0;
+}
+
+.blue-bg {
+    background-color: blue;
+}
+
+.black-bg {
+    background-color: black;
+}
+
+.table-prix {
+    width: 100%;
+}
+
+.prix-bleu {
+    color: blue;
+    font-weight: bold;
+}
+
+.zone-boutons {
+    text-align: center;
+}
+
+.zone-boutons button {
+    padding: 12px 25px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-defaut {
+    background-color: #f0f0f0;
+    border: 1px solid #cccccc;
+}
+
+.btn-retirer {
+    background-color: white;
+    color: red;
+    border: 1px solid red;
+}
+
+.btn-valider {
+    background-color: green;
+    color: white;
+    font-weight: bold;
+    border: none;
+}
+
+.btn-ajouter {
+    background-color: blue;
+    color: white;
+    font-weight: bold;
+    border: none;
+}
