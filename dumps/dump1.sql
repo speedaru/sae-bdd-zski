@@ -121,7 +121,7 @@ CREATE TABLE preference (
 -- ==========================================================
 
 -- 1. Création des clients physiques
-INSERT INTO client (nom, prenom, adresse, num_tel, niveau_ski, taille, poids, pointure) VALUES
+INSERT INTO client (nom, prenom, adresse, num_tel, niveau_ski, taille, poids, pointure, date_naissance) VALUES
 ('Durand', 'Jean', '12 rue des Pins, Paris', '0601020304', 'moyen', 1.80, 75, 43.0, '1985-04-12'),
 ('Durand', 'Marie', '12 rue des Pins, Paris', '0605060708', 'confirmé', 1.65, 60, 38.0, '1990-11-23');
 
