@@ -7,8 +7,6 @@
 
 require_once '../includes/init.php';
 
-session_start();
-
 $redirect_to = $_POST['redirect'] ?? $_GET['redirect'] ?? '../index.php';
 $redirect_to = sanitize_redirect_url($redirect_to);
 

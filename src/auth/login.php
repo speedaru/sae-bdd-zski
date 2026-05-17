@@ -4,11 +4,7 @@
  * gere la connexion a un compte utilisateur
  */
 
-session_start();
-
-require_once '../includes/db.php';
 require_once '../includes/header.php';
-require_once '../includes/functions.php';
 
 // 1. Déterminer la destination de redirection
 // On vérifie d'abord en POST (si le formulaire vient d'être soumis) puis en GET (arrivée initiale)

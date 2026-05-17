@@ -5,7 +5,6 @@
  */
 
 // connexion et header
-require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/header.php';
 
 $error = null;
@@ -27,8 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->beginTransaction();
 
             // ÉTAPE A : Création du profil client (avec valeurs par défaut pour les champs NOT NULL)
-            $sqlClient = "INSERT INTO client (nom, prenom, adresse, num_tel, niveau_ski, taille, poids, pointure) 
-                          VALUES (:nom, :prenom, 'À renseigner', '0000000000', 'débutant', 0, 0, 0)";
+            $sqlClient = "INSERT INTO client (nom, prenom, adresse, num_tel, niveau_ski, taille, poids, pointure, date_naissance) 
+                          VALUES (:nom, :prenom, 'À renseigner', '0000000000', 'débutant', 0, 0, 0, '2000-01-01')";
             $stmtClient = $pdo->prepare($sqlClient);
             $stmtClient->execute([
                 'nom' => $nom,
