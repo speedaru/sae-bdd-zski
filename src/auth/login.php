@@ -1,8 +1,10 @@
 <?php
-session_start();
-require_once '../includes/db.php';
+/**
+ * page de connexion
+ * gere la connexion a un compte utilisateur
+ */
+
 require_once '../includes/header.php';
-require_once '../includes/functions.php';
 
 $url = $_POST['redirect'] ?? $_GET['redirect'] ?? '../index.php';
 $url = sanitize_redirect_url($url);
