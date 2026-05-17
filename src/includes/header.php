@@ -27,6 +27,7 @@ require_once 'init.php';
 </head>
 
 <body class="page-<?php echo $current_page; ?>">
+
     <header class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold" href="<?php echo $base_url; ?>index.php">
@@ -39,12 +40,31 @@ require_once 'init.php';
 
             <div class="collapse navbar-collapse" id="topNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link <?php echo $current_page == 'index' ? 'active' : ''; ?>" href="<?php echo $base_url; ?>index.php">Accueil</a></li>
-                    <li class="nav-item"><a class="nav-link <?php echo $current_page == 'recherche' ? 'active' : ''; ?>" href="<?php echo $base_url; ?>pages/recherche.php">Réserver</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo $current_page == 'index' ? 'active' : ''; ?>" href="<?php echo $base_url; ?>index.php">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo $current_page == 'recherche' ? 'active' : ''; ?>" href="<?php echo $base_url; ?>pages/recherche.php">Réserver</a>
+                    </li>
                 </ul>
 
                 <ul class="navbar-nav ms-auto align-items-center">
-                    <?php if (is_logged_in()): ?>
+                    <?php if (isset($_SESSION['id_user'])): ?>
+                        <!-- NOUVEAU : Affichage dynamique du Panier -->
+                        <li class="nav-item me-2">
+                            <a class="btn btn-outline-light btn-sm position-relative px-3" href="<?php echo $base_url; ?>pages/reservation.php">
+                                <i class="fas fa-shopping-cart me-1"></i> Mon Panier
+                                <?php 
+                                $panier_count = get_panier_count();
+                                if ($panier_count > 0): 
+                                ?>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        <?php echo $panier_count; ?>
+                                    </span>
+                                <?php endif; ?>
+                            </a>
+                        </li>
+
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-user-circle me-1"></i> <?php echo h($_SESSION['username']); ?>
@@ -53,11 +73,11 @@ require_once 'init.php';
                                 <li><a class="dropdown-item" href="<?php echo $base_url; ?>pages/espace_client.php">Tableau de bord</a></li>
                                 <li><a class="dropdown-item" href="<?php echo $base_url; ?>pages/profil.php">Mon profil</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="<?php echo $base_url; ?>auth/logout.php?redirect=<?php echo add_current_url_with_args(); ?>">Déconnexion</a></li>
+                                <li><a class="dropdown-item text-danger" href="<?php echo $base_url; ?>auth/logout.php">Déconnexion</a></li>
                             </ul>
                         </li>
                     <?php else: ?>
-                        <li class="nav-item"><a class="nav-link" href="<?php echo $base_url; ?>auth/login.php?redirect=<?php echo add_current_url_with_args(); ?>">Connexion</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?php echo $base_url; ?>auth/login.php">Connexion</a></li>
                         <li class="nav-item"><a class="btn btn-primary btn-sm ms-2" href="<?php echo $base_url; ?>auth/register.php">Inscription</a></li>
                     <?php endif; ?>
                 </ul>

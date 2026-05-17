@@ -87,3 +87,49 @@ function add_current_args($url) {
 function add_current_url_with_args() {
     return add_current_args($_SERVER['PHP_SELF']);
 }
+
+/**
+ * Retourne le nombre de chambres actuellement sélectionnées dans le panier
+ */
+function get_panier_count() {
+    if (isset($_SESSION['panier']) && is_array($_SESSION['panier'])) {
+        return count($_SESSION['panier']);
+    }
+    return 0;
+}
+
+/**
+ * Calcule l'âge exact en années à partir d'une date de naissance au format (YYYY-MM-DD)
+ * @param string $date_naissance
+ * @return int l'âge exact
+ */
+function calculer_age($date_naissance) {
+    if (empty($date_naissance)) return 0;
+    $today = new DateTime();
+    $birthdate = new DateTime($date_naissance);
+    $diff = $today->diff($birthdate);
+    return $diff->y;
+}
+
+/**
+ * Applique la tarification de la station selon les critères d'âge :
+ * - Bébé (< 2 ans) : Gratuit (0€)
+ * - Enfant (entre 2 ans et 11 ans révolus) : Réduction de -20%
+ * - Adulte (>= 12 ans) : Plein tarif de base
+ * @param int $prix_base Tarif brut d'une formule
+ * @param string $date_naissance Date de naissance du skieur
+ * @return int Tarif final calculé
+ */
+function calculer_prix_indiv($prix_base, $date_naissance) {
+    $age = calculer_age($date_naissance);
+    
+    if ($age < 2) {
+        return 0;
+    } elseif ($age < 12) {
+        // Enfant : réduction de 20%
+        return intval(round($prix_base * 0.8));
+    }
+    
+    // Adulte : prix normal
+    return intval($prix_base);
+}
