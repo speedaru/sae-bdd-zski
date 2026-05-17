@@ -25,7 +25,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </a>
     
     <a href="/pages/groupes.php" 
-       class="list-group-item list-group-item-action <?php echo ($current_page == 'groupes') ? 'active' : ''; ?>">
+       class="list-group-item list-group-item-action <?php echo ($current_page == 'groupes.php') ? 'active' : ''; ?>">
         <i class="fas fa-users-cog me-2"></i>Mes Groupes
     </a>
     
