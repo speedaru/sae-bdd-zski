@@ -20,7 +20,7 @@ unset($_SESSION['error'], $_SESSION['success']);
 if (empty($panier)) {
     ?>
     <div class="container py-5 text-center">
-        <div class="card p-5 shadow border-0 max-width-600 mx-auto">
+        <div class="card p-5 shadow border-0 max-width-600 mx-auto bg-white">
             <div class="mb-4">
                 <i class="fas fa-shopping-basket fa-4x text-muted opacity-50"></i>
             </div>
@@ -78,160 +78,136 @@ try {
         </div>
         <div>
             <h1 class="h2 mb-0 fw-bold">Finaliser ma réservation</h1>
-            <p class="text-muted mb-0">Configurez les séjours de votre tribu, attribuez les chambres et validez vos vacances.</p>
+            <p class="text-muted mb-0">Remplissez les détails, associez les membres de votre tribu aux chambres et validez.</p>
         </div>
     </div>
 
     <?php if ($success) echo alert($success, 'success'); ?>
     <?php if ($error) echo alert($error, 'danger'); ?>
+    
+    <div id="js-error-container" class="mb-4"></div>
 
     <form method="POST" action="../actions/valider_sejour.php" id="form-reservation">
         
-        <div class="row g-4">
-            <!-- COLONNE GAUCHE : CONFIGURATION & REPARTITION -->
-            <div class="col-lg-8">
-                
-                <!-- BLOC 1 : PÉRIODE & CONSTITUTION DE LA TRIBU -->
-                <div class="card shadow-sm border-0 p-4 mb-4">
-                    <h4 class="fw-bold mb-3 text-primary"><i class="fas fa-calendar-alt me-2"></i>1. Ma Période & Ma Tribu</h4>
-                    
-                    <div class="row g-3">
-                        <!-- Date de début (Samedi obligatoire) -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Date de début du séjour</label>
-                            <input type="date" name="date_debut" class="form-control" id="date_debut" required>
-                            <div class="form-text text-muted"><i class="fas fa-info-circle me-1"></i>Les séjours commencent obligatoirement un samedi.</div>
-                        </div>
+        <!-- BLOC 1 : PÉRIODE & CHOIX DE LA TRIBU -->
+        <div class="card shadow-sm border-0 p-4 mb-4 bg-white">
+            <h4 class="fw-bold mb-3 text-primary border-bottom pb-2">
+                <i class="fas fa-calendar-alt me-2"></i>1. Période & Tribu
+            </h4>
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Date de début du séjour</label>
+                    <input type="date" name="date_debut" id="date_debut" class="form-control" required>
+                    <div class="form-text text-muted"><i class="fas fa-info-circle me-1"></i>Les séjours commencent obligatoirement un samedi.</div>
+                </div>
 
-                        <!-- Sélection du groupe -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Groupe associé</label>
-                            <div class="input-group">
-                                <select name="nom_groupe" class="form-select" required>
-                                    <option value="" disabled selected>Sélectionnez un groupe</option>
-                                    <?php foreach ($groupes as $g): ?>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Groupe de séjour</label>
+                    <div class="input-group">
+                        <select name="nom_groupe" class="form-select" required>
+                            <option value="" disabled selected>Sélectionnez un groupe</option>
+                            <?php foreach ($groupes as $g): ?>
                                         <option value="<?php echo h($g['nom_groupe']); ?>"><?php echo h($g['nom_groupe']); ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalGroupe">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Liste des participants (Cases à cocher) -->
-                        <div class="col-12 mt-4">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label class="form-label fw-bold mb-0">Qui part avec vous ? (Sélectionnez les participants)</label>
-                                <button class="btn btn-link btn-sm text-decoration-none" type="button" data-bs-toggle="modal" data-bs-target="#modalVoyageur">
-                                    <i class="fas fa-plus-circle me-1"></i>Enregistrer un proche
-                                </button>
-                            </div>
-
-                            <div id="tribu-conteneur">
-                                <?php if (empty($voyageurs)): ?>
-                                    <div class="alert alert-warning border-0" id="alert-tribu-vide">
-                                        <i class="fas fa-info-circle me-2"></i>Votre tribu est vide. Enregistrez des proches pour les associer au séjour.
-                                    </div>
-                                <?php else: ?>
-                                    <div class="p-3 bg-light rounded-3 border row g-2 max-height-200 overflow-y-auto" id="zone-participants">
-                                        <?php foreach ($voyageurs as $voy): ?>
-                                            <div class="col-sm-6 col-md-4">
-                                                <div class="form-check p-2 bg-white rounded border h-100 d-flex align-items-center">
-                                                    <input class="form-check-input ms-1 participant-checkbox" 
-                                                           type="checkbox" 
-                                                           value="<?php echo $voy['id_client']; ?>" 
-                                                           id="part_<?php echo $voy['id_client']; ?>"
-                                                           data-id="<?php echo $voy['id_client']; ?>"
-                                                           data-fullname="<?php echo h($voy['prenom'] . ' ' . $voy['nom']); ?>"
-                                                           data-dob="<?php echo h($voy['date_naissance']); ?>">
-                                                    <label class="form-check-label ms-3 small text-dark fw-bold" for="part_<?php echo $voy['id_client']; ?>">
-                                                        <?php echo h($voy['prenom'] . ' ' . $voy['nom']); ?>
-                                                        <span class="d-block text-muted text-xs font-normal">Né le <?php echo date_fr($voy['date_naissance']); ?></span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+                            <?php endforeach; ?>
+                        </select>
+                        <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalGroupe">
+                            <i class="fas fa-plus"></i>
+                        </button>
                     </div>
                 </div>
 
-                <!-- BLOC 2 : RÉPARTITION DANS LES CHAMBRES -->
-                <div class="card shadow-sm border-0 p-4 mb-4">
-                    <h4 class="fw-bold mb-3 text-primary"><i class="fas fa-hotel me-2"></i>2. Affectation des chambres</h4>
-                    <p class="text-muted small">Affectez vos skieurs sélectionnés dans les lits de chaque chambre de votre panier.</p>
+                <!-- Liste simple verticale des participants -->
+                <div class="col-12 mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label fw-bold mb-0">Sélectionnez les membres de votre tribu qui partent :</label>
+                        <button class="btn btn-link btn-sm text-decoration-none" type="button" data-bs-toggle="modal" data-bs-target="#modalVoyageur">
+                            <i class="fas fa-plus-circle me-1"></i>Enregistrer un proche
+                        </button>
+                    </div>
 
-                    <?php foreach ($chambres as $ch): ?>
-                        <div class="card border border-2 mb-3 shadow-none room-card" id="room_card_<?php echo $ch['num_chambre']; ?>" data-num="<?php echo $ch['num_chambre']; ?>" data-lits="<?php echo $ch['nb_lits']; ?>">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
-                                    <h5 class="fw-bold mb-0 text-dark">
-                                        <i class="fas fa-bed text-secondary me-2"></i>Chambre <?php echo $ch['num_chambre']; ?>
-                                    </h5>
-                                    <span class="badge bg-secondary">
-                                        Capacité : <?php echo $ch['nb_lits']; ?> lits (Bâtiment <?php echo h($ch['batiment']); ?>)
-                                    </span>
-                                </div>
-                                
-                                <div class="assigned-list" data-room="<?php echo $ch['num_chambre']; ?>">
-                                    <!-- Inséré en JS à la sélection des participants -->
-                                    <p class="text-muted small italic text-center py-2 mb-0 no-occupant-msg">Sélectionnez d'abord des voyageurs ci-dessus pour les affecter ici.</p>
-                                </div>
+                    <div id="no-voyageurs-alert" class="alert alert-warning border-0 <?php echo !empty($voyageurs) ? 'd-none' : ''; ?>">
+                        <i class="fas fa-info-circle me-2"></i>Votre tribu est vide. Enregistrez des proches pour démarrer.
+                    </div>
+
+                    <!-- Liste simple verticale empilée -->
+                    <div class="p-3 bg-light rounded-3 border <?php echo empty($voyageurs) ? 'd-none' : ''; ?>" id="participants-selection-grid" style="max-height: 250px; overflow-y: auto;">
+                        <?php foreach ($voyageurs as $voy): ?>
+                            <div class="form-check py-2 border-bottom border-light participant-checkbox-container">
+                                <input class="form-check-input participant-checkbox" 
+                                       type="checkbox" 
+                                       name="voyageurs_selectionnes[]"
+                                       value="<?php echo $voy['id_client']; ?>" 
+                                       id="part_<?php echo $voy['id_client']; ?>"
+                                       data-id="<?php echo $voy['id_client']; ?>"
+                                       data-fullname="<?php echo h($voy['prenom'] . ' ' . $voy['nom']); ?>"
+                                       data-dob="<?php echo h($voy['date_naissance']); ?>">
+                                <label class="form-check-label ms-2 text-dark fw-bold" for="part_<?php echo $voy['id_client']; ?>">
+                                    <?php echo h($voy['prenom'] . ' ' . $voy['nom']); ?>
+                                    <span class="text-muted fw-normal small ms-2">(Né le <?php echo date_fr($voy['date_naissance']); ?>)</span>
+                                </label>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BLOC 2 : CHOIX FORMULES ET REPARTITION DES CHAMBRES -->
+        <div class="card shadow-sm border-0 p-4 mb-4 bg-white">
+            <h4 class="fw-bold mb-3 text-primary border-bottom pb-2">
+                <i class="fas fa-utensils me-2"></i>2. Choix formules et répartition des chambres
+            </h4>
+            <p class="text-muted small">Sélectionnez la formule et la chambre d'affectation pour chaque voyageur participant.</p>
+            
+            <div id="repartition-voyageurs-list" class="border rounded p-3 bg-light" style="max-height: 350px; overflow-y: auto;">
+                <p class="text-muted text-center py-4 mb-0 italic" id="empty-repartition-msg">Cochez des participants dans la section 1 pour configurer leur formule et leur chambre.</p>
+            </div>
+        </div>
+
+        <!-- BLOC 3 : RÉCAPITULATIF PAR CHAMBRE (SITUÉ EN BAS) -->
+        <div class="card shadow-sm border-0 p-4 mb-4 bg-white">
+            <h4 class="fw-bold mb-3 text-primary border-bottom pb-2">
+                <i class="fas fa-file-invoice-dollar me-2"></i>3. Récapitulatif du séjour
+            </h4>
+            
+            <div class="row g-3" id="recapitulatif-chambres-container">
+                <!-- Grille horizontale des chambres du panier -->
+                <?php foreach ($chambres as $ch): ?>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="chambre-recap-box border rounded p-3 bg-light h-100" id="recap_room_<?php echo $ch['num_chambre']; ?>" data-num="<?php echo $ch['num_chambre']; ?>" data-lits="<?php echo $ch['nb_lits']; ?>" data-batiment="<?php echo h($ch['batiment']); ?>">
+                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2 bg-white px-2 py-1 rounded">
+                                <span class="fw-bold text-dark"><i class="fas fa-bed me-1 text-secondary"></i>Chambre <?php echo $ch['num_chambre']; ?></span>
+                                <span class="badge bg-secondary"><?php echo $ch['nb_lits']; ?> lits</span>
+                            </div>
+                            <div class="occupants-list mb-2 small text-muted px-1">
+                                <span class="italic text-xs text-muted">Aucun skieur affecté</span>
+                            </div>
+                            <div class="empty-penalty-info text-warning text-xs border-top pt-2 d-none px-1"></div>
+                            <div class="room-total-cost text-end fw-bold text-dark mt-2 text-sm px-1 border-top pt-2">
+                                Total chambre : 0 €
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                </div>
-
+                    </div>
+                <?php endforeach; ?>
             </div>
 
-            <!-- COLONNE DROITE : FORMULES & RÉSUMÉ FINANCIER -->
-            <div class="col-lg-4">
-                
-                <!-- BLOC 3 : FORMULES & PAIEMENT -->
-                <div class="card shadow-sm border-0 p-4 sticky-top offset-top-100">
-                    <h4 class="fw-bold mb-3 text-primary"><i class="fas fa-receipt me-2"></i>3. Détails & Tarifs</h4>
-                    
-                    <div id="formule-selection-zone" class="mb-4">
-                        <p class="text-muted text-center py-3 italic mb-0">Aucun voyageur n'est encore affecté à une chambre.</p>
-                    </div>
-
-                    <!-- Résumé financier dynamique -->
-                    <div class="p-3 bg-light rounded-3 border mb-4 shadow-none">
-                        <h6 class="fw-bold mb-3">Résumé financier estimé</h6>
-                        <div class="d-flex justify-content-between small text-muted mb-2">
-                            <span>Chambres réservées :</span>
-                            <span class="fw-bold text-dark"><?php echo count($panier); ?></span>
-                        </div>
-                        <div class="d-flex justify-content-between small text-muted mb-2">
-                            <span>Membres à loger :</span>
-                            <span class="fw-bold text-dark" id="summary-participant-count">0</span>
-                        </div>
-                        
-                        <hr class="my-2">
-                        
-                        <div id="summary-details" class="mb-2">
-                            <!-- Rempli dynamiquement par JS -->
-                        </div>
-
-                        <div class="d-flex justify-content-between h5 fw-bold text-primary mb-0 pt-2 border-top">
-                            <span>TOTAL ESTIMÉ :</span>
-                            <span id="summary-grand-total">0 €</span>
-                        </div>
-                    </div>
-
-                    <!-- Validation finale -->
-                    <button type="submit" class="btn btn-success btn-lg w-100 py-3 fw-bold shadow-sm" id="btn-submit-res">
-                        <i class="fas fa-credit-card me-2"></i>Confirmer et payer
-                    </button>
-                    
-                    <a href="recherche.php" class="btn btn-outline-secondary w-100 mt-2">
-                        <i class="fas fa-search me-1"></i>Modifier ma recherche
-                    </a>
+            <!-- Total général de la réservation -->
+            <div class="p-3 bg-light rounded-3 border mt-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="fw-bold text-dark mb-0">Total global estimé</h5>
+                    <small class="text-muted">Calculé d'après vos formules et la tarification de la station (incluant la pénalité de lits vides).</small>
                 </div>
+                <div class="text-end">
+                    <span id="summary-grand-total" class="h3 fw-bold text-primary mb-0 d-block">0 €</span>
+                </div>
+            </div>
 
+            <!-- Soumission finale -->
+            <div class="text-end mt-4">
+                <button type="submit" class="btn btn-success btn-lg px-5 py-3 fw-bold shadow-sm" id="btn-submit-res">
+                    <i class="fas fa-check-double me-2"></i>Confirmer ma réservation
+                </button>
             </div>
         </div>
 
@@ -247,8 +223,9 @@ try {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body bg-light">
+                <div class="modal-ajax-errors alert alert-danger d-none"></div>
                 <?php 
-                $form_action = "../actions/ajouter_groupe.php?redirect=" . urlencode("../pages/reservation.php");
+                $form_action = "../actions/ajouter_groupe.php";
                 $submit_label = "Créer le groupe";
                 include __DIR__ . '/../forms/form_groupe.php'; 
                 ?>
@@ -266,8 +243,9 @@ try {
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body bg-light">
+                <div class="modal-ajax-errors alert alert-danger d-none"></div>
                 <?php 
-                $form_action = "../actions/ajouter_voyageur.php?redirect=" . urlencode("../pages/reservation.php");
+                $form_action = "../actions/ajouter_voyageur.php";
                 $submit_label = "Ajouter à ma tribu";
                 $voyageur = null;
                 include __DIR__ . '/../forms/form_voyageur.php'; 
@@ -277,325 +255,414 @@ try {
     </div>
 </div>
 
-<!-- ================= LOGIQUE JS INTERACTIVE DE GESTION DU PANIER ================= -->
+<!-- ================= LOGIQUE JAVASCRIPT AJAX & DYNAMIQUE COMPLET ================= -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const listFormules = <?php echo json_encode($formules); ?>;
-    const roomCards = document.querySelectorAll(".room-card");
-    const summaryCount = document.getElementById("summary-participant-count");
-    const summaryDetails = document.getElementById("summary-details");
+    const listChambres = <?php echo json_encode($chambres); ?>;
+    
+    const repartitionList = document.getElementById("repartition-voyageurs-list");
+    const selectionGrid = document.getElementById("participants-selection-grid");
+    const dateInput = document.getElementById("date_debut");
+    const recapBoxes = document.querySelectorAll(".chambre-recap-box");
     const summaryGrandTotal = document.getElementById("summary-grand-total");
-    const formuleZone = document.getElementById("formule-selection-zone");
 
-    // 1. Ecouteur sur les participants du Bloc 1
-    const checkboxes = document.querySelectorAll(".participant-checkbox");
-    checkboxes.forEach(cb => {
-        cb.addEventListener("change", renderLayout);
-    });
+    // Recalculer lors du changement de date
+    dateInput.addEventListener("change", updateLayout);
 
-    function renderLayout() {
-        // Obtenir tous les participants cochés
-        const selected = Array.from(checkboxes)
-            .filter(cb => cb.checked)
-            .map(cb => ({
-                id: cb.dataset.id,
-                name: cb.dataset.fullname,
-                dob: cb.dataset.dob
-            }));
-
-        summaryCount.textContent = selected.length;
-
-        if (selected.length === 0) {
-            // Vue vide
-            roomCards.forEach(card => {
-                const list = card.querySelector(".assigned-list");
-                list.innerHTML = `<p class="text-muted small italic text-center py-2 mb-0 no-occupant-msg">Sélectionnez d'abord des voyageurs ci-dessus pour les affecter ici.</p>`;
-            });
-            formuleZone.innerHTML = `<p class="text-muted text-center py-3 italic mb-0">Aucun voyageur n'est encore affecté à une chambre.</p>`;
-            updateFinancials();
-            return;
-        }
-
-        // Pour chaque chambre, générer la liste des personnes assignables (cochées dans le Bloc 1)
-        roomCards.forEach(card => {
-            const rNum = card.dataset.num;
-            const rLits = parseInt(card.dataset.lits);
-            const listContainer = card.querySelector(".assigned-list");
-            
-            // Conserver l'état de sélection actuel pour cette chambre
-            const currentlyChecked = Array.from(listContainer.querySelectorAll("input[type='checkbox']:checked")).map(i => i.value);
-
-            let html = `<div class="row g-2">`;
-            selected.forEach(v => {
-                const isChecked = currentlyChecked.includes(v.id) ? "checked" : "";
-                html += `
-                <div class="col-sm-6">
-                    <div class="form-check p-2 rounded border h-100 d-flex align-items-center bg-light">
-                        <input class="form-check-input assignment-checkbox ms-1" 
-                               type="checkbox" 
-                               name="assignments[${rNum}][]" 
-                               value="${v.id}" 
-                               id="assign_${rNum}_${v.id}"
-                               data-room="${rNum}"
-                               data-voyageur-id="${v.id}"
-                               data-fullname="${v.name}"
-                               data-dob="${v.dob}"
-                               ${isChecked}>
-                        <label class="form-check-label ms-3 small text-dark" for="assign_${rNum}_${v.id}">
-                            ${v.name}
-                        </label>
-                    </div>
-                </div>`;
-            });
-            html += `</div>`;
-            listContainer.innerHTML = html;
-        });
-
-        // Liaison d'écouteurs sur les affectations de chambres
-        bindAssignmentEvents();
-        updateFormulesAndFinancials();
-    }
-
-    function bindAssignmentEvents() {
-        const assignCbs = document.querySelectorAll(".assignment-checkbox");
-        assignCbs.forEach(cb => {
-            cb.addEventListener("change", function() {
-                const voyId = this.dataset.voyageurId;
-                const rNum = this.dataset.room;
-                const parentCard = document.getElementById("room_card_" + rNum);
-                const maxCapacity = parseInt(parentCard.dataset.lits);
-
-                if (this.checked) {
-                    // SÉCURITÉ A : Un voyageur ne peut pas être dans deux chambres en même temps
-                    assignCbs.forEach(otherCb => {
-                        if (otherCb.dataset.voyageurId === voyId && otherCb.dataset.room !== rNum) {
-                            otherCb.checked = false;
-                            otherCb.disabled = true;
-                        }
-                    });
-
-                    // SÉCURITÉ B : Respecter la capacité de lits de la chambre
-                    const checkedInRoom = parentCard.querySelectorAll(".assignment-checkbox:checked");
-                    if (checkedInRoom.length > maxCapacity) {
-                        alert("La capacité maximale de la Chambre " + rNum + " (" + maxCapacity + " lits) est dépassée !");
-                        this.checked = false;
-                    }
-                } else {
-                    // Réactiver le voyageur dans les autres chambres
-                    assignCbs.forEach(otherCb => {
-                        if (otherCb.dataset.voyageurId === voyId) {
-                            otherCb.disabled = false;
-                        }
-                    });
-                }
-
-                updateFormulesAndFinancials();
-            });
+    // Écouteur de sélection des participants
+    if (selectionGrid) {
+        selectionGrid.addEventListener("change", function(e) {
+            if (e.target.classList.contains("participant-checkbox")) {
+                updateLayout();
+            }
         });
     }
 
-    function updateFormulesAndFinancials() {
-        const assignCbs = document.querySelectorAll(".assignment-checkbox:checked");
+    function updateLayout() {
+        const checkboxes = document.querySelectorAll(".participant-checkbox:checked");
         
-        if (assignCbs.length === 0) {
-            formuleZone.innerHTML = `<p class="text-muted text-center py-3 italic mb-0">Aucun voyageur n'est encore affecté à une chambre.</p>`;
-            updateFinancials();
+        if (checkboxes.length === 0) {
+            repartitionList.innerHTML = `<p class="text-muted text-center py-4 mb-0 italic" id="empty-repartition-msg">Cochez des participants dans la section 1 pour configurer leur formule et leur chambre.</p>`;
+            calculateFinancials();
             return;
         }
 
-        // Construire le formulaire d'attribution des formules au Bloc 3
-        let htmlFormules = `<h5 class="fw-bold mb-3"><i class="fas fa-utensils me-2 text-secondary"></i>Formules par voyageur</h5>`;
-        assignCbs.forEach(cb => {
-            const voyId = cb.dataset.voyageurId;
-            const rNum = cb.dataset.room;
+        // Sauvegarder l'état actuel des sélections pour les conserver d'un clic à l'autre
+        const currentSelections = {};
+        document.querySelectorAll(".repartition-row").forEach(row => {
+            const vId = row.dataset.id;
+            const formSel = row.querySelector(".formule-select");
+            const roomSel = row.querySelector(".chambre-select");
+            currentSelections[vId] = {
+                formule: formSel ? formSel.value : "",
+                chambre: roomSel ? roomSel.value : ""
+            };
+        });
+
+        // Générer la liste verticale
+        let html = "";
+        checkboxes.forEach(cb => {
+            const vId = cb.dataset.id;
             const name = cb.dataset.fullname;
             const dob = cb.dataset.dob;
+            
+            const prevFormule = currentSelections[vId] ? currentSelections[vId].formule : "";
+            const prevChambre = currentSelections[vId] ? currentSelections[vId].chambre : "";
 
-            // Déterminer l'âge pour adapter l'étiquette (Bébé, Enfant, Adulte)
-            const age = calculateAgeJS(dob);
-            let ageLabel = "Adulte";
-            if (age < 2) ageLabel = "Bébé (Gratuit)";
-            else if (age < 12) ageLabel = "Enfant (-20%)";
-
-            htmlFormules += `
-            <div class="p-3 bg-white border rounded-3 mb-2 shadow-none">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="fw-bold text-dark text-truncate d-inline-block max-w-180">${name}</span>
-                    <span class="badge bg-light text-primary border">${ageLabel}</span>
+            html += `
+            <div class="row align-items-center mb-3 p-2 bg-white rounded border repartition-row" data-id="${vId}" data-fullname="${name}" data-dob="${dob}">
+                <div class="col-md-4 col-sm-12 fw-bold text-dark mb-2 mb-md-0">
+                    <i class="fas fa-user-circle me-1 text-muted"></i>${name}
                 </div>
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-light border-0">Formule (Ch. ${rNum})</span>
-                    <select name="formules[${rNum}][${voyId}]" class="form-select formula-select" data-dob="${dob}" data-room="${rNum}" data-voy-id="${voyId}" required>
-                        ${listFormules.map(f => `<option value="${f.type_formule}" data-price="${f.prix_base}">${f.type_formule} (${f.prix_base}€)</option>`).join('')}
-                    </select>
+                <!-- Formule -->
+                <div class="col-md-4 col-sm-6 mb-2 mb-md-0">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border-0 text-muted">Formule</span>
+                        <select name="formules[${vId}]" class="form-select formule-select" required>
+                            ${listFormules.map(f => `
+                                <option value="${f.type_formule}" data-price="${f.prix_base}" ${f.type_formule === prevFormule ? 'selected' : ''}>
+                                    ${f.type_formule} (${f.prix_base} €)
+                                </option>
+                            `).join('')}
+                        </select>
+                    </div>
+                </div>
+                <!-- Chambre -->
+                <div class="col-md-4 col-sm-6">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border-0 text-muted">Chambre</span>
+                        <select name="affectations[${vId}]" class="form-select chambre-select" required data-prev="${prevChambre}">
+                            <option value="" disabled ${prevChambre === "" ? 'selected' : ''}>-- Choisir --</option>
+                            ${listChambres.map(c => `
+                                <option value="${c.num_chambre}" ${String(c.num_chambre) === String(prevChambre) ? 'selected' : ''}>
+                                    Chambre ${c.num_chambre} (Capacité: ${c.nb_lits} lits)
+                                </option>
+                            `).join('')}
+                        </select>
+                    </div>
                 </div>
             </div>`;
         });
 
-        formuleZone.innerHTML = htmlFormules;
+        repartitionList.innerHTML = html;
 
-        // Liaison d'écouteur sur les changements de formule pour recalculer le tarif instantanément
-        document.querySelectorAll(".formula-select").forEach(sel => {
-            sel.addEventListener("change", updateFinancials);
+        // Liaison d'écouteurs sur les modifications des selects
+        document.querySelectorAll(".formule-select").forEach(el => {
+            el.addEventListener("change", calculateFinancials);
         });
 
-        updateFinancials();
+        document.querySelectorAll(".chambre-select").forEach(el => {
+            el.addEventListener("change", handleRoomAssignment);
+        });
+
+        calculateFinancials();
     }
 
-    function updateFinancials() {
-        const selectElements = document.querySelectorAll(".formula-select");
-        let grandTotal = 0;
-        let detailsHtml = "";
+    // fonction utilitaire pour afficher l'erreur en rouge sur la page
+    function showInlineError(message) {
+        const container = document.getElementById("js-error-container");
+        if (container) {
+            container.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show shadow-sm d-flex align-items-center" role="alert">
+                    <i class="fas fa-exclamation-triangle me-3 fa-lg"></i>
+                    <div>
+                        <strong class="d-block">Ajustement impossible</strong>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            // Défilement fluide automatique de l'écran vers le message d'erreur
+            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
 
-        // Dictionnaire pour suivre les voyageurs par chambre afin de déduire les lits vides
-        const roomOccupants = {};
-        roomCards.forEach(card => {
-            roomOccupants[card.dataset.num] = {
-                capacity: parseInt(card.dataset.lits),
-                occupants: 0
-            };
-        });
+    // Fonction de gestion de l'affectation mise à jour sans alert()
+    function handleRoomAssignment(e) {
+        const select = e.target;
+        const targetRoomNum = select.value;
+        const previousRoomNum = select.dataset.prev;
+        const row = select.closest(".repartition-row");
+        const dob = row.dataset.dob;
+        const startDate = dateInput.value;
 
-        selectElements.forEach(select => {
-            const dob = select.dataset.dob;
-            const rNum = select.dataset.room;
-            const option = select.options[select.selectedIndex];
-            const basePrice = parseFloat(option.dataset.price);
+        if (!targetRoomNum) return;
 
-            const age = calculateAgeJS(dob);
-            let finalPrice = basePrice;
-            
-            if (age < 2) {
-                finalPrice = 0; // Bébé gratuit et n'occupe pas de lit
-            } else {
-                roomOccupants[rNum].occupants++; // Occupe un lit
-                if (age < 12) {
-                    finalPrice = Math.round(basePrice * 0.8); // Enfant -20%
+        // 1. Un bébé de moins de 2 ans n'occupe pas de lit
+        const age = calculateAgeJS(dob, startDate);
+        const consumesBed = (age >= 2);
+
+        if (consumesBed) {
+            // 2. Compter le nombre de lits occupés dans la chambre choisie
+            let occupiedBeds = 0;
+            const targetRoomCapacity = parseInt(document.getElementById("recap_room_" + targetRoomNum).dataset.lits);
+
+            // Parcourir toutes les lignes de répartition pour compter l'occupation de la chambre cible
+            document.querySelectorAll(".repartition-row").forEach(otherRow => {
+                const otherSelect = otherRow.querySelector(".chambre-select");
+                if (otherSelect && otherSelect.value === targetRoomNum) {
+                    const otherDob = otherRow.dataset.dob;
+                    const otherAge = calculateAgeJS(otherDob, startDate);
+                    if (otherAge >= 2) {
+                        occupiedBeds++;
+                    }
                 }
-            }
+            });
 
-            grandTotal += finalPrice;
-        });
-
-        // Calcul des lits vides pour chaque chambre
-        detailsHtml += `<div class="mb-3 small">`;
-        for (const [rNum, data] of Object.entries(roomOccupants)) {
-            const emptyBeds = data.capacity - data.occupants;
-            if (emptyBeds > 0) {
-                const penalty = emptyBeds * 150;
-                grandTotal += penalty;
-                detailsHtml += `
-                <div class="d-flex justify-content-between text-warning mb-1">
-                    <span>Chambre ${rNum} : ${emptyBeds} lit(s) vide(s)</span>
-                    <span>+ ${penalty} €</span>
-                </div>`;
-            } else {
-                detailsHtml += `
-                <div class="d-flex justify-content-between text-success mb-1">
-                    <span>Chambre ${rNum} : Remplie</span>
-                    <span>0 €</span>
-                </div>`;
+            // Si dépassement : afficher l'erreur en rouge sur la page et annuler
+            if (occupiedBeds > targetRoomCapacity) {
+                showInlineError(`La Chambre n°${targetRoomNum} est complète (${targetRoomCapacity} lits disponibles maximum). Impossible d'y ajouter un nouvel occupant.`);
+                select.value = previousRoomNum; // Retour à la valeur précédente
+                return;
             }
         }
-        detailsHtml += `</div>`;
 
-        summaryDetails.innerHTML = detailsHtml;
+        // Effacer le message d'erreur si la nouvelle affectation est valide
+        const errorContainer = document.getElementById("js-error-container");
+        if (errorContainer) {
+            errorContainer.innerHTML = "";
+        }
+
+        // Mettre à jour l'ancienne valeur stockée pour les futurs contrôles
+        select.dataset.prev = targetRoomNum;
+        calculateFinancials();
+    }
+
+    function calculateFinancials() {
+        const rows = document.querySelectorAll(".repartition-row");
+        const startDate = dateInput.value;
+
+        // Dictionnaire des occupants par chambre du panier
+        const occupantsByRoom = {};
+        recapBoxes.forEach(box => {
+            occupantsByRoom[box.dataset.num] = [];
+        });
+
+        // Classer les occupants sélectionnés par chambre
+        rows.forEach(row => {
+            const name = row.dataset.fullname;
+            const dob = row.dataset.dob;
+            const formuleSelect = row.querySelector(".formule-select");
+            const chambreSelect = row.querySelector(".chambre-select");
+
+            const selectedFormule = formuleSelect.value;
+            const selectedFormulePrice = parseFloat(formuleSelect.options[formuleSelect.selectedIndex].dataset.price);
+            const selectedChambre = chambreSelect.value;
+
+            if (selectedChambre && occupantsByRoom[selectedChambre]) {
+                const age = calculateAgeJS(dob, startDate);
+                let finalPrice = selectedFormulePrice;
+                let priceLabel = "";
+
+                if (age < 2) {
+                    finalPrice = 0;
+                    priceLabel = " (Tarif Bébé Gratuit)";
+                } else if (age < 12) {
+                    finalPrice = Math.round(selectedFormulePrice * 0.8);
+                    priceLabel = " (Tarif Enfant -20%)";
+                }
+
+                occupantsByRoom[selectedChambre].push({
+                    name: name,
+                    formule: selectedFormule,
+                    price: finalPrice,
+                    label: priceLabel,
+                    occupiesBed: age >= 2
+                });
+            }
+        });
+
+        let grandTotal = 0;
+
+        // Remplir les boîtes récapitulatives en bas de page
+        recapBoxes.forEach(box => {
+            const roomNum = box.dataset.num;
+            const capacity = parseInt(box.dataset.lits);
+            const listContainer = box.querySelector(".occupants-list");
+            const penaltyInfo = box.querySelector(".empty-penalty-info");
+            const costContainer = box.querySelector(".room-total-cost");
+
+            const occupants = occupantsByRoom[roomNum] || [];
+
+            let roomTotal = 0;
+            let occupiedBeds = 0;
+
+            if (occupants.length === 0) {
+                listContainer.innerHTML = `<span class="italic text-xs text-muted d-block py-1">Aucun skieur affecté</span>`;
+                penaltyInfo.classList.add("d-none");
+                costContainer.textContent = "Total chambre : 0 €";
+                return;
+            }
+
+            let html = '<ul class="list-unstyled mb-2">';
+            occupants.forEach(occ => {
+                html += `
+                <li class="d-flex justify-content-between align-items-center mb-1 pb-1 border-bottom border-light">
+                    <span>${occ.name} <small class="text-secondary font-normal">${occ.label}</small></span>
+                    <span class="fw-bold">${occ.price} €</span>
+                </li>`;
+                roomTotal += occ.price;
+                if (occ.occupiesBed) {
+                    occupiedBeds++;
+                }
+            });
+            html += '</ul>';
+            listContainer.innerHTML = html;
+
+            // Calcul de l'amende pour lits vacants (150 € / lit)
+            const emptyBeds = capacity - occupiedBeds;
+            if (emptyBeds > 0) {
+                const penalty = emptyBeds * 150;
+                roomTotal += penalty;
+                penaltyInfo.innerHTML = `
+                    <div class="d-flex justify-content-between text-warning">
+                        <span><i class="fas fa-exclamation-circle me-1"></i>${emptyBeds} lit(s) vide(s) (150€/lit)</span>
+                        <span>+ ${penalty} €</span>
+                    </div>`;
+                penaltyInfo.classList.remove("d-none");
+            } else {
+                penaltyInfo.classList.add("d-none");
+            }
+
+            costContainer.textContent = `Total chambre : ${roomTotal} €`;
+            grandTotal += roomTotal;
+        });
+
         summaryGrandTotal.textContent = grandTotal.toLocaleString('fr-FR') + " €";
     }
 
-    function calculateAgeJS(dobString) {
+    function calculateAgeJS(dobString, startDateString) {
         if (!dobString) return 0;
-        const today = new Date();
+        const refDate = startDateString ? new Date(startDateString) : new Date();
         const birthDate = new Date(dobString);
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const m = today.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        let age = refDate.getFullYear() - birthDate.getFullYear();
+        const m = refDate.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && refDate.getDate() < birthDate.getDate())) {
             age--;
         }
         return age;
     }
-});
 
-document.querySelector('#modalGroupe form').addEventListener('submit', function(e) {
-    e.preventDefault(); // 1. Bloque le rechargement de la page
+    // =================================================================
+    // ENREGISTREMENT DE GROUPE EN AJAX (FETCH)
+    // =================================================================
+    const formGroupe = document.querySelector("#modalGroupe form");
+    if (formGroupe) {
+        formGroupe.addEventListener("submit", function(e) {
+            e.preventDefault();
+            const errorDiv = document.querySelector("#modalGroupe .modal-ajax-errors");
+            errorDiv.classList.add("d-none");
 
-    fetch(this.action, {
-        method: 'POST',
-        body: new FormData(this), // 2. Envoie automatiquement les champs du formulaire
-        headers: { 'X-Requested-With': 'XMLHttpRequest' } // 3. Dit au PHP que c'est du AJAX
-    })
-    .then(res => res.json()) // 4. Convertit la réponse du serveur en objet JS
-    .then(data => {
-        if (data.success) {
-            // 5. Ajoute le nouveau groupe dans le <select> et le sélectionne
-            const select = document.querySelector('select[name="nom_groupe"]');
-            select.add(new Option(data.nom_groupe, data.nom_groupe, true, true));
-            
-            // 6. Ferme la modale Bootstrap et vide le formulaire
-            bootstrap.Modal.getInstance(document.getElementById('modalGroupe')).hide();
-            this.reset();
-        } else {
-            alert(data.message); // Affiche l'erreur (ex: groupe déjà existant)
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: "POST",
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const selectGroupe = document.querySelector("select[name='nom_groupe']");
+                    if (selectGroupe) {
+                        const newOption = document.createElement("option");
+                        newOption.value = data.nom_groupe;
+                        newOption.textContent = data.nom_groupe;
+                        newOption.selected = true;
+                        selectGroupe.appendChild(newOption);
+                    }
+                    const modalInst = bootstrap.Modal.getInstance(document.getElementById('modalGroupe'));
+                    if (modalInst) modalInst.hide();
+                    formGroupe.reset();
+                } else {
+                    errorDiv.textContent = data.message;
+                    errorDiv.classList.remove("d-none");
+                }
+            })
+            .catch(() => {
+                errorDiv.textContent = "Erreur réseau.";
+                errorDiv.classList.remove("d-none");
+            });
+        });
+    }
+
+    // =================================================================
+    // ENREGISTREMENT DE PROCHE EN AJAX (FETCH)
+    // =================================================================
+    const formVoyageur = document.querySelector("#modalVoyageur form");
+    if (formVoyageur) {
+        formVoyageur.addEventListener("submit", function(e) {
+            e.preventDefault();
+            const errorDiv = document.querySelector("#modalVoyageur .modal-ajax-errors");
+            errorDiv.classList.add("d-none");
+
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: "POST",
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const alertEmpty = document.getElementById("no-voyageurs-alert");
+                    if (alertEmpty) alertEmpty.classList.add("d-none");
+
+                    if (selectionGrid) {
+                        selectionGrid.classList.remove("d-none");
+
+                        // Ajouter le nouveau venu à la liste verticale de l'étape 1
+                        const container = document.createElement("div");
+                        container.className = "form-check py-2 border-bottom border-light participant-checkbox-container";
+                        
+                        container.innerHTML = `
+                        <input class="form-check-input participant-checkbox" 
+                               type="checkbox" 
+                               name="voyageurs_selectionnes[]"
+                               value="${data.id_client}" 
+                               id="part_${data.id_client}"
+                               data-id="${data.id_client}"
+                               data-fullname="${data.prenom} ${data.nom}"
+                               data-dob="${data.date_naissance}"
+                               checked>
+                        <label class="form-check-label ms-2 text-dark fw-bold" for="part_${data.id_client}">
+                            ${data.prenom} ${data.nom}
+                            <span class="text-muted fw-normal small ms-2">(Né le ${formatDateJS(data.date_naissance)})</span>
+                        </label>`;
+                        
+                        selectionGrid.appendChild(container);
+                    }
+
+                    // Mettre à jour l'étape 2 d'affectation directement
+                    updateLayout();
+
+                    const modalInst = bootstrap.Modal.getInstance(document.getElementById('modalVoyageur'));
+                    if (modalInst) modalInst.hide();
+                    formVoyageur.reset();
+                } else {
+                    errorDiv.textContent = data.message;
+                    errorDiv.classList.remove("d-none");
+                }
+            })
+            .catch(() => {
+                errorDiv.textContent = "Erreur réseau.";
+                errorDiv.classList.remove("d-none");
+            });
+        });
+    }
+
+    function formatDateJS(dateStr) {
+        if (!dateStr) return '';
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
         }
-    });
+        return dateStr;
+    }
+
+    // Premier calcul initial
+    updateLayout();
 });
-
-document.querySelector('#modalVoyageur form').addEventListener('submit', function(e) {
-    e.preventDefault(); // Bloque le rechargement
-
-    fetch(this.action, {
-        method: 'POST',
-        body: new FormData(this),
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            const conteneurGlobal = document.getElementById('tribu-conteneur');
-            let zoneParticipants = document.getElementById('zone-participants');
-            
-            // 1. Si la tribu était vide, on vire l'alerte et on crée la structure de la grille
-            const alertVide = document.getElementById('alert-tribu-vide');
-            if (alertVide) {
-                alertVide.remove();
-                conteneurGlobal.innerHTML = `<div class="p-3 bg-light rounded-3 border row g-2 max-height-200 overflow-y-auto" id="zone-participants"></div>`;
-                zoneParticipants = document.getElementById('zone-participants');
-            }
-
-            // 2. Formatage rapide de la date YYYY-MM-DD en DD/MM/YYYY pour l'affichage
-            const dateFr = data.date_naissance.split('-').reverse().join('/');
-
-            // 3. On crée la nouvelle carte HTML (strictement identique à ton template PHP)
-            const nouvelleCarte = document.createElement('div');
-            nouvelleCarte.className = 'col-sm-6 col-md-4';
-            nouvelleCarte.innerHTML = `
-                <div class="form-check p-2 bg-white rounded border h-100 d-flex align-items-center">
-                    <input class="form-check-input ms-1 participant-checkbox" 
-                           type="checkbox" 
-                           value="${data.id_client}" 
-                           id="part_${data.id_client}"
-                           data-id="${data.id_client}"
-                           data-fullname="${data.prenom} ${data.nom}"
-                           data-dob="${data.date_naissance}">
-                    <label class="form-check-label ms-3 small text-dark fw-bold" for="part_${data.id_client}">
-                        ${data.prenom} ${data.nom}
-                        <span class="d-block text-muted text-xs font-normal">Né le ${dateFr}</span>
-                    </label>
-                </div>
-            `;
-
-            // 4. On l'injecte dans la liste
-            zoneParticipants.appendChild(nouvelleCarte);
-
-            // 5. Fermeture et reset de la modale
-            bootstrap.Modal.getInstance(document.getElementById('modalVoyageur')).hide();
-            this.reset();
-        } else {
-            alert(data.message);
-        }
-    });
-});
-
 </script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
