@@ -1,0 +1,86 @@
+.conteneur-recherche {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+    font-family: sans-serif;
+}
+
+.conteneur-recherche h1 {
+    color: #333333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.bloc-filtres {
+    border: 3px solid black;
+    background-color: #fafafa;
+    padding: 20px;
+}
+
+.bloc-filtres form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-end;
+}
+
+.groupe-champ {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    min-width: 150px;
+}
+
+.groupe-champ label {
+    font-size: 14px;
+    color: #444444;
+}
+
+.groupe-champ select,
+.groupe-champ input[type="number"] {
+    padding: 8px;
+    border: 1px solid #cccccc;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.groupe-bouton {
+    flex: 1;
+    min-width: 180px;
+}
+
+.btn-filtrer {
+    width: 100%;
+    padding: 9px;
+    background-color: blue;
+    color: white;
+    font-weight: bold;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.table-resultats {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table-resultats th {
+    padding: 12px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.table-resultats td {
+    padding: 12px;
+    border: 1px solid #dddddd;
+}
+
+.lien-voir {
+    color: blue;
+    text-decoration: none;
+    font-weight: bold;
+}
