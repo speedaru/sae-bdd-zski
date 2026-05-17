@@ -1,0 +1,160 @@
+/**
+ * Zarza-Ski - Styles académiques TP épurés
+ * Emplacement : src/assets/css/vues.css
+ */
+
+.report-container {
+    max-width: 1000px;
+    margin: 20px auto;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333333;
+}
+
+/* 1. EN-TÊTE */
+.report-header {
+    margin-bottom: 20px;
+}
+
+.report-header h1 {
+    font-size: 1.5rem;
+    color: #111111;
+    margin: 0 0 5px 0;
+}
+
+.report-header p {
+    color: #666666;
+    margin: 0;
+    font-size: 0.85rem;
+}
+
+/* 2. NAVIGATION PAR TEXTE ET RECTANGLES SIMPLES */
+.tab-navigation {
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #777777;
+}
+
+.tab-link {
+    text-decoration: none;
+    color: #333333;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+}
+
+.tab-link:hover {
+    text-decoration: underline;
+}
+
+.tab-link.active-tab {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.tab-separator {
+    color: #888888;
+    font-size: 0.9rem;
+}
+
+/* 3. CONTENEUR CONTENU */
+.tab-content-box {
+    background-color: #ffffff;
+    border: 1px solid #555555;
+    padding: 15px;
+}
+
+.tab-pane h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.15rem;
+    color: #111111;
+}
+
+.description-text {
+    font-size: 0.8rem;
+    color: #555555;
+    margin: 0 0 15px 0;
+}
+
+/* 4. TABLEAU ACADÉMIQUE STANDARD (BORDURES APPARENTES) */
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.report-table th,
+.report-table td {
+    border: 1px solid #333333;
+    padding: 6px 10px;
+    text-align: left;
+}
+
+.report-table th {
+    background-color: #e2e2e2;
+    color: #000000;
+}
+
+/* 6. FORMULAIRE DE RECHERCHE TRADITIONNEL */
+.search-form {
+    border: 1px solid #777777;
+    background-color: #fafafa;
+    padding: 12px;
+    margin-bottom: 20px;
+}
+
+.form-group-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: flex-end;
+}
+
+.input-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-item label {
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.input-item input {
+    padding: 4px;
+    border: 1px solid #777777;
+    font-size: 0.85rem;
+    background-color: #ffffff;
+}
+
+.btn-search-submit {
+    background-color: #e2e2e2;
+    color: #000000;
+    border: 1px solid #333333;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-search-submit:hover {
+    background-color: #cccccc;
+}
+
+/* 7. ALERTE ERREUR */
+.alert-error {
+    border: 1px solid #990000;
+    background-color: #ffe6e6;
+    color: #990000;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 0.85rem;
+}
+
+.no-data-msg {
+    text-align: center;
+    color: #666666;
+    font-style: italic;
+    padding: 20px 0;
+    margin: 0;
+}

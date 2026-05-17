@@ -1,17 +1,33 @@
 <?php
-// connexion a la db
-require_once 'includes/db.php';
-
 // inclusion du header
 include_once 'includes/header.php';
 
-// requete de test
-$query = $pdo->query("SELECT COUNT(*) FROM chambre");
-$nbChambres = $query->fetchColumn();
+// 1. On récupère les éventuels messages d'erreur ou de succès mis en session
+$error = $_SESSION['error'] ?? null;
+$success = $_SESSION['success'] ?? null;
+
+// 2. IMPORTANT : On les supprime tout de suite de la session pour le prochain refresh
+unset($_SESSION['error'], $_SESSION['success']);
 ?>
 
-<h1>Bienvenue sur Zarza-Ski !</h1>
-<p>Connexion réussie : Il y a actuellement <?php echo $nbChambres; ?> chambres en base.</p>
+<div class="main-container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+
+    <?php if ($error): ?>
+        <div class="alert-error" style="background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; padding: 12px 16px; border-radius: 4px; margin-bottom: 20px; font-family: sans-serif;">
+            <strong><?php echo h($error); ?></strong>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($success): ?>
+        <div class="alert-success" style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 12px 16px; border-radius: 4px; margin-bottom: 20px; font-family: sans-serif;">
+            <strong>✅ <?php echo h($success); ?></strong>
+        </div>
+    <?php endif; ?>
+
+    <h1>Bienvenue à la station Zarza-Ski !</h1>
+    <p>Découvrez nos séjours low-cost à la montagne</p>
+
+</div>
 
 <?php 
 // inclusion du footer

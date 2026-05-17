@@ -8,11 +8,11 @@ function is_logged_in() {
 
 /**
  * force la connexion et conserve les paramètres d'url (get)
- * @param string $path_from_auth chemin relatif depuis le dossier auth/ vers la page cible
+ * @param string $redirect_path chemin relatif depuis le dossier auth/ vers la page cible
  */
-function require_login($path_from_auth) {
+function require_login($redirect_path) {
     if (!isset($_SESSION['id_user'])) {
-        $full_redirect = add_current_args($path_from_auth);
+        $full_redirect = add_current_args($redirect_path);
         
         // redirection vers login avec le paramètre redirect encodé
         header("Location: ../auth/login.php?redirect=" . urlencode($full_redirect));
@@ -20,10 +20,37 @@ function require_login($path_from_auth) {
     }
 }
 
-// 3. Vérifie les rôles (ex: admin, gestionnaire)
-function require_role($roles_autorises = []) {
-    if (!isset($_SESSION['role']) || !in_array($_SESSION['role'], $roles_autorises)) {
-        header("Location: /index.php"); // Ou une page d'erreur 403
+/**
+ * Sécurise une page en fonction du rôle de l'utilisateur connecté.
+ * Respecte la hiérarchie : admin > gestionnaire > client
+ * * @param string $required_role Le rôle minimal requis ('admin', 'gestionnaire', 'client')
+ * @param string $redirect_path Chemin de redirection en cas d'échec (par défaut l'index)
+ */
+function require_role($required_role, $redirect_path = "../index.php") {
+    // 1. On vérifie d'abord si l'utilisateur est connecté
+    if (!isset($_SESSION['id_user']) || !isset($_SESSION['role'])) {
+        $_SESSION['error'] = "Veuillez vous connecter pour accéder à cette page.";
+        header("Location: ../auth/login.php");
+        exit;
+    }
+
+    // 2. Définition du barème numérique de la hiérarchie
+    $roles_hierarchy = [
+        'admin' => 3,
+        'gestionnaire' => 2,
+        'client' => 1
+    ];
+
+    $user_role = $_SESSION['role'];
+
+    // 3. Récupération des poids (sécurité avec l'opérateur null coalescent au cas où)
+    $user_weight     = $roles_hierarchy[$user_role] ?? 0;
+    $required_weight = $roles_hierarchy[$required_role] ?? 0;
+
+    // 4. Comparaison : si le poids de l'utilisateur est insuffisant, on bloque !
+    if ($user_weight < $required_weight) {
+        $_SESSION['error'] = "Accès refusé : Vos privilèges actuels (" . h($user_role) . ") ne vous permettent pas d'accéder à cette ressource.";
+        header("Location: " . $redirect_path);
         exit;
     }
 }

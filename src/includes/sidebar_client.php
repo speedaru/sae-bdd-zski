@@ -9,8 +9,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
         Navigation Client
     </div>
     
-    <a href="/pages/espace_client.php" 
-       class="list-group-item list-group-item-action <?php echo ($current_page == 'espace_client.php') ? 'active' : ''; ?>">
+    <a href="/pages/tableau_de_bord.php" 
+       class="list-group-item list-group-item-action <?php echo ($current_page == 'tableau_de_bord.php') ? 'active' : ''; ?>">
         <i class="fas fa-tachometer-alt me-2"></i>Tableau de bord
     </a>
     

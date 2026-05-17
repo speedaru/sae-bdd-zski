@@ -46,6 +46,9 @@ require_once 'init.php';
                     <li class="nav-item">
                         <a class="nav-link <?php echo $current_page == 'recherche' ? 'active' : ''; ?>" href="<?php echo $base_url; ?>pages/recherche.php">Réserver</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?php echo $current_page == 'vues' ? 'active' : ''; ?>" href="<?php echo $base_url; ?>pages/vues.php">Vues</a>
+                    </li>
                 </ul>
 
                 <ul class="navbar-nav ms-auto align-items-center">
@@ -70,14 +73,13 @@ require_once 'init.php';
                                 <i class="fas fa-user-circle me-1"></i> <?php echo h($_SESSION['username']); ?>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow">
-                                <li><a class="dropdown-item" href="<?php echo $base_url; ?>pages/espace_client.php">Tableau de bord</a></li>
-                                <li><a class="dropdown-item" href="<?php echo $base_url; ?>pages/profil.php">Mon profil</a></li>
+                                <li><a class="dropdown-item" href="<?php echo $base_url; ?>pages/tableau_de_bord.php">Mon espace client</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="<?php echo $base_url; ?>auth/logout.php">Déconnexion</a></li>
+                                <li><a class="dropdown-item text-danger" href="<?php echo $base_url; ?>auth/logout.php?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>">Déconnexion</a></li>
                             </ul>
                         </li>
                     <?php else: ?>
-                        <li class="nav-item"><a class="nav-link" href="<?php echo $base_url; ?>auth/login.php">Connexion</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?php echo $base_url; ?>auth/login.php?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>">Connexion</a></li>
                         <li class="nav-item"><a class="btn btn-primary btn-sm ms-2" href="<?php echo $base_url; ?>auth/register.php">Inscription</a></li>
                     <?php endif; ?>
                 </ul>
