@@ -2,6 +2,7 @@
 /**
  * Page de gestion des préférences de cohabitation - Zarza-Ski
  * Emplacement : src/pages/preferences.php
+ * Version épurée, académique et sans framework
  */
 
 require_once __DIR__ . '/../includes/header.php';
@@ -86,114 +87,110 @@ try {
 }
 ?>
 
-<div class="row mt-4">
-    <div class="col-md-3">
+<div class="preferences-container">
+    <!-- Barre de navigation latérale de l'Espace Client -->
+    <div class="preferences-sidebar">
         <?php include __DIR__ . '/../includes/sidebar_client.php'; ?>
     </div>
 
-    <div class="col-md-9">
-        <div class="card shadow-sm border-0 p-4">
+    <!-- Contenu Principal -->
+    <div class="preferences-content">
+        
+        <div class="preferences-header">
+            <h2>Mes Préférences de cohabitation</h2>
+            <p>Déterminez les affinités ou incompatibilités de cohabitation entre les skieurs de votre foyer pour simplifier la répartition.</p>
+        </div>
+
+        <!-- Alertes d'état -->
+        <?php if ($success): ?>
+            <div class="alert alert-success"><?php echo h($success); ?></div>
+        <?php endif; ?>
+        <?php if ($error): ?>
+            <div class="alert alert-error"><?php echo h($error); ?></div>
+        <?php endif; ?>
+
+        <div class="preferences-grid">
             
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2 class="mb-1"><i class="fas fa-heart text-danger me-2"></i>Mes Préférences de séjour</h2>
-                    <p class="text-muted mb-0">Organisez les affinités et interdits de cohabitation de votre tribu pour fluidifier la répartition des lits.</p>
-                </div>
+            <!-- BLOC GAUCHE : LISTE DES RELATIONS -->
+            <div class="preferences-list-section">
+                <h3>Affinités et liaisons configurées</h3>
+                
+                <?php if (empty($preferences)): ?>
+                    <div class="empty-state">
+                        <p>Aucune préférence de cohabitation n'a été spécifiée pour l'instant. Utilisez le formulaire ci-contre pour lier deux personnes.</p>
+                    </div>
+                <?php else: ?>
+                    <table class="academic-table">
+                        <thead>
+                            <tr>
+                                <th>Émetteur</th>
+                                <th>Relation (&rarr;)</th>
+                                <th>Récepteur</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($preferences as $p): 
+                                $badge_class = 'pref-neutral';
+                                if ($p['niveau_preference'] === 'impératif') $badge_class = 'pref-imperative';
+                                elseif ($p['niveau_preference'] === 'Souhaitable') $badge_class = 'pref-desirable';
+                                elseif ($p['niveau_preference'] === 'Pas souhaitable') $badge_class = 'pref-undesirable';
+                                elseif ($p['niveau_preference'] === 'Interdit') $badge_class = 'pref-forbidden';
+                            ?>
+                                <tr class="<?php echo ($pref_edit && $pref_edit['id_client'] == $p['id_client'] && $pref_edit['id_client_1'] == $p['id_client_1']) ? 'editing-row' : ''; ?>">
+                                    <td>
+                                        <span class="client-name"><?php echo h($p['emetteur_prenom'] . ' ' . $p['emetteur_nom']); ?></span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge-pref-level <?php echo $badge_class; ?>">
+                                            <?php echo ucfirst(h($p['niveau_preference'])); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="client-name"><?php echo h($p['recepteur_prenom'] . ' ' . $p['recepteur_nom']); ?></span>
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="action-buttons">
+                                            <a href="preferences.php?action=edit&id_client=<?php echo $p['id_client']; ?>&id_client_1=<?php echo $p['id_client_1']; ?>" class="btn-edit" title="Modifier">
+                                                Modifier
+                                            </a>
+                                            <button class="btn-delete" onclick="confirmDeletePref(<?php echo $p['id_client']; ?>, <?php echo $p['id_client_1']; ?>, '<?php echo h(addslashes($p['emetteur_prenom'])); ?>', '<?php echo h(addslashes($p['recepteur_prenom'])); ?>')" title="Supprimer">
+                                                Supprimer
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
             </div>
 
-            <hr>
-
-            <?php if ($success) echo alert($success, 'success'); ?>
-            <?php if ($error) echo alert($error, 'danger'); ?>
-
-            <div class="row g-4 mt-2">
-                
-                <!-- LISTE DES RELATIONS EXISTANTES (COLONNE GAUCHE) -->
-                <div class="col-lg-7">
-                    <h5 class="fw-bold mb-3"><i class="fas fa-list me-2 text-secondary"></i>Affinités configurées</h5>
-                    
-                    <?php if (empty($preferences)): ?>
-                        <div class="p-5 text-center bg-light rounded-3 border border-dashed">
-                            <i class="fas fa-heart-broken fa-3x text-muted mb-3 opacity-50"></i>
-                            <p class="text-muted mb-0">Aucune affinité de cohabitation n'a été spécifiée pour l'instant.</p>
-                        </div>
-                    <?php else: ?>
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle border-light">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Émetteur</th>
-                                        <th class="text-center">Relation</th>
-                                        <th>Récepteur</th>
-                                        <th class="text-end">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($preferences as $p): 
-                                        $badge_class = 'bg-secondary';
-                                        if ($p['niveau_preference'] === 'impératif') $badge_class = 'bg-success';
-                                        elseif ($p['niveau_preference'] === 'Souhaitable') $badge_class = 'bg-info';
-                                        elseif ($p['niveau_preference'] === 'Pas souhaitable') $badge_class = 'bg-warning text-dark';
-                                        elseif ($p['niveau_preference'] === 'Interdit') $badge_class = 'bg-danger';
-                                    ?>
-                                        <tr class="<?php echo ($pref_edit && $pref_edit['id_client'] == $p['id_client'] && $pref_edit['id_client_1'] == $p['id_client_1']) ? 'table-warning' : ''; ?>">
-                                            <td>
-                                                <span class="fw-bold text-dark"><?php echo h($p['emetteur_prenom'] . ' ' . $p['emetteur_nom']); ?></span>
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="badge <?php echo $badge_class; ?> d-inline-block text-xs py-2 px-2" style="min-width: 110px;">
-                                                    <?php echo ucfirst($p['niveau_preference']); ?>
-                                                </span>
-                                                <div class="text-muted text-xs mt-1"><i class="fas fa-chevron-right"></i></div>
-                                            </td>
-                                            <td>
-                                                <span class="fw-bold text-dark"><?php echo h($p['recepteur_prenom'] . ' ' . $p['recepteur_nom']); ?></span>
-                                            </td>
-                                            <td class="text-end">
-                                                <div class="btn-group">
-                                                    <a href="preferences.php?action=edit&id_client=<?php echo $p['id_client']; ?>&id_client_1=<?php echo $p['id_client_1']; ?>" 
-                                                       class="btn btn-outline-primary btn-sm" title="Modifier la relation">
-                                                        <i class="fas fa-pencil-alt"></i>
-                                                    </a>
-                                                    <button class="btn btn-outline-danger btn-sm" 
-                                                            onclick="confirmDeletePref(<?php echo $p['id_client']; ?>, <?php echo $p['id_client_1']; ?>, '<?php echo h(addslashes($p['emetteur_prenom'])); ?>', '<?php echo h(addslashes($p['recepteur_prenom'])); ?>')" 
-                                                            title="Supprimer la relation">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    <?php endif; ?>
-                </div>
-
-                <!-- FORMULAIRE CRÉATION OU ÉDITION (COLONNE DROITE) -->
-                <div class="col-lg-5">
-                    <div class="p-4 bg-light rounded-3 border">
-                        <?php if ($pref_edit): ?>
-                            <h5 class="fw-bold mb-3 text-warning"><i class="fas fa-edit me-2"></i>Modifier l'affinité</h5>
-                            <?php 
-                            $form_action = "../actions/modifier_preference.php";
-                            $submit_label = "Mettre à jour l'affinité";
-                            include __DIR__ . '/../forms/form_preference.php'; 
-                            ?>
-                        <?php else: ?>
-                            <h5 class="fw-bold mb-3 text-success"><i class="fas fa-plus me-2"></i>Ajouter une affinité</h5>
-                            <?php 
-                            $form_action = "../actions/ajouter_preference.php";
-                            $submit_label = "Ajouter l'affinité";
-                            include __DIR__ . '/../forms/form_preference.php'; 
-                            ?>
-                        <?php endif; ?>
+            <!-- BLOC DROITE : FORMULAIRE DYNAMIQUE -->
+            <div class="preferences-form-section">
+                <?php if ($pref_edit): ?>
+                    <h3 class="form-title edit-mode">Modifier l'affinité</h3>
+                    <div class="form-box border-edit">
+                        <?php 
+                        $form_action = "../actions/modifier_preference.php";
+                        $submit_label = "Mettre à jour l'affinité";
+                        include __DIR__ . '/../forms/form_preference.php'; 
+                        ?>
                     </div>
-                </div>
-
+                <?php else: ?>
+                    <h3 class="form-title">Lier deux skieurs</h3>
+                    <div class="form-box">
+                        <?php 
+                        $form_action = "../actions/ajouter_preference.php";
+                        $submit_label = "Ajouter la préférence";
+                        include __DIR__ . '/../forms/form_preference.php'; 
+                        ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
         </div>
+
     </div>
 </div>
 

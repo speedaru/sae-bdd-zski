@@ -2,6 +2,7 @@
  * Zarza-Ski - Styles Globaux & Layout
  * Version avec Sticky Footer
  */
+@import url("sidebar_client.css");
 
 :root {
     --ski-blue-primary: #2563eb;

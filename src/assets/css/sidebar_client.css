@@ -1,0 +1,60 @@
+/**
+ * Style épuré et universitaire pour la navigation client
+ * Emplacement : src/assets/css/sidebar_client.css
+ */
+
+.sidebar-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 20px;
+}
+
+/* Bordures visibles et nettes sur les cellules */
+.sidebar-table th, 
+.sidebar-table td {
+    border: 1px solid #333333;
+    padding: 10px 14px;
+    text-align: left;
+}
+
+/* En-tête de la table de navigation */
+.sidebar-table th {
+    background-color: #e2e2e2;
+    color: #000000;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+/* Style des liens */
+.sidebar-table td a {
+    text-decoration: none;
+    color: #333333;
+    display: block;
+    width: 100%;
+}
+
+.sidebar-table td a:hover {
+    text-decoration: underline;
+}
+
+/* Cellule de la page actuellement active */
+.sidebar-table td.active-cell {
+    background-color: #f1f5f9;
+    font-weight: bold;
+}
+
+.sidebar-table td.active-cell a {
+    color: #000000;
+}
+
+/* Cellule et lien rouge de déconnexion */
+.sidebar-table td.logout-cell a.logout-link {
+    color: #cc0000;
+    font-weight: bold;
+}
+
+.sidebar-table td.logout-cell a.logout-link:hover {
+    color: #990000;
+    text-decoration: underline;
+}

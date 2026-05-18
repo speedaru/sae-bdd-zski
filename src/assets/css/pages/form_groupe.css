@@ -1,0 +1,123 @@
+/**
+ * Styles épurés pour le formulaire de gestion d'un groupe (Ajout / Modification)
+ * Emplacement : src/assets/css/form_groupe.css
+ */
+
+.academic-form {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333333;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+/* Titre des formulaires de la grille principale */
+.groupes-form-section h3.form-title {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #2f855a; /* Vert sobre d'ajout */
+    border-bottom: 1px solid #2f855a;
+    padding-bottom: 6px;
+}
+
+.groupes-form-section h3.form-title.edit-mode {
+    color: #dd6b20; /* Orange sobre d'édition */
+    border-bottom-color: #dd6b20;
+}
+
+.form-box {
+    background-color: #f7fafc;
+    border: 1px solid #cbd5e0;
+    padding: 16px;
+}
+
+.form-box.border-edit {
+    border-color: #fbd38d;
+}
+
+/* Alignement standard d'un groupe de saisie */
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-field label {
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #1a365d; /* Bleu sobre universitaire */
+}
+
+/* Saisie de texte */
+.academic-form input[type="text"] {
+    padding: 8px 10px;
+    border: 1px solid #777777;
+    font-size: 0.9rem;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Mise en avant lors du focus */
+.academic-form input:focus {
+    outline: none;
+    border-color: #2b6cb0;
+    background-color: #f7fafc;
+}
+
+/* Sous-titres d'aide */
+.field-help {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* Section de boutons d'action */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 1px solid #cbd5e0;
+}
+
+/* Bouton principal de soumission */
+.btn-submit {
+    background-color: #1a365d;
+    color: #ffffff;
+    border: 1px solid #1a365d;
+    padding: 8px 18px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.btn-submit:hover {
+    background-color: #2b6cb0;
+    border-color: #2b6cb0;
+}
+
+/* Lien d'annulation neutre */
+.btn-cancel {
+    text-decoration: none;
+    color: #64748b;
+    border: 1px solid #777777;
+    background-color: #ffffff;
+    padding: 8px 18px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.btn-cancel:hover {
+    background-color: #f1f5f9;
+    color: #334155;
+}

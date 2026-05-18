@@ -1,46 +1,54 @@
 <?php
 /**
- * Navigation latérale de l'espace client
+ * Navigation latérale de l'espace client - Structure de tableau classique
+ * Emplacement : src/includes/sidebar_client.php
  */
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
-<div class="list-group shadow-sm mb-4">
-    <div class="list-group-item bg-light fw-bold text-muted small text-uppercase py-3">
-        Navigation Client
-    </div>
-    
-    <a href="/pages/tableau_de_bord.php" 
-       class="list-group-item list-group-item-action <?php echo ($current_page == 'tableau_de_bord.php') ? 'active' : ''; ?>">
-        <i class="fas fa-tachometer-alt me-2"></i>Tableau de bord
-    </a>
-    
-    <a href="/pages/profil.php" 
-       class="list-group-item list-group-item-action <?php echo ($current_page == 'profil.php') ? 'active' : ''; ?>">
-        <i class="fas fa-user-edit me-2"></i>Mon Profil Skieur
-    </a>
-    
-    <a href="/pages/carnet.php" 
-       class="list-group-item list-group-item-action <?php echo ($current_page == 'carnet.php') ? 'active' : ''; ?>">
-        <i class="fas fa-book me-2"></i>Carnet de Voyageurs
-    </a>
-    
-    <a href="/pages/groupes.php" 
-       class="list-group-item list-group-item-action <?php echo ($current_page == 'groupes.php') ? 'active' : ''; ?>">
-        <i class="fas fa-users-cog me-2"></i>Mes Groupes
-    </a>
-    
-    <a href="/pages/mes_reservations.php" 
-       class="list-group-item list-group-item-action <?php echo ($current_page == 'mes_reservations.php') ? 'active' : ''; ?>">
-        <i class="fas fa-skiing me-2"></i>Mes Réservations
-    </a>
-    
-    <a href="/pages/preferences.php" 
-       class="list-group-item list-group-item-action <?php echo ($current_page == 'preferences.php') ? 'active' : ''; ?>">
-        <i class="fas fa-heart me-2"></i>Préférences séjour
-    </a>
-    
-    <a href="/auth/logout.php" class="list-group-item list-group-item-action text-danger mt-2">
-        <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
-    </a>
-    
-</div>
+<!-- Liaison de la feuille de style de la navigation client -->
+<link rel="stylesheet" href="/assets/css/sidebar_client.css">
+
+<table class="sidebar-table">
+    <thead>
+        <tr>
+            <th>Navigation Client</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="<?php echo ($current_page == 'tableau_de_bord.php') ? 'active-cell' : ''; ?>">
+                <a href="/pages/tableau_de_bord.php">Tableau de bord</a>
+            </td>
+        </tr>
+        <tr>
+            <td class="<?php echo ($current_page == 'profil.php') ? 'active-cell' : ''; ?>">
+                <a href="/pages/profil.php">Mon Profil Skieur</a>
+            </td>
+        </tr>
+        <tr>
+            <td class="<?php echo ($current_page == 'carnet.php') ? 'active-cell' : ''; ?>">
+                <a href="/pages/carnet.php">Carnet de Voyageurs</a>
+            </td>
+        </tr>
+        <tr>
+            <td class="<?php echo ($current_page == 'groupes.php') ? 'active-cell' : ''; ?>">
+                <a href="/pages/groupes.php">Mes Groupes</a>
+            </td>
+        </tr>
+        <tr>
+            <td class="<?php echo ($current_page == 'mes_reservations.php') ? 'active-cell' : ''; ?>">
+                <a href="/pages/mes_reservations.php">Mes Réservations</a>
+            </td>
+        </tr>
+        <tr>
+            <td class="<?php echo ($current_page == 'preferences.php') ? 'active-cell' : ''; ?>">
+                <a href="/pages/preferences.php">Préférences séjour</a>
+            </td>
+        </tr>
+        <tr>
+            <td class="logout-cell">
+                <a href="/auth/logout.php" class="logout-link">Déconnexion</a>
+            </td>
+        </tr>
+    </tbody>
+</table>

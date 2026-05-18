@@ -1,41 +1,122 @@
-
 /**
- * Zarza-Ski - Style Profil
- * Optimisation des formulaires de saisie
+ * Zarza-Ski - Styles épurés pour l'administration de profil
+ * Emplacement : src/assets/css/profil.css
  */
+@import url("form_voyageur.css");
 
-.form-label {
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #64748b;
-    margin-bottom: 0.4rem;
+.profile-container {
+    display: flex;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-.form-control, .form-select {
-    border: 1.5px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 0.65rem 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
+/* Zone pour la sidebar */
+.profile-sidebar {
+    flex: 0 0 250px;
 }
 
-.form-control:focus {
-    border-color: var(--ski-blue-primary);
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+/* Zone principale de contenu */
+.profile-content {
+    flex: 1;
+    background-color: #ffffff;
+    border: 1px solid #333333;
+    padding: 24px;
 }
 
-.input-group-text {
-    background-color: #f8fafc;
-    border: 1.5px solid #e2e8f0;
-    color: #64748b;
-    font-weight: 600;
-}
-
-/* Section Divider */
-.profile-section-title {
-    border-bottom: 2px solid var(--ski-blue-snow);
+/* En-tête */
+.profile-header {
+    border-bottom: 2px solid #1a365d;
     padding-bottom: 10px;
     margin-bottom: 20px;
-    font-weight: 700;
-    color: var(--ski-dark-slate);
+}
+
+.profile-header h2 {
+    margin: 0;
+    color: #1a365d;
+    font-size: 1.35rem;
+}
+
+.profile-header p {
+    margin: 4px 0 0 0;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+/* Encadré de formulaire */
+.form-wrapper {
+    background-color: #fafafa;
+    border: 1px solid #cbd5e0;
+    padding: 20px;
+}
+
+/* Style des champs du formulaire inclus (Ciblage global pour form_voyageur.php) */
+.form-wrapper form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-wrapper label {
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #2d3748;
+    margin-bottom: 4px;
+}
+
+.form-wrapper input[type="text"],
+.form-wrapper input[type="number"],
+.form-wrapper input[type="date"],
+.form-wrapper select {
+    padding: 8px 12px;
+    border: 1px solid #777777;
+    font-size: 0.95rem;
+    background-color: #ffffff;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-wrapper input:focus,
+.form-wrapper select:focus {
+    outline: none;
+    border-color: #1a365d;
+}
+
+/* Bouton de soumission du formulaire */
+.form-wrapper button[type="submit"] {
+    background-color: #1a365d;
+    color: #ffffff;
+    border: 1px solid #1a365d;
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    width: auto;
+}
+
+.form-wrapper button[type="submit"]:hover {
+    background-color: #2b6cb0;
+    border-color: #2b6cb0;
+}
+
+/* Alertes d'information */
+.alert {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    border: 1px solid transparent;
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background-color: #f0fff4;
+    border-color: #c6f6d5;
+    color: #22543d;
+}
+
+.alert-error {
+    background-color: #fff5f5;
+    border-color: #fed7d7;
+    color: #742a2a;
 }

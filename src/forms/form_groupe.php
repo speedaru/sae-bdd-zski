@@ -2,38 +2,36 @@
 /**
  * Partial : Formulaire d'ajout/édition de groupe - Zarza-Ski
  * Emplacement : src/includes/forms/form_groupe.php
- * Variables attendues : 
- * - $form_action : URL cible du formulaire
- * - $submit_label : Texte du bouton
- * - $groupe : (Optionnel) Array contenant le groupe à éditer
  */
 $g_name = isset($groupe) ? $groupe['nom_groupe'] : '';
 ?>
-<form action="<?php echo $form_action; ?>" method="POST" class="needs-validation">
+<!-- Liaison de la feuille de style spécifique du formulaire -->
+<link rel="stylesheet" href="/assets/css/form_groupe.css">
+
+<form action="<?php echo $form_action; ?>" method="POST" class="academic-form">
     <?php if (isset($groupe)): ?>
-        <!-- Clé d'origine pour cibler l'ancien nom de groupe lors de l'Update -->
+        <!-- Clé d'origine masquée indispensable pour localiser le groupe lors du UPDATE SQL -->
         <input type="hidden" name="ancien_nom_groupe" value="<?php echo h($groupe['nom_groupe']); ?>">
     <?php endif; ?>
     
-    <div class="mb-3">
-        <label for="nom_groupe" class="form-label fw-bold">Nom du groupe de séjour</label>
+    <div class="form-field">
+        <label for="nom_groupe">Nom du groupe de séjour</label>
         <input type="text" 
                name="nom_groupe" 
                id="nom_groupe" 
-               class="form-control" 
                placeholder="Ex: Famille Durand, Ski Club..." 
                maxlength="48" 
                value="<?php echo h($g_name); ?>"
                required>
-        <div class="form-text">Maximum 48 caractères. Le nom doit être unique dans la station.</div>
+        <span class="field-help">Maximum 48 caractères. Le nom doit être unique au sein de la station.</span>
     </div>
     
-    <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-primary flex-grow-1 py-2 shadow-sm">
-            <i class="fas fa-save me-2"></i><?php echo $submit_label; ?>
-        </button>
+    <div class="form-actions">
         <?php if (isset($groupe)): ?>
-            <a href="groupes.php" class="btn btn-outline-secondary py-2">Annuler</a>
+            <a href="groupes.php" class="btn-cancel">Annuler</a>
         <?php endif; ?>
+        <button type="submit" class="btn-submit">
+            <?php echo $submit_label; ?>
+        </button>
     </div>
 </form>

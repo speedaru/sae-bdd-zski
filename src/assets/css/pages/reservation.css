@@ -2,6 +2,8 @@
  * Zarza-Ski - Styles épurés pour la page de réservation
  * Emplacement : src/assets/css/reservation.css
  */
+@import url("form_voyageur.css");
+@import url("form_groupe.css");
 
 .reservation-container {
     max-width: 1100px;

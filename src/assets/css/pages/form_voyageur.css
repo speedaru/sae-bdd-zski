@@ -1,0 +1,109 @@
+/**
+ * Styles épurés pour le formulaire de gestion d'un voyageur (Ajout / Modification)
+ * Emplacement : src/assets/css/form_voyageur.css
+ */
+
+.academic-form {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333333;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+/* Alignement standard d'un groupe de saisie */
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-field label {
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #1a365d; /* Bleu sobre universitaire */
+}
+
+/* Saisie de texte, de nombres, de dates et menus déroulants */
+.academic-form input[type="text"],
+.academic-form input[type="number"],
+.academic-form input[type="date"],
+.academic-form select {
+    padding: 8px 10px;
+    border: 1px solid #777777;
+    font-size: 0.9rem;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Mise en avant lors du focus de saisie */
+.academic-form input:focus,
+.academic-form select:focus {
+    outline: none;
+    border-color: #2b6cb0;
+    background-color: #f7fafc;
+}
+
+/* Alignements horizontaux par grilles légères */
+.form-row {
+    display: grid;
+    gap: 12px;
+    width: 100%;
+}
+
+.form-row.split-2 {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.form-row.split-3 {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+/* Section de boutons d'action */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 1px solid #cbd5e0;
+}
+
+/* Bouton principal de soumission */
+.btn-submit {
+    background-color: #1a365d;
+    color: #ffffff;
+    border: 1px solid #1a365d;
+    padding: 8px 18px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn-submit:hover {
+    background-color: #2b6cb0;
+    border-color: #2b6cb0;
+}
+
+/* Lien d'annulation neutre */
+.btn-cancel {
+    text-decoration: none;
+    color: #64748b;
+    border: 1px solid #777777;
+    background-color: #ffffff;
+    padding: 8px 18px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.btn-cancel:hover {
+    background-color: #f1f5f9;
+    color: #334155;
+}

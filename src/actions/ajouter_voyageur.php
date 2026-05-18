@@ -33,15 +33,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $user_id = $_SESSION['id_user'];
 
 // Récupération et nettoyage des données POST
-$nom            = trim($_POST['nom'] ?? '');
-$prenom         = trim($_POST['prenom'] ?? '');
+$nom = trim($_POST['nom'] ?? '');
+$prenom = trim($_POST['prenom'] ?? '');
 $date_naissance = trim($_POST['date_naissance'] ?? '');
-$adresse        = trim($_POST['adresse'] ?? '');
-$num_tel        = trim($_POST['num_tel'] ?? '');
-$niveau_ski     = $_POST['niveau_ski'] ?? 'débutant';
-$taille         = floatval($_POST['taille'] ?? 0);
-$poids          = intval($_POST['poids'] ?? 0);
-$pointure       = floatval($_POST['pointure'] ?? 0);
+$adresse = trim($_POST['adresse'] ?? '');
+$num_tel = trim($_POST['num_tel'] ?? '');
+$niveau_ski = $_POST['niveau_ski'] ?? 'débutant';
+$taille = floatval($_POST['taille'] ?? 0);
+$poids = intval($_POST['poids'] ?? 0);
+$pointure = floatval($_POST['pointure'] ?? 0);
 
 // Validation
 if (empty($nom) || empty($prenom) || empty($date_naissance) || empty($adresse) || empty($num_tel) || $taille <= 0 || $poids <= 0 || $pointure <= 0) {
@@ -66,15 +66,15 @@ try {
                   
     $stmtClient = $pdo->prepare($sqlClient);
     $stmtClient->execute([
-        'nom'            => $nom,
-        'prenom'         => $prenom,
+        'nom' => $nom,
+        'prenom' => $prenom,
         'date_naissance' => $date_naissance,
-        'adresse'        => $adresse,
-        'num_tel'        => $num_tel,
-        'niveau_ski'     => $niveau_ski,
-        'taille'         => $taille,
-        'poids'          => $poids,
-        'pointure'       => $pointure
+        'adresse' => $adresse,
+        'num_tel' => $num_tel,
+        'niveau_ski' => $niveau_ski,
+        'taille' => $taille,
+        'poids' => $poids,
+        'pointure' => $pointure
     ]);
 
     $id_client_cree = $pdo->lastInsertId();
@@ -83,7 +83,7 @@ try {
     $sqlLiaison = "INSERT INTO gestion_voyageurs (id_user, id_client) VALUES (:id_user, :id_client)";
     $stmtLiaison = $pdo->prepare($sqlLiaison);
     $stmtLiaison->execute([
-        'id_user'   => $user_id,
+        'id_user' => $user_id,
         'id_client' => $id_client_cree
     ]);
 

@@ -1,10 +1,10 @@
 /**
- * Zarza-Ski - Styles académiques épurés pour le carnet de voyageurs
- * Emplacement : src/assets/css/carnet.css
+ * Zarza-Ski - Styles académiques épurés pour la gestion des préférences
+ * Emplacement : src/assets/css/preferences.css
  */
-@import url("form_voyageur.css");
+@import url("form_preference.css");
 
-.carnet-container {
+.preferences-container {
     display: flex;
     gap: 20px;
     max-width: 1200px;
@@ -13,12 +13,12 @@
 }
 
 /* Zone pour la sidebar */
-.carnet-sidebar {
+.preferences-sidebar {
     flex: 0 0 250px;
 }
 
-/* Zone principale de contenu */
-.carnet-content {
+/* Zone de contenu de droite */
+.preferences-content {
     flex: 1;
     background-color: #ffffff;
     border: 1px solid #333333;
@@ -26,26 +26,26 @@
 }
 
 /* En-tête */
-.carnet-header {
+.preferences-header {
     border-bottom: 2px solid #1a365d;
     padding-bottom: 10px;
     margin-bottom: 20px;
 }
 
-.carnet-header h2 {
+.preferences-header h2 {
     margin: 0;
     color: #1a365d;
     font-size: 1.35rem;
 }
 
-.carnet-header p {
+.preferences-header p {
     margin: 4px 0 0 0;
     color: #64748b;
     font-size: 0.85rem;
 }
 
-/* Partitionnement de la grille */
-.carnet-grid {
+/* Structure à grille double */
+.preferences-grid {
     display: grid;
     grid-template-columns: 1.4fr 1fr;
     gap: 24px;
@@ -53,13 +53,13 @@
 }
 
 @media (max-width: 900px) {
-    .carnet-grid {
+    .preferences-grid {
         grid-template-columns: 1fr;
     }
 }
 
 /* Section Liste */
-.carnet-list-section h3 {
+.preferences-list-section h3 {
     margin-top: 0;
     margin-bottom: 15px;
     font-size: 1.1rem;
@@ -68,7 +68,7 @@
     padding-bottom: 6px;
 }
 
-/* TABLEAU DES MEMBRES ACADÉMIQUE */
+/* TABLEAU DES RELATIONS ACADÉMIQUE */
 .academic-table {
     width: 100%;
     border-collapse: collapse;
@@ -80,6 +80,7 @@
     border: 1px solid #333333;
     padding: 10px;
     text-align: left;
+    vertical-align: middle;
 }
 
 .academic-table th {
@@ -88,37 +89,68 @@
     color: #000000;
 }
 
-/* Ligne mise en avant pour modification */
+/* Ligne d'édition mise en évidence */
 .academic-table tr.editing-row {
     background-color: #fffae6;
 }
 
-.skier-name {
+.client-name {
     font-weight: bold;
-    display: block;
-    color: #1a365d;
+    color: #2d3748;
 }
 
-.skier-meta {
+/* Indicateurs de relation épurés */
+.text-center {
+    text-align: center;
+}
+
+.arrow-indicator {
+    display: block;
     font-size: 0.75rem;
-    color: #666666;
+    color: #718096;
     margin-top: 2px;
 }
 
-.badge-level {
+.badge-pref-level {
     display: inline-block;
     border: 1px solid #777777;
-    background-color: #fafafa;
-    padding: 2px 6px;
-    font-weight: bold;
+    padding: 2px 8px;
     font-size: 0.75rem;
+    font-weight: bold;
+    min-width: 100px;
+    text-align: center;
+    box-sizing: border-box;
 }
 
-.skier-hardware-list {
-    margin: 0;
-    padding-left: 14px;
-    font-size: 0.75rem;
+/* Variantes de badges de préférences */
+.pref-imperative {
+    background-color: #f0fff4;
+    color: #22543d;
+    border-color: #c6f6d5;
+}
+
+.pref-desirable {
+    background-color: #ebf8ff;
+    color: #2b6cb0;
+    border-color: #bee3f8;
+}
+
+.pref-undesirable {
+    background-color: #fffaf0;
+    color: #dd6b20;
+    border-color: #fbd38d;
+}
+
+.pref-forbidden {
+    background-color: #fff5f5;
+    color: #c53030;
+    border-color: #fed7d7;
+}
+
+.pref-neutral {
+    background-color: #fafafa;
     color: #4a5568;
+    border-color: #cbd5e0;
 }
 
 .text-right {
@@ -128,7 +160,6 @@
 /* Boutons d'action */
 .action-buttons {
     display: flex;
-    flex-direction: column;
     gap: 6px;
     justify-content: flex-end;
 }
@@ -163,35 +194,10 @@
     background-color: #fff5f5;
 }
 
-/* Section Formulaire */
-.carnet-form-section h3.form-title {
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-    color: #2f855a; /* Vert sobre d'ajout */
-    border-bottom: 1px solid #2f855a;
-    padding-bottom: 6px;
-}
-
-.carnet-form-section h3.form-title.edit-mode {
-    color: #dd6b20; /* Orange sobre d'édition */
-    border-bottom-color: #dd6b20;
-}
-
-.form-box {
-    background-color: #f7fafc;
-    border: 1px solid #cbd5e0;
-    padding: 16px;
-}
-
-.form-box.border-edit {
-    border-color: #fbd38d;
-}
-
-/* Zone d'état vide */
+/* Zone vide */
 .empty-state {
     padding: 30px;
-    border: 1px dashed #777777;
+    /*border: 1px solid #777777;*/
     background-color: #f8fafc;
     text-align: center;
 }

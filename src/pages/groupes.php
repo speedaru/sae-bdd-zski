@@ -2,6 +2,7 @@
 /**
  * Page de gestion des groupes - Zarza-Ski
  * Emplacement : src/pages/groupes.php
+ * Version épurée et académique
  */
 
 require_once __DIR__ . '/../includes/header.php';
@@ -47,101 +48,92 @@ try {
 }
 ?>
 
-<div class="row mt-4">
-    <div class="col-md-3">
+<div class="groupes-container">
+    <!-- Barre de navigation latérale de l'Espace Client -->
+    <div class="groupes-sidebar">
         <?php include __DIR__ . '/../includes/sidebar_client.php'; ?>
     </div>
 
-    <div class="col-md-9">
-        <div class="card shadow-sm border-0 p-4">
+    <!-- Contenu Principal -->
+    <div class="groupes-content">
+        
+        <div class="groupes-header">
+            <h2>Mes Groupes — Tribus de Séjour</h2>
+            <p>Gérez et organisez vos groupes pour vos séjours, hébergements et locations communes à la station.</p>
+        </div>
+
+        <!-- Alertes de retour SQL -->
+        <?php if ($success): ?>
+            <div class="alert alert-success"><?php echo h($success); ?></div>
+        <?php endif; ?>
+        <?php if ($error): ?>
+            <div class="alert alert-error"><?php echo h($error); ?></div>
+        <?php endif; ?>
+
+        <div class="groupes-grid">
             
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2 class="mb-1"><i class="fas fa-users-cog text-primary me-2"></i>Mes Groupes</h2>
-                    <p class="text-muted mb-0">Organisez vos tribus pour vos séjours et locations communes.</p>
-                </div>
+            <!-- BLOC GAUCHE : LISTE DES GROUPES -->
+            <div class="groupes-list-section">
+                <h3>Groupes enregistrés</h3>
+                
+                <?php if (empty($groupes)): ?>
+                    <div class="empty-state">
+                        <p>Vous n'avez créé aucun groupe de séjour pour l'instant. Utilisez le formulaire ci-contre pour démarrer.</p>
+                    </div>
+                <?php else: ?>
+                    <table class="academic-table">
+                        <thead>
+                            <tr>
+                                <th>Nom du groupe de séjour</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($groupes as $g): ?>
+                                <tr class="<?php echo ($edit_groupe && $edit_groupe['nom_groupe'] === $g['nom_groupe']) ? 'editing-row' : ''; ?>">
+                                    <td>
+                                        <span class="group-name-label"><?php echo h($g['nom_groupe']); ?></span>
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="action-buttons">
+                                            <a href="groupes.php?action=edit&nom=<?php echo urlencode($g['nom_groupe']); ?>" class="btn-edit" title="Modifier">
+                                                Modifier
+                                            </a>
+                                            <button class="btn-delete" onclick="confirmDeleteGroup('<?php echo h(addslashes($g['nom_groupe'])); ?>')" title="Supprimer">
+                                                Supprimer
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
             </div>
 
-            <hr>
-
-            <?php if ($success) echo alert($success, 'success'); ?>
-            <?php if ($error) echo alert($error, 'danger'); ?>
-
-            <div class="row g-4 mt-2">
-                
-                <!-- LISTE DES GROUPES -->
-                <div class="col-lg-7">
-                    <h5 class="fw-bold mb-3"><i class="fas fa-list me-2 text-secondary"></i>Groupes enregistrés</h5>
-                    
-                    <?php if (empty($groupes)): ?>
-                        <div class="p-5 text-center bg-light rounded-3 border border-dashed">
-                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                            <p class="text-muted mb-0">Vous n'avez créé aucun groupe de séjour pour l'instant.</p>
-                        </div>
-                    <?php else: ?>
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle border-light">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Nom du groupe</th>
-                                        <th class="text-end">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($groupes as $g): ?>
-                                        <tr class="<?php echo ($edit_groupe && $edit_groupe['nom_groupe'] === $g['nom_groupe']) ? 'table-warning' : ''; ?>">
-                                            <td>
-                                                <div class="fw-bold text-dark">
-                                                    <i class="fas fa-user-friends me-2 text-muted"></i>
-                                                    <?php echo h($g['nom_groupe']); ?>
-                                                </div>
-                                            </td>
-                                            <td class="text-end">
-                                                <div class="btn-group">
-                                                    <!-- Crayon pour l'édition -->
-                                                    <a href="groupes.php?action=edit&nom=<?php echo urlencode($g['nom_groupe']); ?>" 
-                                                       class="btn btn-outline-primary btn-sm" title="Modifier ce groupe">
-                                                        <i class="fas fa-pencil-alt"></i>
-                                                    </a>
-                                                    <!-- Bouton de suppression -->
-                                                    <button class="btn btn-outline-danger btn-sm" 
-                                                            onclick="confirmDeleteGroup('<?php echo h(addslashes($g['nom_groupe'])); ?>')" 
-                                                            title="Supprimer ce groupe">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    <?php endif; ?>
-                </div>
-
-                <!-- FORMULAIRE (DYNAMIQUE : CREATION OU EDITION) -->
-                <div class="col-lg-5">
-                    <div class="p-4 bg-light rounded-3 border">
-                        <?php if ($edit_groupe): ?>
-                            <h5 class="fw-bold mb-3 text-warning"><i class="fas fa-edit me-2"></i>Modifier le groupe</h5>
-                            <?php 
-                            $form_action = "../actions/modifier_groupe.php";
-                            $submit_label = "Enregistrer";
-                            $groupe = $edit_groupe;
-                            include __DIR__ . '/../forms/form_groupe.php'; 
-                            ?>
-                        <?php else: ?>
-                            <h5 class="fw-bold mb-3"><i class="fas fa-plus me-2 text-success"></i>Créer un groupe</h5>
-                            <?php 
-                            $form_action = "../actions/ajouter_groupe.php";
-                            $submit_label = "Créer la tribu";
-                            $groupe = null;
-                            include __DIR__ . '/../forms/form_groupe.php'; 
-                            ?>
-                        <?php endif; ?>
+            <!-- BLOC DROITE : FORMULAIRE CRÉATION OU ÉDITION -->
+            <div class="groupes-form-section">
+                <?php if ($edit_groupe): ?>
+                    <h3 class="form-title edit-mode">Modifier le groupe</h3>
+                    <div class="form-box border-edit">
+                        <?php 
+                        $form_action = "../actions/modifier_groupe.php";
+                        $submit_label = "Enregistrer";
+                        $groupe = $edit_groupe;
+                        include __DIR__ . '/../forms/form_groupe.php'; 
+                        ?>
                     </div>
-                </div>
-
+                <?php else: ?>
+                    <h3 class="form-title">Créer un groupe</h3>
+                    <div class="form-box">
+                        <?php 
+                        $form_action = "../actions/ajouter_groupe.php";
+                        $submit_label = "Créer la tribu";
+                        $groupe = null;
+                        include __DIR__ . '/../forms/form_groupe.php'; 
+                        ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
         </div>

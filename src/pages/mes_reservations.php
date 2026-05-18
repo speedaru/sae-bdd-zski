@@ -2,7 +2,7 @@
 /**
  * Page d'affichage des réservations - Zarza-Ski
  * Emplacement : src/pages/mes_reservations.php
- * Affiche l'historique des séjours passés ou futurs de l'utilisateur.
+ * Version épurée, académique et sans framework
  */
 
 require_once __DIR__ . '/../includes/header.php';
@@ -41,156 +41,128 @@ try {
 }
 ?>
 
-<div class="row mt-4">
+<div class="reservations-container">
     <!-- Menu Latéral Client -->
-    <div class="col-md-3">
+    <div class="reservations-sidebar">
         <?php include __DIR__ . '/../includes/sidebar_client.php'; ?>
     </div>
 
     <!-- Contenu Principal -->
-    <div class="col-md-9">
-        <div class="card shadow-sm border-0 p-4">
-            
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2 class="mb-1 fw-bold"><i class="fas fa-skiing text-primary me-2"></i>Mes Séjours</h2>
-                    <p class="text-muted mb-0">Consultez, gérez et suivez l'ensemble de vos réservations à la station Zarza-Ski.</p>
-                </div>
-                <?php if (!empty($reservations)): ?>
-                    <span class="badge bg-primary rounded-pill px-3 py-2">
-                        <?php echo count($reservations); ?> séjour(s)
-                    </span>
-                <?php endif; ?>
+    <div class="reservations-content">
+        
+        <div class="reservations-header">
+            <h2>Mes Séjours & Réservations</h2>
+            <p>Retrouvez ci-dessous l'historique complet de vos vacances à la station Zarza-Ski ainsi que vos factures.</p>
+        </div>
+
+        <!-- Messages d'erreur ou de succès -->
+        <?php if ($success): ?>
+            <div class="alert alert-success"><?php echo h($success); ?></div>
+        <?php endif; ?>
+        <?php if ($error): ?>
+            <div class="alert alert-error"><?php echo h($error); ?></div>
+        <?php endif; ?>
+
+        <?php if (empty($reservations)): ?>
+            <!-- Aucun séjour trouvé -->
+            <div class="empty-state">
+                <p>Vous n'avez pas encore de réservation de prévue. Prenez d'assaut les pistes !</p>
+                <p><a href="recherche.php" class="btn-primary">Rechercher une chambre</a></p>
             </div>
-
-            <hr>
-
-            <!-- Affichage des messages flash d'erreur ou de succès -->
-            <?php if ($success) echo alert($success, 'success'); ?>
-            <?php if ($error) echo alert($error, 'danger'); ?>
-
-            <?php if (empty($reservations)): ?>
-                <!-- Aucun séjour trouvé -->
-                <div class="text-center py-5">
-                    <div class="mb-3">
-                        <i class="fas fa-calendar-times fa-4x text-muted opacity-50"></i>
-                    </div>
-                    <h4 class="fw-bold text-muted">Aucune réservation pour le moment</h4>
-                    <p class="text-muted mb-4">Vous n'avez pas encore de réservation de prévue. Prenez d'assaut les pistes !</p>
-                    <a href="recherche.php" class="btn btn-primary px-4 py-2 shadow-sm">
-                        <i class="fas fa-search me-2"></i>Rechercher une chambre
-                    </a>
-                </div>
-            <?php else: ?>
-                <!-- Liste des séjours trouvés -->
-                <div class="row g-4">
-                    <?php foreach ($reservations as $res): ?>
-                        <div class="col-12">
-                            <div class="card border border-2 shadow-none">
-                                <!-- En-tête de la carte de séjour -->
-                                <div class="card-header bg-light d-flex justify-content-between align-items-center py-3 border-0">
-                                    <div>
-                                        <h5 class="fw-bold text-dark mb-1">
-                                            <i class="fas fa-users text-secondary me-2"></i>Groupe : <?php echo h($res['nom_groupe']); ?>
-                                        </h5>
-                                        <span class="text-muted small">
-                                            <i class="far fa-calendar-alt me-1"></i>Du <?php echo date_fr($res['date_debut']); ?> au <?php echo date_fr($res['date_fin']); ?>
-                                        </span>
-                                    </div>
-                                    <div class="text-end d-flex align-items-center gap-3">
-                                        <div>
-                                            <span class="text-xs text-muted d-block uppercase fw-bold">Montant Total</span>
-                                            <span class="badge bg-primary fs-5 px-3 py-2">
-                                                <?php echo number_format($res['prix_total_sejour'], 0, ',', ' '); ?> €
-                                            </span>
-                                        </div>
-                                        
-                                        <!-- Bouton Annuler la réservation entière -->
-                                        <button class="btn btn-danger btn-sm px-3 py-2 fw-bold" 
-                                                onclick="confirmCancelReservation(<?php echo $res['id_reservation']; ?>, '<?php echo h(addslashes($res['nom_groupe'])); ?>')"
-                                                title="Annuler tout le séjour">
-                                            <i class="fas fa-trash-alt me-1"></i> Annuler
-                                        </button>
-                                    </div>
+        <?php else: ?>
+            
+            <!-- Liste des séjours trouvés -->
+            <div class="reservations-list">
+                <?php foreach ($reservations as $res): ?>
+                    <div class="reservation-box">
+                        
+                        <!-- En-tête de la réservation -->
+                        <div class="reservation-box-header">
+                            <div class="group-info">
+                                <h3>Groupe : <?php echo h($res['nom_groupe']); ?></h3>
+                                <span class="stay-dates">Du <?php echo date_fr($res['date_debut']); ?> au <?php echo date_fr($res['date_fin']); ?></span>
+                            </div>
+                            
+                            <div class="billing-info">
+                                <div class="total-badge">
+                                    Total : <strong><?php echo number_format($res['prix_total_sejour'], 0, ',', ' '); ?> €</strong>
                                 </div>
-
-                                <!-- Corps de la carte : Détails des occupants (Requête secondaire) -->
-                                <div class="card-body p-4">
-                                    <h6 class="fw-bold mb-3 text-secondary"><i class="fas fa-info-circle me-1"></i>Répartition et Formules</h6>
-                                    
-                                    <?php
-                                    try {
-                                        // 2. REQUÊTE SECONDAIRE : Récupère les chambres, les occupants et les prix des formules pour ce séjour
-                                        $sql_sub = "SELECT 
-                                                        re.num_chambre,
-                                                        ch.batiment,
-                                                        ch.etage,
-                                                        c.nom AS client_nom,
-                                                        c.prenom AS client_prenom,
-                                                        re.type_formule,
-                                                        re.formule_prix_final
-                                                    FROM reserver re
-                                                    INNER JOIN client c ON re.id_client = c.id_client
-                                                    INNER JOIN chambre ch ON re.num_chambre = ch.num_chambre
-                                                    WHERE re.id_reservation = :id_reservation
-                                                    ORDER BY re.num_chambre, c.nom, c.prenom";
-
-                                        $stmt_sub = $pdo->prepare($sql_sub);
-                                        $stmt_sub->execute(['id_reservation' => $res['id_reservation']]);
-                                        $occupants = $stmt_sub->fetchAll(PDO::FETCH_ASSOC);
-                                    } catch (PDOException $e) {
-                                        $occupants = [];
-                                    }
-                                    ?>
-
-                                    <?php if (empty($occupants)): ?>
-                                        <p class="text-muted italic small mb-0">Aucun occupant n'est lié à cette réservation.</p>
-                                    <?php else: ?>
-                                        <div class="table-responsive">
-                                            <table class="table table-sm table-borderless align-middle mb-0">
-                                                <thead>
-                                                    <tr class="text-muted small border-bottom">
-                                                        <th class="pb-2">Logement</th>
-                                                        <th class="pb-2">Occupant</th>
-                                                        <th class="pb-2">Formule choisie</th>
-                                                        <th class="pb-2 text-end">Tarif final</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php foreach ($occupants as $occ): ?>
-                                                        <tr>
-                                                            <td class="py-2">
-                                                                <span class="fw-bold text-dark">Chambre <?php echo $occ['num_chambre']; ?></span>
-                                                                <span class="text-muted small d-block">Bâtiment <?php echo h($occ['batiment']); ?> - Étage <?php echo $occ['etage']; ?></span>
-                                                            </td>
-                                                            <td class="py-2">
-                                                                <span class="text-dark fw-semibold"><?php echo h($occ['client_prenom'] . ' ' . $occ['client_nom']); ?></span>
-                                                            </td>
-                                                            <td class="py-2">
-                                                                <span class="badge bg-light text-secondary border"><?php echo h($occ['type_formule']); ?></span>
-                                                            </td>
-                                                            <td class="py-2 text-end text-primary fw-bold">
-                                                                <?php echo $occ['formule_prix_final'] > 0 ? $occ['formule_prix_final'] . ' €' : 'Gratuit'; ?>
-                                                            </td>
-                                                        </tr>
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
+                                <button class="btn-cancel-stay" onclick="confirmCancelReservation(<?php echo $res['id_reservation']; ?>, '<?php echo h(addslashes($res['nom_groupe'])); ?>')">
+                                    Annuler le séjour
+                                </button>
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                </div>
 
-                <div class="mt-4 text-center">
-                    <a href="recherche.php" class="text-decoration-none text-muted small">
-                        <i class="fas fa-plus-circle me-1"></i> Louer d'autres chambres pour une autre semaine
-                    </a>
-                </div>
-            <?php endif; ?>
-        </div>
+                        <!-- Détails des occupants (Requête secondaire) -->
+                        <div class="reservation-box-body">
+                            <h4>Répartition des occupants & formules :</h4>
+                            
+                            <?php
+                            try {
+                                $sql_sub = "SELECT 
+                                                re.num_chambre,
+                                                ch.batiment,
+                                                ch.etage,
+                                                c.nom AS client_nom,
+                                                c.prenom AS client_prenom,
+                                                re.type_formule,
+                                                re.formule_prix_final
+                                            FROM reserver re
+                                            INNER JOIN client c ON re.id_client = c.id_client
+                                            INNER JOIN chambre ch ON re.num_chambre = ch.num_chambre
+                                            WHERE re.id_reservation = :id_reservation
+                                            ORDER BY re.num_chambre, c.nom, c.prenom";
+
+                                $stmt_sub = $pdo->prepare($sql_sub);
+                                $stmt_sub->execute(['id_reservation' => $res['id_reservation']]);
+                                $occupants = $stmt_sub->fetchAll(PDO::FETCH_ASSOC);
+                            } catch (PDOException $e) {
+                                $occupants = [];
+                            }
+                            ?>
+
+                            <?php if (empty($occupants)): ?>
+                                <p class="no-occupants-msg">Aucun proche n'est affecté à ce séjour.</p>
+                            <?php else: ?>
+                                <table class="academic-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Hébergement</th>
+                                            <th>Skieur</th>
+                                            <th>Formule</th>
+                                            <th class="text-right">Tarif final</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($occupants as $occ): ?>
+                                            <tr>
+                                                <td>
+                                                    <strong>Chambre <?php echo $occ['num_chambre']; ?></strong> 
+                                                    <span class="room-meta">(Bat. <?php echo h($occ['batiment']); ?>, Niv. <?php echo $occ['etage']; ?>)</span>
+                                                </td>
+                                                <td><?php echo h($occ['client_prenom'] . ' ' . $occ['client_nom']); ?></td>
+                                                <td><span class="badge-formula"><?php echo h($occ['type_formule']); ?></span></td>
+                                                <td class="text-right highlight-price">
+                                                    <?php echo $occ['formule_prix_final'] > 0 ? $occ['formule_prix_final'] . ' €' : 'Gratuit'; ?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            <?php endif; ?>
+                        </div>
+
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="more-actions">
+                <a href="recherche.php" class="link-more-rooms">
+                    <u>Louer d'autres chambres pour une autre semaine</u>
+                </a>
+            </div>
+            
+        <?php endif; ?>
     </div>
 </div>
 
