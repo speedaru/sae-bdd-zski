@@ -4,10 +4,10 @@
 <footer class="academic-footer">
     <div class="footer-left">
         <p class="footer-copy">
-            &copy; 2026 <span class="footer-brand">Zarza-Ski</span> - Projet SAE 2-04
+            2026 <span class="footer-brand">Zarza-Ski</span> - Projet SAE 2-04
         </p>
         <small class="footer-credits">
-            &lt;/&gt; Développé par Anis ZIANE et Iegor TAFTAI
+            Développé par Anis ZIANE et Iegor TAFTAI
         </small>
     </div>
     

@@ -29,8 +29,9 @@ require_once 'init.php';
     <header class="academic-header">
         <!-- section gauche: marque et liens de navigation -->
         <div class="header-left">
+            <img src="https://elearning.univ-eiffel.fr/pluginfile.php/1/theme_boost_union/logocompact/300x300/1778486817/cigle-Eiffel-blanc-marge.png"></img>
             <a class="header-brand" href="<?php echo $base_url; ?>index.php">
-                ▲ Zarza-Ski
+                Zarza-Ski
             </a>
             <nav class="header-nav-container">
                 <ul class="header-nav">
@@ -60,7 +61,7 @@ require_once 'init.php';
                 <!-- dropdown espace client -->
                 <div class="header-user-dropdown">
                     <button class="header-dropdown-trigger">
-                        👤 <?php echo h($_SESSION['username']); ?> <span class="arrow">&#9662;</span>
+                        <?php echo h($_SESSION['username']); ?> <span class="arrow">&#9662;</span>
                     </button>
                     <ul class="header-dropdown-menu">
                         <li><a href="<?php echo $base_url; ?>pages/tableau_de_bord.php">Mon espace client</a></li>

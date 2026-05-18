@@ -30,6 +30,12 @@
     white-space: nowrap;
 }
 
+img {
+    max-width: 48px;
+    max-height: 48px;
+    justify-content: center;
+}
+
 .header-brand:hover {
     color: #ffffff;
 }
