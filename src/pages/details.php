@@ -94,9 +94,9 @@ $is_in_panier = in_array($id_chambre, $panier);
                 <button class="btn-valider">Finaliser ma réservation &rarr;</button>
             </a>
         <?php else: ?>
-            <a href="../actions/ajouter_panier.php?id=<?php echo $id_chambre; ?>" class="btn-link">
-                <button class="btn-ajouter">[+] Ajouter à ma sélection</button>
-            </a>
+        <a href="../actions/ajouter_panier.php?id=<?php echo $id_chambre; ?>&redirect=<?php echo urlencode('../pages/details.php?id=' . $id_chambre); ?>" class="btn-link">
+            <button class="btn-ajouter">[+] Ajouter à ma sélection</button>
+        </a>
         <?php endif; ?>
     </div>
 

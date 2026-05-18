@@ -6,12 +6,11 @@
 
 require_once __DIR__ . '/../includes/init.php';
 
-// Protection d'accès de base (il est recommandé d'être connecté)
-if (!isset($_SESSION['id_user'])) {
-    $_SESSION['error'] = "Vezillez vous connecter pour ajouter une chambre à votre panier.";
-    header("Location: /auth/login.php");
-    exit();
-}
+require_login(add_current_url_with_args());
+
+$redirect_target = isset($_GET['redirect']) ? trim($_GET['redirect']) : '../index.php';
+$redirect_target = sanitize_redirect_url($redirect_target);
+$_SESSION['redirect_target'] = $redirect_target;
 
 $id_chambre = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
@@ -48,7 +47,8 @@ try {
     $_SESSION['error'] = "Une erreur technique est survenue.";
 }
 
-// Redirection vers la page précédente ou par défaut vers la recherche
-$referer = $_SERVER['HTTP_REFERER'] ?? '../pages/recherche.php';
-header("Location: " . $referer);
+//// Redirection vers la page précédente ou par défaut vers la recherche
+//$referer = $_SERVER['HTTP_REFERER'] ?? '../pages/recherche.php';
+//header("Location: " . $referer);
+header("Location: " . $redirect_target);
 exit();

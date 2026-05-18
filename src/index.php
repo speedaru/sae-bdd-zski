@@ -5,6 +5,7 @@ include_once 'includes/header.php';
 // 1. On récupère les éventuels messages d'erreur ou de succès mis en session
 $error = $_SESSION['error'] ?? null;
 $success = $_SESSION['success'] ?? null;
+$redirect_target = $_SESSION['redirect_target'] ?? null;
 
 // 2. IMPORTANT : On les supprime tout de suite de la session pour le prochain refresh
 unset($_SESSION['error'], $_SESSION['success']);
@@ -21,6 +22,12 @@ unset($_SESSION['error'], $_SESSION['success']);
     <?php if ($success): ?>
         <div class="alert-success" style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 12px 16px; border-radius: 4px; margin-bottom: 20px; font-family: sans-serif;">
             <strong>✅ <?php echo h($success); ?></strong>
+        </div>
+    <?php endif; ?>
+    
+    <?php if ($redirect_target): ?>
+        <div class="alert-success" style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 12px 16px; border-radius: 4px; margin-bottom: 20px; font-family: sans-serif;">
+            <strong><?php echo h($redirect_target); ?></strong>
         </div>
     <?php endif; ?>
 
