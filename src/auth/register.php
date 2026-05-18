@@ -24,13 +24,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $q1 = $pdo->prepare($sql1);
             $q1->execute([$nom, $prenom]);
 
-            $id = $q1->fetchColumn();
+            $id_client = $q1->fetchColumn();
 
             $hash = password_hash($p, PASSWORD_DEFAULT);
             $sql2 = "INSERT INTO compte_utilisateur (username, mdp_hash, role, id_client) 
-                     VALUES (?, ?, 'client', ?)";
+                     VALUES (?, ?, 'client', ?)
+                     RETURNING id_user";
             $q2 = $pdo->prepare($sql2);
-            $q2->execute([$u, $hash, $id]);
+            $q2->execute([$u, $hash, $id_client]);
+
+            $id_user = $q2->fetchColumn();
+
+            $sql3 = "INSERT INTO gestion_voyageurs (id_user, id_client)
+                     VALUES (?, ?)";
+            $q3 = $pdo->prepare($sql3);
+            $q3->execute([$id_user, $id_client]);
 
             $pdo->commit();
             $suc = "Compte créé avec succès ! Vous pouvez vous connecter.";

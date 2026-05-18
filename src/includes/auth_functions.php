@@ -49,7 +49,8 @@ function require_role($required_role, $redirect_path = "../index.php") {
     // bloquer utilisateur si role pas assez puissant
     if ($user_weight < $required_weight) {
         $_SESSION['error'] = "Acces refuse : Vos privileges actuels (" . h($user_role) . ") ne vous permettent pas d'acceder à cette ressource.";
-        header("Location: " . $redirect_path);
+        // echo "<h1>" . $redirect_path . "</h1>";
+        header("Location: ../index.php");
         exit;
     }
 }

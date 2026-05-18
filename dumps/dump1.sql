@@ -1,8 +1,6 @@
--- ==========================================================
--- Script de création de la base de données Zarza-Ski
--- ==========================================================
+-- script de création de la base de données zarza-ski
 
--- 1. NETTOYAGE
+-- nettoyage
 DROP TABLE IF EXISTS preference CASCADE;
 DROP TABLE IF EXISTS facturation CASCADE;
 DROP TABLE IF EXISTS reserver CASCADE;
@@ -19,13 +17,13 @@ DROP TYPE IF EXISTS ski_level CASCADE;
 DROP TYPE IF EXISTS vue_type CASCADE;
 DROP TYPE IF EXISTS role_compte CASCADE;
 
--- 2. TYPES ENUMÉRÉS
+-- enums
 CREATE TYPE pref_level AS ENUM ('impératif', 'Souhaitable', 'Pas souhaitable', 'Interdit');
 CREATE TYPE ski_level AS ENUM ('débutant', 'moyen', 'confirmé');
 CREATE TYPE vue_type AS ENUM ('parking', 'pistes');
 CREATE TYPE role_compte AS ENUM ('admin', 'gestionnaire', 'client');
 
--- 3. TABLES INDÉPENDANTES
+-- tables indépendantes
 
 CREATE TABLE client (
     id_client SERIAL PRIMARY KEY,
@@ -55,9 +53,9 @@ CREATE TABLE chambre (
     balcon_present BOOLEAN NOT NULL
 );
 
--- 4. TABLES DÉPENDANTES (HIÉRARCHIQUES)
+-- tables dépendantes (hiérarchiques)
 
--- Compte lié au client principal
+-- compte lié au client principal
 CREATE TABLE compte_utilisateur (
     id_user SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -66,20 +64,20 @@ CREATE TABLE compte_utilisateur (
     id_client INTEGER REFERENCES client(id_client) ON DELETE SET NULL
 );
 
--- Carnet d'adresses : Quels clients sont gérés par quel compte ?
+-- carnet d'adresses : quels clients sont gérés par quel compte ?
 CREATE TABLE gestion_voyageurs (
     id_user INTEGER REFERENCES compte_utilisateur(id_user) ON DELETE CASCADE,
     id_client INTEGER REFERENCES client(id_client) ON DELETE CASCADE,
     PRIMARY KEY (id_user, id_client)
 );
 
--- Un groupe appartient à un compte (chef de groupe)
+-- un groupe appartient à un compte (chef de groupe)
 CREATE TABLE groupe (
     nom_groupe VARCHAR(48) PRIMARY KEY,
-    id_user INTEGER NOT NULL REFERENCES compte_utilisateur(id_user) ON DELETE CASCADE
+    id_user INTEGER REFERENCES compte_utilisateur(id_user) ON DELETE CASCADE
 );
 
--- Une réservation appartient à un groupe
+-- une réservation appartient à un groupe
 CREATE TABLE reservation (
     id_reservation SERIAL PRIMARY KEY,
     date_debut DATE NOT NULL,
@@ -88,7 +86,7 @@ CREATE TABLE reservation (
     CONSTRAINT check_dates CHECK (date_fin > date_debut)
 );
 
--- Table de liaison centrale : Qui occupe quelle chambre sous quelle formule ?
+-- table de liaison centrale : qui occupe quelle chambre sous quelle formule ?
 CREATE TABLE reserver (
     id_client INTEGER REFERENCES client(id_client) ON DELETE CASCADE,
     id_reservation INTEGER REFERENCES reservation(id_reservation) ON DELETE CASCADE,
@@ -107,7 +105,7 @@ CREATE TABLE facturation (
     num_chambre INTEGER NOT NULL REFERENCES chambre(num_chambre)
 );
 
--- Préférences entre clients (ex: veut dormir avec / ne veut pas dormir avec)
+-- préférences entre clients
 CREATE TABLE preference (
     id_client INTEGER REFERENCES client(id_client) ON DELETE CASCADE,
     id_client_1 INTEGER REFERENCES client(id_client) ON DELETE CASCADE,
@@ -116,11 +114,9 @@ CREATE TABLE preference (
     CONSTRAINT no_self_pref CHECK (id_client <> id_client_1)
 );
 
--- ==========================================================
--- 6. CRÉATION DES VUES DEMANDÉES PAR LE SUJET (PAGE 2)
--- ==========================================================
+-- création des vues postgres sql
 
--- VUE 1 : Nombre de personnes présentes par semaine
+-- nombre de personnes présentes par semaine
 CREATE OR REPLACE VIEW vue_frequentation_semaine AS
 SELECT 
     r.date_debut AS semaine_debut,
@@ -130,7 +126,7 @@ FROM reservation r
 LEFT JOIN reserver re ON r.id_reservation = re.id_reservation
 GROUP BY r.id_reservation, r.date_debut, r.date_fin;
 
--- VUE 2 & 3 : Liste complète et détails des occupants par chambre et par semaine
+-- liste complète et détails des occupants par chambre et par semaine
 CREATE OR REPLACE VIEW vue_details_occupants_chambre AS
 SELECT 
     r.date_debut AS semaine_debut, 
@@ -145,39 +141,28 @@ INNER JOIN reservation r ON re.id_reservation = r.id_reservation
 INNER JOIN client c ON re.id_client = c.id_client
 INNER JOIN chambre ch ON re.num_chambre = ch.num_chambre;
 
--- ==========================================================
--- 5. JEU D'ESSAI RÉVISÉ
--- ==========================================================
+-- jeu d'essai
 
--- 1. Création des clients physiques
-INSERT INTO client (nom, prenom, adresse, num_tel, niveau_ski, taille, poids, pointure, date_naissance) VALUES
-('Durand', 'Jean', '12 rue des Pins, Paris', '0601020304', 'moyen', 1.80, 75, 43.0, '1985-04-12'),
-('Durand', 'Marie', '12 rue des Pins, Paris', '0605060708', 'confirmé', 1.65, 60, 38.0, '1990-11-23');
+-- les formules disponibles dans la station
+INSERT INTO formule (type_formule, prix_base) VALUES 
+('Non skieur', 420), 
+('Tout compris', 510);
 
--- 2. Création du compte pour Jean
-INSERT INTO compte_utilisateur (username, mdp_hash, role, id_client) VALUES
-('j.durand', '$2y$10$e0MYzXy..6L.88H1L7L9e.lE5QO.mX5I.mX5I.mX5I.mX5I.mX5I.', 'client', 1);
-
--- 3. Jean ajoute Marie à son carnet de voyageurs
-INSERT INTO gestion_voyageurs (id_user, id_client) VALUES (1, 2);
-
--- 4. Jean crée un groupe pour ses vacances
-INSERT INTO groupe (nom_groupe, id_user) VALUES ('Ski Famille 2025', 1);
-
--- 5. Mise en place de l'environnement (Formules et Chambres)
-INSERT INTO formule (type_formule, prix_base) VALUES ('Non skieur', 420), ('Tout compris', 510);
+-- insertion de 10 chambres 
 INSERT INTO chambre (num_chambre, etage, batiment, nb_lits, superficie, type_vue, balcon_present) VALUES
+(101, 1, 'A', 2, 16, 'parking', false),
+(102, 1, 'A', 3, 20, 'parking', false),
 (105, 1, 'B', 2, 18, 'parking', false),
-(227, 2, 'A', 4, 25, 'pistes', true);
+(110, 1, 'B', 4, 24, 'pistes', true),
+(201, 2, 'A', 2, 17, 'parking', true),
+(202, 2, 'A', 3, 21, 'pistes', true),
+(205, 2, 'B', 2, 19, 'parking', false),
+(210, 2, 'B', 4, 26, 'pistes', true),
+(227, 2, 'A', 4, 25, 'pistes', true),
+(302, 3, 'B', 4, 28, 'pistes', true);
+
+-- synchronisation de la séquence pour éviter les conflits d'insertion serial
 SELECT setval(pg_get_serial_sequence('chambre', 'num_chambre'), MAX(num_chambre)) FROM chambre;
 
--- 6. Création de la réservation pour le groupe
-INSERT INTO reservation (date_debut, date_fin, nom_groupe) VALUES ('2025-12-20', '2025-12-27', 'Ski Famille 2025');
-
--- 7. Détails des occupants (Jean et Marie dans la 227)
-INSERT INTO reserver (id_client, id_reservation, num_chambre, type_formule, occupe_lit, formule_prix_final) VALUES
-(1, 1, 227, 'Tout compris', true, 510),
-(2, 1, 227, 'Tout compris', true, 510);
-
--- 8. Génération de la facture
-INSERT INTO facturation (montant_total, id_reservation, num_chambre) VALUES (1020, 1, 227);
+INSERT INTO compte_utilisateur (username, mdp_hash, role, id_client) VALUES
+('admin1', '$2y$10$K/Bl4e2rMmsn9EJIpiWFPeMMnfNThO/wFSbgXlnsJeLnmVLwvuNr.', 'admin', NULL);

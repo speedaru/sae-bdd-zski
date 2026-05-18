@@ -56,6 +56,11 @@ try {
     $stmtFormules = $pdo->query("SELECT * FROM formule ORDER BY prix_base ASC");
     $formules = $stmtFormules->fetchAll(PDO::FETCH_ASSOC);
 
+    // Identification de la fiche de la personne connectée (Moi)
+    $stmtMoi = $pdo->prepare("SELECT id_client FROM compte_utilisateur WHERE id_user = ?");
+    $stmtMoi->execute([$user_id]);
+    $mon_id_client = $stmtMoi->fetchColumn();
+
 } catch (PDOException $e) {
     die("Erreur technique de chargement : " . $e->getMessage());
 }
@@ -144,8 +149,12 @@ try {
                                                 <input type="checkbox" name="chambres[<?php echo $ch['num_chambre']; ?>][voyageurs][]" value="<?php echo $voy['id_client']; ?>">
                                             </td>
                                             <td>
-                                                <span class="skier-name"><?php echo h($voy['prenom'] . ' ' . $voy['nom']); ?></span>
-                                                <span class="skier-dob">(ne le <?php echo date_fr($voy['date_naissance']); ?>)</span>
+                                                <?php if ($voy['id_client'] == $mon_id_client): ?>
+                                                    <span class="skier-name"><strong>Moi</strong></span>
+                                                <?php else: ?>
+                                                    <span class="skier-name"><?php echo h($voy['prenom'] . ' ' . $voy['nom']); ?></span>
+                                                <?php endif; ?>
+                                                <span class="skier-dob">(né le <?php echo date_fr($voy['date_naissance']); ?>)</span>
                                             </td>
                                             <td>
                                                 <select name="chambres[<?php echo $ch['num_chambre']; ?>][formules][<?php echo $voy['id_client']; ?>]" class="form-select select-formule-room">
@@ -317,7 +326,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             </td>
                             <td>
                                 <span class="skier-name">${data.prenom} ${data.nom}</span>
-                                <span class="skier-dob">(ne le ${formatDateFR(data.date_naissance)})</span>
+                                <span class="skier-dob">(né le ${formatDateFR(data.date_naissance)})</span>
                             </td>
                             <td>
                                 <select name="chambres[${roomNum}][formules][${data.id_client}]" class="form-select select-formule-room">
