@@ -1,49 +1,72 @@
+/**
+ * Zarza-Ski - Styles académiques épurés pour la page de recherche
+ * Emplacement : src/assets/css/recherche.css
+ * Aligné sur la charte sobre et universitaire de details.css
+ */
+
 .conteneur-recherche {
-    max-width: 1000px;
-    margin: 30px auto;
-    padding: 20px;
-    font-family: sans-serif;
-}
-
-.conteneur-recherche h1 {
+    max-width: 1100px;
+    margin: 20px auto;
+    font-family: Arial, Helvetica, sans-serif;
     color: #333333;
-    font-size: 24px;
-    margin-bottom: 20px;
+    padding: 0 10px;
 }
 
+/* Titre principal de la page */
+.conteneur-recherche h1 {
+    font-size: 1.5rem;
+    color: #111111;
+    margin: 0 0 20px 0;
+    border-bottom: 2px solid #1a365d; /* Ligne de séparation bleu marine caractéristique */
+    padding-bottom: 10px;
+}
+
+/* BLOC DES FILTRES DE RECHERCHE */
 .bloc-filtres {
-    border: 3px solid black;
+    border: 1px solid #333333; /* Remplacement de la bordure épaisse de 3px par une bordure fine standard */
     background-color: #fafafa;
     padding: 20px;
+    margin-bottom: 30px;
 }
 
 .bloc-filtres form {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 16px;
     align-items: flex-end;
 }
 
 .groupe-champ {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 6px;
     flex: 1;
-    min-width: 150px;
+    min-width: 180px;
 }
 
 .groupe-champ label {
-    font-size: 14px;
-    color: #444444;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #1a365d; /* Bleu universitaire pour les labels */
 }
 
+/* Saisie de texte, sélections et nombres unifiés */
 .groupe-champ select,
 .groupe-champ input[type="number"] {
-    padding: 8px;
-    border: 1px solid #cccccc;
-    font-size: 14px;
+    padding: 8px 10px;
+    border: 1px solid #777777;
+    font-size: 0.9rem;
+    background-color: #ffffff;
     width: 100%;
     box-sizing: border-box;
+}
+
+/* Mise en avant lors du focus de saisie */
+.groupe-champ select:focus,
+.groupe-champ input[type="number"]:focus {
+    outline: none;
+    border-color: #1a365d;
+    background-color: #f7fafc;
 }
 
 .groupe-bouton {
@@ -51,36 +74,63 @@
     min-width: 180px;
 }
 
+/* BOUTON DE SOUMISSION DE RECHERCHE */
 .btn-filtrer {
     width: 100%;
-    padding: 9px;
-    background-color: blue;
-    color: white;
+    padding: 9px 18px;
+    background-color: #1a365d; /* Bleu universitaire uni */
+    color: #ffffff;
     font-weight: bold;
-    border: none;
-    font-size: 14px;
+    border: 1px solid #1a365d;
+    font-size: 0.9rem;
     cursor: pointer;
+    text-align: center;
+    box-sizing: border-box;
 }
 
+.btn-filtrer:hover {
+    background-color: #2b6cb0;
+    border-color: #2b6cb0;
+}
+
+/* TABLEAU DES RÉSULTATS (STYLE GRILLE ACADÉMIQUE) */
 .table-resultats {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 25px;
+    font-size: 0.9rem;
+    background-color: #ffffff;
 }
 
+/* En-têtes du tableau */
 .table-resultats th {
-    padding: 12px;
+    background-color: #edf2f7; /* Fond gris clair uni */
+    color: #000000;
     font-weight: bold;
+    border: 1px solid #333333;
+    padding: 10px 14px;
     text-align: left;
 }
 
+/* Cellules du tableau */
 .table-resultats td {
-    padding: 12px;
-    border: 1px solid #dddddd;
+    padding: 10px 14px;
+    border: 1px solid #333333; /* Bordures d'école nettes et visibles */
+    color: #2d3748;
 }
 
+/* Effet de survol sobre et léger de la ligne */
+.table-resultats tbody tr:hover {
+    background-color: #f7fafc;
+}
+
+/* LIENS D'ACTIONS (VOIR DETAILS) */
 .lien-voir {
-    color: blue;
+    color: #1a365d;
     text-decoration: none;
     font-weight: bold;
+}
+
+.lien-voir:hover {
+    text-decoration: underline;
 }

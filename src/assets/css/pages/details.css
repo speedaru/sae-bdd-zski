@@ -1,93 +1,215 @@
+/**
+ * Zarza-Ski - Styles académiques épurés pour la fiche technique
+ * Emplacement : src/assets/css/details.css
+ */
+
 .conteneur-principal {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: sans-serif;
+    max-width: 1100px;
+    margin: 20px auto;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333333;
+    padding: 0 10px;
 }
 
+/* Fil d'ariane académique */
 .fil-ariane {
-    font-size: 14px;
-    color: #555555;
+    font-size: 0.85rem;
+    color: #666666;
+    margin-bottom: 20px;
 }
 
-.titre-page {
-    text-align: center;
+.fil-ariane a {
+    color: #1a365d;
+    text-decoration: none;
+}
+
+.fil-ariane a:hover {
+    text-decoration: underline;
+}
+
+/* Titre de page */
+.titre-page h1 {
+    font-size: 1.5rem;
+    color: #111111;
+    margin: 0 0 10px 0;
 }
 
 .barre-separation {
-    width: 100px;
-    height: 3px;
-    background-color: blue;
-    margin: 10px auto 0 auto;
-    border-radius: 2px;
+    height: 2px;
+    background-color: #1a365d;
+    width: 100%;
 }
 
+/* TABLEAU DE PRÉSENTATION DEUX COLONNES */
 .table-presentation {
     width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    border: 1px solid #333333;
 }
 
-.colonne-technique {
+.table-presentation td {
+    padding: 24px;
     width: 50%;
+    vertical-align: top;
+    border: 1px solid #333333;
 }
 
-.colonne-tarifs {
-    width: 50%;
-}
-
+/* En-têtes de sections techniques et tarifs */
 .titre-section {
-    color: white;
-    padding: 10px;
+    font-size: 1.05rem;
+    font-weight: bold;
+    padding: 8px 12px;
     margin-top: 0;
+    margin-bottom: 20px;
+    border: 1px solid #333333;
 }
 
-.blue-bg {
-    background-color: blue;
+.titre-section.blue-bg {
+    background-color: #edf2f7;
+    color: #1a365d;
+    border-left: 4px solid #1a365d;
 }
 
-.black-bg {
-    background-color: black;
+.titre-section.black-bg {
+    background-color: #222222;
+    color: #ffffff;
 }
 
+/* Fiche d'informations techniques */
+.tech-info-group p {
+    font-size: 0.95rem;
+    margin: 12px 0;
+    line-height: 1.5;
+    border-bottom: 1px solid #cbd5e0;
+    padding-bottom: 6px;
+}
+
+.tech-info-group p:last-child {
+    border-bottom: none;
+}
+
+/* Table de tarifs intégrée */
 .table-prix {
     width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.table-prix th, .table-prix td {
+    border: 1px solid #333333;
+    padding: 10px 12px;
+    text-align: left;
+}
+
+.table-prix th {
+    background-color: #edf2f7;
+    font-weight: bold;
+    color: #000000;
+}
+
+.text-right {
+    text-align: right;
 }
 
 .prix-bleu {
-    color: blue;
     font-weight: bold;
+    color: #1a365d;
 }
 
-.zone-boutons {
+.remise-notice {
+    font-size: 0.8rem;
+    color: #666666;
+    font-style: italic;
     text-align: center;
+    margin-top: 15px;
+}
+
+/* BOUTONS ET ACTIONS */
+.zone-boutons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #777777;
+}
+
+.btn-link {
+    text-decoration: none;
 }
 
 .zone-boutons button {
-    padding: 12px 25px;
-    font-size: 16px;
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    font-weight: bold;
     cursor: pointer;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
 .btn-defaut {
-    background-color: #f0f0f0;
-    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #333333;
 }
 
-.btn-retirer {
-    background-color: white;
-    color: red;
-    border: 1px solid red;
-}
-
-.btn-valider {
-    background-color: green;
-    color: white;
-    font-weight: bold;
-    border: none;
+.btn-defaut:hover {
+    background-color: #f1f5f9;
 }
 
 .btn-ajouter {
-    background-color: blue;
-    color: white;
-    font-weight: bold;
-    border: none;
+    background-color: #1a365d;
+    color: #ffffff;
+    border: 1px solid #1a365d;
+}
+
+.btn-ajouter:hover {
+    background-color: #2b6cb0;
+    border-color: #2b6cb0;
+}
+
+.btn-retirer {
+    background-color: #ffffff;
+    color: #c53030;
+    border: 1px solid #c53030;
+}
+
+.btn-retirer:hover {
+    background-color: #fff5f5;
+}
+
+.btn-valider {
+    background-color: #2f855a;
+    color: #ffffff;
+    border: 1px solid #2f855a;
+}
+
+.btn-valider:hover {
+    background-color: #38a169;
+    border-color: #38a169;
+}
+
+/* ZONE D'ERREUR */
+.error-wrapper {
+    max-width: 600px;
+    margin: 60px auto;
+    border: 1px solid #c53030;
+    background-color: #fff5f5;
+    padding: 30px;
+    text-align: center;
+}
+
+.error-title {
+    color: #c53030;
+    font-size: 1.3rem;
+    margin-top: 0;
+}
+
+.error-text {
+    color: #4a5568;
+    margin-bottom: 24px;
 }
