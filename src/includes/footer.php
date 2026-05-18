@@ -1,5 +1,4 @@
 </main>
-<!-- Liaison de la feuille de style spécifique du pied de page -->
 <link rel="stylesheet" href="/assets/css/footer.css">
 
 <footer class="academic-footer">
@@ -21,7 +20,5 @@
     </div>
 </footer>
 
-<!-- Conservation du script local indispensable -->
-<script src="/assets/js/main.js"></script>
 </body>
 </html>

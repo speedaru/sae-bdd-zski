@@ -1,12 +1,7 @@
 <?php
-/**
- * Action PHP - Ajouter Voyageur au Carnet
- * Emplacement : src/actions/ajouter_voyageur.php
- */
-
 require_once __DIR__ . '/../includes/init.php';
 
-// Détection de la nature de la requête
+// detection de la nature de la requete
 $is_ajax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 
 if (!is_logged_in()) {
@@ -21,7 +16,6 @@ if (!is_logged_in()) {
     exit();
 }
 
-// Récupère l'URL de redirection si elle existe, sinon retourne à la page par défaut
 $redirect_target = isset($_GET['redirect']) ? trim($_GET['redirect']) : '../pages/carnet.php';
 $redirect_target = sanitize_redirect_url($redirect_target);
 
@@ -32,18 +26,18 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $user_id = $_SESSION['id_user'];
 
-// Récupération et nettoyage des données POST
+// Recuperation et nettoyage des donnees POST
 $nom = trim($_POST['nom'] ?? '');
 $prenom = trim($_POST['prenom'] ?? '');
 $date_naissance = trim($_POST['date_naissance'] ?? '');
 $adresse = trim($_POST['adresse'] ?? '');
 $num_tel = trim($_POST['num_tel'] ?? '');
-$niveau_ski = $_POST['niveau_ski'] ?? 'débutant';
+$niveau_ski = $_POST['niveau_ski'] ?? 'debutant';
 $taille = floatval($_POST['taille'] ?? 0);
 $poids = intval($_POST['poids'] ?? 0);
 $pointure = floatval($_POST['pointure'] ?? 0);
 
-// Validation
+// validation
 if (empty($nom) || empty($prenom) || empty($date_naissance) || empty($adresse) || empty($num_tel) || $taille <= 0 || $poids <= 0 || $pointure <= 0) {
     $msg = "Veuillez remplir correctement tous les champs obligatoires.";
     if ($is_ajax) {
@@ -57,10 +51,10 @@ if (empty($nom) || empty($prenom) || empty($date_naissance) || empty($adresse) |
 }
 
 try {
-    // TRANSACTION POSTGRESQL de sécurité
+    // transaction postgresql de securite
     $pdo->beginTransaction();
 
-    // Insertion du voyageur avec sa date de naissance
+    // insertion du voyageur avec sa date de naissance
     $sqlClient = "INSERT INTO client (nom, prenom, date_naissance, adresse, num_tel, niveau_ski, taille, poids, pointure) 
                   VALUES (:nom, :prenom, :date_naissance, :adresse, :num_tel, :niveau_ski, :taille, :poids, :pointure)";
                   
@@ -79,7 +73,7 @@ try {
 
     $id_client_cree = $pdo->lastInsertId();
 
-    // Liaison dans la table d'association d'adresses
+    // liaison dans la table d'association d'adresses
     $sqlLiaison = "INSERT INTO gestion_voyageurs (id_user, id_client) VALUES (:id_user, :id_client)";
     $stmtLiaison = $pdo->prepare($sqlLiaison);
     $stmtLiaison->execute([
@@ -89,9 +83,9 @@ try {
 
     $pdo->commit();
 
-    $msg = "Le membre " . h($prenom) . " " . h($nom) . " a été ajouté à votre tribu !";
+    $msg = "Le membre " . h($prenom) . " " . h($nom) . " a ete ajoute à votre tribu !";
 
-    // Envoi des métadonnées complètes au frontend AJAX
+    // envoi des metadonnees complètes au frontend ajax
     if ($is_ajax) {
         header('Content-Type: application/json');
         echo json_encode([

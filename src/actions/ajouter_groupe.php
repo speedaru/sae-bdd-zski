@@ -1,16 +1,11 @@
 <?php
-/**
- * Action PHP - Création de groupe - Zarza-Ski
- * Emplacement : src/actions/ajouter_groupe.php
- */
-
 require_once __DIR__ . '/../includes/init.php';
 
-// Détection de la nature de la requête (AJAX ou Standard)
+// detection de la nature de la requete (ajax ou standard)
 $is_ajax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
 
 if (!is_logged_in()) {
-    $msg = "Veuillez vous connecter pour créer un groupe.";
+    $msg = "Veuillez vous connecter pour creer un groupe.";
     if ($is_ajax) {
         header('Content-Type: application/json');
         echo json_encode(['success' => false, 'message' => $msg]);
@@ -21,7 +16,7 @@ if (!is_logged_in()) {
     exit();
 }
 
-// Récupère l'URL de redirection si elle existe, sinon retourne à la page par défaut
+// recuperer l'url de redirection si elle existe, sinon retourne a la page par defaut
 $redirect_target = isset($_GET['redirect']) ? trim($_GET['redirect']) : '../pages/groupes.php';
 $redirect_target = sanitize_redirect_url($redirect_target);
 
@@ -34,7 +29,7 @@ $user_id = $_SESSION['id_user'];
 $nom_groupe = trim($_POST['nom_groupe'] ?? '');
 
 if (empty($nom_groupe)) {
-    $msg = "Le nom du groupe ne peut pas être vide.";
+    $msg = "Le nom du groupe ne peut pas etre vide.";
     if ($is_ajax) {
         header('Content-Type: application/json');
         echo json_encode(['success' => false, 'message' => $msg]);
@@ -46,7 +41,7 @@ if (empty($nom_groupe)) {
 }
 
 if (strlen($nom_groupe) > 48) {
-    $msg = "Le nom du groupe ne doit pas dépasser 48 caractères.";
+    $msg = "Le nom du groupe ne doit pas depasser 48 caracteres.";
     if ($is_ajax) {
         header('Content-Type: application/json');
         echo json_encode(['success' => false, 'message' => $msg]);
@@ -58,16 +53,16 @@ if (strlen($nom_groupe) > 48) {
 }
 
 try {
-    // Insertion SQL du nouveau groupe
+    // insertion sql du nouveau groupe
     $stmt = $pdo->prepare("INSERT INTO groupe (nom_groupe, id_user) VALUES (:nom, :id_user)");
     $stmt->execute([
         'nom' => $nom_groupe,
         'id_user' => $user_id
     ]);
 
-    $msg = "Le groupe '" . h($nom_groupe) . "' a été créé avec succès !";
+    $msg = "Le groupe '" . h($nom_groupe) . "' a ete cree avec succes !";
     
-    // Si la requête est en AJAX, on retourne du JSON
+    // si la requete est en ajax, on retourne du json
     if ($is_ajax) {
         header('Content-Type: application/json');
         echo json_encode([
@@ -81,11 +76,11 @@ try {
     $_SESSION['success'] = $msg;
 
 } catch (PDOException $e) {
-    // Code PostgreSQL 23505 = Violation d'unicité (le groupe existe déjà)
+    // 23505 = le groupe existe dejà
     if ($e->getCode() === '23505') {
-        $msg = "Le groupe '" . h($nom_groupe) . "' existe déjà au sein de la station.";
+        $msg = "Le groupe '" . h($nom_groupe) . "' existe dejà au sein de la station.";
     } else {
-        $msg = "Une erreur technique s'est produite lors de la création.";
+        $msg = "Une erreur technique s'est produite lors de la creation.";
     }
 
     if ($is_ajax) {

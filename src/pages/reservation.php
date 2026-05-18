@@ -1,13 +1,11 @@
 <?php
 /**
- * Page de Réservation / Validation du Panier - Zarza-Ski
- * Emplacement : src/pages/reservation.php
- * Version épurée sans framework avec intégration AJAX pour les modales
+ * page de reservation / validation du panier
  */
 
 require_once __DIR__ . '/../includes/header.php';
 
-// Protection d'accès
+// protection
 require_login("../pages/reservation.php");
 
 $user_id = $_SESSION['id_user'];
@@ -17,13 +15,13 @@ $error = $_SESSION['error'] ?? null;
 $success = $_SESSION['success'] ?? null;
 unset($_SESSION['error'], $_SESSION['success']);
 
-// 1. GESTION DU PANIER VIDE
+// gestion du panier vide
 if (empty($panier)) {
     ?>
     <link rel="stylesheet" href="../assets/css/reservation.css">
     <div class="empty-panier-container">
         <h3>Votre panier est vide</h3>
-        <p>Sélectionnez une ou plusieurs chambres pour configurer votre séjour à la montagne.</p>
+        <p>Selectionnez une ou plusieurs chambres pour configurer votre sejour à la montagne.</p>
         <p><a href="recherche.php" class="btn-submit">Rechercher une chambre</a></p>
     </div>
     <?php
@@ -31,20 +29,20 @@ if (empty($panier)) {
     exit();
 }
 
-// 2. RÉCUPÉRATION DES DONNÉES EN BDD
+// recuperation des donnees
 try {
-    // A. Détails des chambres dans le panier
+    // details des chambres dans le panier
     $placeholders = implode(',', array_fill(0, count($panier), '?'));
     $stmtChambres = $pdo->prepare("SELECT * FROM chambre WHERE num_chambre IN ($placeholders) ORDER BY num_chambre ASC");
     $stmtChambres->execute($panier);
     $chambres = $stmtChambres->fetchAll(PDO::FETCH_ASSOC);
 
-    // B. Groupes de l'utilisateur
+    // groupes de l'utilisateur
     $stmtGroupes = $pdo->prepare("SELECT * FROM groupe WHERE id_user = ? ORDER BY nom_groupe ASC");
     $stmtGroupes->execute([$user_id]);
     $groupes = $stmtGroupes->fetchAll(PDO::FETCH_ASSOC);
 
-    // C. Membres de la tribu (Carnet de voyageurs)
+    // affiche des membres du carnet de voyageurs
     $stmtVoyageurs = $pdo->prepare("
         SELECT c.* FROM client c
         JOIN gestion_voyageurs gv ON c.id_client = gv.id_client
@@ -54,7 +52,7 @@ try {
     $stmtVoyageurs->execute([$user_id]);
     $voyageurs = $stmtVoyageurs->fetchAll(PDO::FETCH_ASSOC);
 
-    // D. Liste des formules pour attribution tarifaire
+    // liste des formules pour attribution tarifaire
     $stmtFormules = $pdo->query("SELECT * FROM formule ORDER BY prix_base ASC");
     $formules = $stmtFormules->fetchAll(PDO::FETCH_ASSOC);
 
@@ -66,11 +64,11 @@ try {
 <div class="reservation-container">
     
     <div class="reservation-header-box">
-        <h1>Validation du séjour</h1>
+        <h1>Validation du sejour</h1>
         <p class="subtitle">Affectez vos proches à vos chambres d'hôtel de station de ski.</p>
     </div>
 
-    <!-- Alertes de retour PHP standard -->
+    <!-- alertes de retour -->
     <?php if ($success): ?>
         <div class="alert alert-success"><?php echo h($success); ?></div>
     <?php endif; ?>
@@ -80,18 +78,18 @@ try {
 
     <form method="POST" action="../actions/valider_sejour.php" class="reservation-form">
         
-        <!-- BLOC 1 : PÉRIODE & GROUPE -->
+        <!-- periode et groupe -->
         <div class="section-box">
-            <h2 class="section-title">1. Période & Groupe</h2>
+            <h2 class="section-title">1. Periode & Groupe</h2>
             <div class="form-grid">
                 <div class="form-group">
-                    <label class="form-label" for="date_debut">Date de début de séjour (Dimanche obligatoire)</label>
+                    <label class="form-label" for="date_debut">Date de debut de sejour (Dimanche obligatoire)</label>
                     <input type="date" name="date_debut" id="date_debut" class="form-input" required>
                     <span class="field-help">La semaine se termine le samedi suivant à 10h.</span>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="nom_groupe">Sélectionner votre groupe</label>
+                    <label class="form-label" for="nom_groupe">Selectionner votre groupe</label>
                     <select name="nom_groupe" id="nom_groupe" class="form-select" required>
                         <option value="" disabled selected>-- Choisir le groupe --</option>
                         <?php foreach ($groupes as $g): ?>
@@ -99,23 +97,23 @@ try {
                         <?php endforeach; ?>
                     </select>
                     <div class="action-tribu-buttons">
-                        <button type="button" class="btn-action-tribu" onclick="toggleModal('modal-groupe', true)">Créer un groupe</button>
-                        <button type="button" class="btn-action-tribu" onclick="toggleModal('modal-voyageur', true)">Créer un voyageur</button>
+                        <button type="button" class="btn-action-tribu" onclick="toggleModal('modal-groupe', true)">Creer un groupe</button>
+                        <button type="button" class="btn-action-tribu" onclick="toggleModal('modal-voyageur', true)">Creer un voyageur</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- BLOC 2 : HÉBERGEMENTS, AFFECTATIONS & SUPPRESSION -->
+        <!-- hebergements, affectations et suppression -->
         <div class="section-box">
-            <h2 class="section-title">2. Hébergements & Affectation de la Tribu</h2>
-            <p class="description-text">Cochez chaque personne participant à ce séjour dans les chambres de votre sélection.</p>
+            <h2 class="section-title">2. Hebergements & Affectation de la Tribu</h2>
+            <p class="description-text">Cochez chaque personne participant à ce sejour dans les chambres de votre selection.</p>
 
             <?php foreach ($chambres as $ch): ?>
                 <div class="chambre-card">
                     <div class="chambre-header">
                         <div class="chambre-info">
-                            <strong>Chambre n°<?php echo $ch['num_chambre']; ?></strong> — Bâtiment <?php echo h($ch['batiment']); ?>, Étage <?php echo $ch['etage']; ?> 
+                            <strong>Chambre n°<?php echo $ch['num_chambre']; ?></strong> — Bâtiment <?php echo h($ch['batiment']); ?>, etage <?php echo $ch['etage']; ?> 
                             <span class="chambre-capacity"><?php echo $ch['nb_lits']; ?> lits disponibles</span>
                         </div>
                         <a href="../actions/supprimer_panier.php?id=<?php echo $ch['num_chambre']; ?>" class="btn-delete-chambre" onclick="return confirm('Retirer cette chambre du panier ?');">
@@ -128,7 +126,7 @@ try {
                             <thead>
                                 <tr>
                                     <th class="col-affect">Affecter</th>
-                                    <th>Nom & Prénom</th>
+                                    <th>Nom & Prenom</th>
                                     <th>Formule choisie</th>
                                 </tr>
                             </thead>
@@ -136,7 +134,7 @@ try {
                                 <?php if (empty($voyageurs)): ?>
                                     <tr class="no-voyageurs-row">
                                         <td colspan="3" class="text-center italic">
-                                            Aucun voyageur disponible dans votre tribu. Enregistrez vos proches pour démarrer.
+                                            Aucun voyageur disponible dans votre tribu. Enregistrez vos proches pour demarrer.
                                         </td>
                                     </tr>
                                 <?php else: ?>
@@ -147,7 +145,7 @@ try {
                                             </td>
                                             <td>
                                                 <span class="skier-name"><?php echo h($voy['prenom'] . ' ' . $voy['nom']); ?></span>
-                                                <span class="skier-dob">(né le <?php echo date_fr($voy['date_naissance']); ?>)</span>
+                                                <span class="skier-dob">(ne le <?php echo date_fr($voy['date_naissance']); ?>)</span>
                                             </td>
                                             <td>
                                                 <select name="chambres[<?php echo $ch['num_chambre']; ?>][formules][<?php echo $voy['id_client']; ?>]" class="form-select select-formule-room">
@@ -168,22 +166,22 @@ try {
             <?php endforeach; ?>
         </div>
 
-        <!-- BLOC 3 : SOUMISSION -->
+        <!-- soumission du formulaire -->
         <div class="section-box">
             <h2 class="section-title">3. Validation & Tarification</h2>
             <div class="billing-notices">
                 <p class="notice-title">Informations sur la facturation de la station :</p>
                 <ul class="notice-list">
-                    <li>Bébés (moins de 2 ans au départ) : gratuit (n'occupent pas de lits physiques).</li>
-                    <li>Enfants (moins de 12 ans au départ) : réduction de 20% sur la formule choisie.</li>
-                    <li>Amende de lit inoccupé : 150 € par lit vide par rapport à la capacité de la chambre louée.</li>
+                    <li>Bebes (moins de 2 ans au depart) : gratuit (n'occupent pas de lits physiques).</li>
+                    <li>Enfants (moins de 12 ans au depart) : reduction de 20% sur la formule choisie.</li>
+                    <li>Amende de lit inoccupe : 150 € par lit vide par rapport à la capacite de la chambre louee.</li>
                 </ul>
-                <p class="notice-footer">Le montant final exact de votre séjour sera calculé et facturé à la confirmation.</p>
+                <p class="notice-footer">Le montant final exact de votre sejour sera calcule et facture à la confirmation.</p>
             </div>
             
             <div class="btn-submit-container">
                 <button type="submit" class="btn-submit-main">
-                    Confirmer ma réservation
+                    Confirmer ma reservation
                 </button>
             </div>
         </div>
@@ -191,7 +189,7 @@ try {
     </form>
 </div>
 
-<!-- ================= MODALE GROUPE ÉPURÉE ================= -->
+<!-- --------------- modale groupe --------------- -->
 <div id="modal-groupe" class="custom-modal-overlay hidden">
     <div class="custom-modal-box">
         <div class="custom-modal-header">
@@ -202,14 +200,14 @@ try {
             <div class="modal-ajax-errors hidden" id="errors-groupe"></div>
             <?php 
             $form_action = "../actions/ajouter_groupe.php";
-            $submit_label = "Créer le groupe";
+            $submit_label = "Creer le groupe";
             include __DIR__ . '/../forms/form_groupe.php'; 
             ?>
         </div>
     </div>
 </div>
 
-<!-- ================= MODALE VOYAGEUR ÉPURÉE ================= -->
+<!-- --------------- modale voyageur --------------- -->
 <div id="modal-voyageur" class="custom-modal-overlay hidden">
     <div class="custom-modal-box modal-wide">
         <div class="custom-modal-header">
@@ -228,7 +226,7 @@ try {
     </div>
 </div>
 
-<!-- ================= SCRIPT JAVASCRIPT AJAX INTERNE ÉPURÉ ================= -->
+<!-- --------------- script js ajax --------------- -->
 <script>
 const listFormules = <?php echo json_encode($formules); ?>;
 
@@ -241,7 +239,7 @@ function toggleModal(modalId, show) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    // A. Interception de l'enregistrement de groupe (AJAX Fetch)
+    // interception de l'enregistrement de groupe
     const formGroup = document.querySelector("#modal-groupe form");
     if (formGroup) {
         formGroup.addEventListener("submit", function(e) {
@@ -280,7 +278,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // B. Interception de l'enregistrement de skieur (AJAX Fetch)
+    // interception de l'enregistrement de skieur
     const formVoyageur = document.querySelector("#modal-voyageur form");
     if (formVoyageur) {
         formVoyageur.addEventListener("submit", function(e) {
@@ -297,17 +295,17 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    // Injecter instantanément ce skieur dans les tables de chaque chambre
+                    // injecter instantanement ce skieur dans les tables de chaque chambre
                     document.querySelectorAll(".liste-voyageurs-chambre").forEach(tbody => {
                         const roomNum = tbody.dataset.room;
                         
-                        // Retirer le message vide s'il est présent
+                        // retirer le message vide si present
                         const emptyRow = tbody.querySelector(".no-voyageurs-row");
                         if (emptyRow) {
                             emptyRow.remove();
                         }
 
-                        // Création du markup de la ligne
+                        // creation du markup de la ligne
                         const tr = document.createElement("tr");
                         let optionsHtml = listFormules.map(f => `
                             <option value="${f.type_formule}">${f.type_formule} (${f.prix_base} €)</option>
@@ -319,7 +317,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             </td>
                             <td>
                                 <span class="skier-name">${data.prenom} ${data.nom}</span>
-                                <span class="skier-dob">(né le ${formatDateFR(data.date_naissance)})</span>
+                                <span class="skier-dob">(ne le ${formatDateFR(data.date_naissance)})</span>
                             </td>
                             <td>
                                 <select name="chambres[${roomNum}][formules][${data.id_client}]" class="form-select select-formule-room">

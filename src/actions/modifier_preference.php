@@ -1,12 +1,6 @@
 <?php
-/**
- * Action PHP - Modifier Préférence - Zarza-Ski
- * Emplacement : src/actions/modifier_preference.php
- */
-
 require_once __DIR__ . '/../includes/init.php';
 
-// Récupère l'URL de redirection si elle existe, sinon retourne à la page par défaut
 $redirect_target = isset($_GET['redirect']) ? trim($_GET['redirect']) : '../pages/preferences.php';
 $redirect_target = sanitize_redirect_url($redirect_target);
 $redirect_location = "Location: " . $redirect_target;
@@ -22,13 +16,13 @@ $recepteur = isset($_POST['id_client_1']) ? intval($_POST['id_client_1']) : 0;
 $niveau    = trim($_POST['niveau_preference'] ?? '');
 
 if ($emetteur <= 0 || $recepteur <= 0 || empty($niveau)) {
-    $_SESSION['error'] = "Informations d'affinité incomplètes.";
+    $_SESSION['error'] = "Informations d'affinite incompletes.";
     header($redirect_location);
     exit();
 }
 
 try {
-    // SÉCURITÉ : Vérifier que les deux voyageurs appartiennent bien au carnet de l'utilisateur connecté
+    // verifier que les deux voyageurs appartiennent bien au carnet de l'utilisateur connecte
     $stmtCheckTribu = $pdo->prepare("
         SELECT COUNT(*) 
         FROM gestion_voyageurs 
@@ -41,12 +35,12 @@ try {
     ]);
 
     if (intval($stmtCheckTribu->fetchColumn()) < 2) {
-        $_SESSION['error'] = "Action non autorisée : Les skieurs de la relation ne vous appartiennent pas.";
+        $_SESSION['error'] = "Action non autorisee : Les skieurs de la relation ne vous appartiennent pas.";
         header($redirect_location);
         exit();
     }
 
-    // MISE À JOUR DU NIVEAU DE PRÉFÉRENCE
+    // maj du niveau de preference
     $stmtUpdate = $pdo->prepare("
         UPDATE preference 
         SET niveau_preference = :niveau 
@@ -58,7 +52,7 @@ try {
         'recepteur' => $recepteur
     ]);
 
-    $_SESSION['success'] = "L'affinité a été mise à jour avec succès.";
+    $_SESSION['success'] = "L'affinite a ete mise à jour avec succes.";
 
 } catch (PDOException $e) {
     $_SESSION['error'] = "Erreur de modification : " . $e->getMessage();

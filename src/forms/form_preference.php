@@ -1,18 +1,16 @@
 <?php
 /**
- * Partial : Formulaire d'ajout/édition de préférence de cohabitation - Zarza-Ski
- * Emplacement : src/includes/forms/form_preference.php
+ * formulaire d'ajout/édition de préférence de cohabitation
  */
 
 $is_edit = isset($pref_edit) && !empty($pref_edit);
 ?>
-<!-- Liaison de la feuille de style spécifique du formulaire -->
 <link rel="stylesheet" href="/assets/css/form_preference.css">
 
 <form action="<?php echo $form_action; ?>" method="POST" class="academic-form">
     
     <?php if ($is_edit): ?>
-        <!-- Mode Édition : Noms statiques d'identité et clés primaires cachées -->
+        <!-- mode édition, noms statiques d'identité et clés primaires cachées -->
         <input type="hidden" name="id_client" value="<?php echo intval($pref_edit['id_client']); ?>">
         <input type="hidden" name="id_client_1" value="<?php echo intval($pref_edit['id_client_1']); ?>">
         

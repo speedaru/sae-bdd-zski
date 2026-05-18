@@ -1,27 +1,24 @@
 <?php
-/**
- * bibliotheque de fonctions reutilisables
- */
 
 /**
- * Nettoie une chaîne pour éviter les failles XSS
+ * nettoie une chaîie pour eviter les failles xss
  */
 function h($string) {
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
 
 /**
- * Affiche une alerte Bootstrap stylisée
- * @param string $message Le texte à afficher
+ * affiche une alerte stylisee
+ * @param string $message le texte à afficher
  * @param string $type success, danger, warning, info
  */
 function alert($message, $type = 'info') {
     if (!$message) return '';
     $icon = [
         'success' => 'check-circle',
-        'danger'  => 'exclamation-triangle',
+        'danger' => 'exclamation-triangle',
         'warning' => 'exclamation-circle',
-        'info'    => 'info-circle'
+        'info' => 'info-circle'
     ];
     return "
     <div class='alert alert-{$type} alert-dismissible fade show' role='alert'>
@@ -31,7 +28,7 @@ function alert($message, $type = 'info') {
 }
 
 /**
- * Formate une date SQL (YYYY-MM-DD) vers le format français (DD/MM/YYYY)
+ * formate une date sql (YYYY-MM-DD) vers le format francais (DD/MM/YYYY)
  */
 function date_fr($date_sql) {
     return date('d/m/Y', strtotime($date_sql));
@@ -69,11 +66,10 @@ function get_relative_base_url() {
 }
 
 /**
- * adds current arguments to url and returns formated url with arguments
- * useful to keep current arguments when redirecting to a page
+ * ajoute arguments de la page sur laquel on est pour redireger
  */
 function add_current_args($url) {
-    // on récupère les arguments actuels (ex: id=105)
+    // on recupere les arguments actuels (ex: id=105)
     $params = !empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '';
 
     // on construit l'url complet
@@ -82,14 +78,14 @@ function add_current_args($url) {
 }
 
 /**
- * same as add_current_args() but uses current page by default
+ * pareil que add_current_args() mais utilise par defaut la page actuel
  */
 function add_current_url_with_args() {
     return add_current_args($_SERVER['PHP_SELF']);
 }
 
 /**
- * Retourne le nombre de chambres actuellement sélectionnées dans le panier
+ * renvoie le nombre de chambres actuellement selectionnees dans le panier
  */
 function get_panier_count() {
     if (isset($_SESSION['panier']) && is_array($_SESSION['panier'])) {
@@ -99,7 +95,7 @@ function get_panier_count() {
 }
 
 /**
- * Calcule l'âge exact en années à partir d'une date de naissance au format (YYYY-MM-DD)
+ * calcule l'age exact en annees à partir d'une date de naissance au format (yyyy-mm-dd)
  * @param string $date_naissance
  * @return int l'âge exact
  */
@@ -112,13 +108,13 @@ function calculer_age($date_naissance) {
 }
 
 /**
- * Applique la tarification de la station selon les critères d'âge :
- * - Bébé (< 2 ans) : Gratuit (0€)
- * - Enfant (entre 2 ans et 11 ans révolus) : Réduction de -20%
- * - Adulte (>= 12 ans) : Plein tarif de base
- * @param int $prix_base Tarif brut d'une formule
- * @param string $date_naissance Date de naissance du skieur
- * @return int Tarif final calculé
+ * applique la tarification de la station selon les criteres d'age :
+ * bebe (< 2 ans) : gratuit (0€)
+ * enfant (entre 2 ans et 11 ans revolus) : reduction de -20%
+ * adulte (>= 12 ans) : plein tarif de base
+ * @param int $prix_base tarif brut d'une formule
+ * @param string $date_naissance date de naissance du skieur
+ * @return int tarif final calcule
  */
 function calculer_prix_indiv($prix_base, $date_naissance) {
     $age = calculer_age($date_naissance);
@@ -126,10 +122,10 @@ function calculer_prix_indiv($prix_base, $date_naissance) {
     if ($age < 2) {
         return 0;
     } elseif ($age < 12) {
-        // Enfant : réduction de 20%
+        // enfant
         return intval(round($prix_base * 0.8));
     }
     
-    // Adulte : prix normal
+    // adulte
     return intval($prix_base);
 }

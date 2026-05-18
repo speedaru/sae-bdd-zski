@@ -1,10 +1,4 @@
 <?php
-/**
- * Page de gestion des groupes - Zarza-Ski
- * Emplacement : src/pages/groupes.php
- * Version épurée et académique
- */
-
 require_once __DIR__ . '/../includes/header.php';
 
 require_login("../pages/groupes.php");
@@ -15,30 +9,30 @@ $edit_groupe = null;
 $error = $_SESSION['error'] ?? null;
 $success = $_SESSION['success'] ?? null;
 
-// Nettoyage des messages flash
+// nettoyage des messages
 unset($_SESSION['error'], $_SESSION['success']);
 
-// Mode d'édition d'un groupe spécifique
+// mode d'edition d'un groupe specifique
 $action = $_GET['action'] ?? '';
 $editing_group_name = $_GET['nom'] ?? '';
 
 if ($action === 'edit' && !empty($editing_group_name)) {
     try {
-        // Vérifie la possession du groupe à éditer
+        // verifie la possession du groupe à editer
         $stmt_edit = $pdo->prepare("SELECT * FROM groupe WHERE nom_groupe = :nom AND id_user = :id_user");
         $stmt_edit->execute(['nom' => $editing_group_name, 'id_user' => $user_id]);
         $edit_groupe = $stmt_edit->fetch(PDO::FETCH_ASSOC);
         
         if (!$edit_groupe) {
-            $error = "Action non autorisée ou groupe inexistant.";
+            $error = "Action non autorisee ou groupe inexistant.";
         }
     } catch (PDOException $e) {
-        $error = "Erreur technique lors du chargement des données d'édition.";
+        $error = "Erreur technique lors du chargement des donnees d'edition.";
     }
 }
 
 try {
-    // Récupération globale pour la liste
+    // recuperation globale pour la liste
     $sql = "SELECT * FROM groupe WHERE id_user = :id_user ORDER BY nom_groupe ASC";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['id_user' => $user_id]);
@@ -49,20 +43,19 @@ try {
 ?>
 
 <div class="groupes-container">
-    <!-- Barre de navigation latérale de l'Espace Client -->
     <div class="groupes-sidebar">
         <?php include __DIR__ . '/../includes/sidebar_client.php'; ?>
     </div>
 
-    <!-- Contenu Principal -->
+    <!-- contenu principal -->
     <div class="groupes-content">
         
         <div class="groupes-header">
-            <h2>Mes Groupes — Tribus de Séjour</h2>
-            <p>Gérez et organisez vos groupes pour vos séjours, hébergements et locations communes à la station.</p>
+            <h2>Mes Groupes — Tribus de Sejour</h2>
+            <p>Gerez et organisez vos groupes pour vos sejours, hebergements et locations communes à la station.</p>
         </div>
 
-        <!-- Alertes de retour SQL -->
+        <!-- alertes de retour -->
         <?php if ($success): ?>
             <div class="alert alert-success"><?php echo h($success); ?></div>
         <?php endif; ?>
@@ -72,19 +65,19 @@ try {
 
         <div class="groupes-grid">
             
-            <!-- BLOC GAUCHE : LISTE DES GROUPES -->
+            <!-- liste des groupes -->
             <div class="groupes-list-section">
-                <h3>Groupes enregistrés</h3>
+                <h3>Groupes enregistres</h3>
                 
                 <?php if (empty($groupes)): ?>
                     <div class="empty-state">
-                        <p>Vous n'avez créé aucun groupe de séjour pour l'instant. Utilisez le formulaire ci-contre pour démarrer.</p>
+                        <p>Vous n'avez cree aucun groupe de sejour pour l'instant. Utilisez le formulaire ci-contre pour demarrer.</p>
                     </div>
                 <?php else: ?>
                     <table class="academic-table">
                         <thead>
                             <tr>
-                                <th>Nom du groupe de séjour</th>
+                                <th>Nom du groupe de sejour</th>
                                 <th class="text-right">Actions</th>
                             </tr>
                         </thead>
@@ -111,7 +104,7 @@ try {
                 <?php endif; ?>
             </div>
 
-            <!-- BLOC DROITE : FORMULAIRE CRÉATION OU ÉDITION -->
+            <!-- formulaire creation ou edition -->
             <div class="groupes-form-section">
                 <?php if ($edit_groupe): ?>
                     <h3 class="form-title edit-mode">Modifier le groupe</h3>
@@ -124,11 +117,11 @@ try {
                         ?>
                     </div>
                 <?php else: ?>
-                    <h3 class="form-title">Créer un groupe</h3>
+                    <h3 class="form-title">Creer un groupe</h3>
                     <div class="form-box">
                         <?php 
                         $form_action = "../actions/ajouter_groupe.php";
-                        $submit_label = "Créer la tribu";
+                        $submit_label = "Creer la tribu";
                         $groupe = null;
                         include __DIR__ . '/../forms/form_groupe.php'; 
                         ?>
@@ -142,7 +135,7 @@ try {
 
 <script>
 function confirmDeleteGroup(groupName) {
-    if (confirm("Attention ! Supprimer le groupe '" + groupName + "' annulera les réservations passées ou futures si aucune n'est active. Si des réservations sont en cours, la suppression sera bloquée par la base de données. Continuer ?")) {
+    if (confirm("Attention ! Supprimer le groupe '" + groupName + "' annulera les reservations passees ou futures si aucune n'est active. Si des reservations sont en cours, la suppression sera bloquee par la base de donnees. Continuer ?")) {
         window.location.href = "../actions/supprimer_groupe.php?nom=" + encodeURIComponent(groupName);
     }
 }

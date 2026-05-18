@@ -1,15 +1,10 @@
 <?php
-/**
- * Action PHP - Modifier un voyageur - Zarza-Ski
- * Emplacement : src/actions/modifier_voyageur.php
- */
-
 require_once __DIR__ . '/../includes/init.php';
 
 $redirect_target = $_POST['redirect'] ?? $_GET['redirect'] ?? '../index.php';
 $redirect_target = sanitize_redirect_url($redirect_target);
 
-// Protection d'accès
+// protection d'acces
 if (!isset($_SESSION['id_user'])) {
     header("Location: /auth/login.php");
     exit();
@@ -29,13 +24,13 @@ if ($id_client <= 0) {
     exit();
 }
 
-// Récupération et nettoyage des champs avec date_naissance
+// recuperation et nettoyage des champs avec date_naissance
 $nom = trim($_POST['nom'] ?? '');
 $prenom = trim($_POST['prenom'] ?? '');
 $date_naissance = trim($_POST['date_naissance'] ?? '');
 $adresse = trim($_POST['adresse'] ?? '');
 $num_tel = trim($_POST['num_tel'] ?? '');
-$niveau_ski = $_POST['niveau_ski'] ?? 'débutant';
+$niveau_ski = $_POST['niveau_ski'] ?? 'debutant';
 $taille = floatval($_POST['taille'] ?? 0);
 $poids = intval($_POST['poids'] ?? 0);
 $pointure = floatval($_POST['pointure'] ?? 0);
@@ -47,7 +42,7 @@ if (empty($nom) || empty($prenom) || empty($date_naissance) || empty($adresse) |
 }
 
 try {
-    // SÉCURITÉ : Vérifier la possession en base
+    // verifier la possession en base
     $stmtCheck = $pdo->prepare("SELECT 1 FROM gestion_voyageurs WHERE id_user = :id_user AND id_client = :id_client");
     $stmtCheck->execute([
         'id_user' => $user_id,
@@ -58,12 +53,12 @@ try {
     $modifying_self = $id_client == $_SESSION['id_client'];
     
     if (!$stmtCheck->fetch() && !$modifying_self) {
-        $_SESSION['error'] = "Action non autorisée.";
+        $_SESSION['error'] = "Action non autorisee.";
         header("Location: " . $redirect_target);
         exit();
     }
 
-    // Mise à jour de la table client (date_naissance comprise)
+    // maj de la table client
     $stmtUpdate = $pdo->prepare("UPDATE client SET 
                                     nom = :nom, 
                                     prenom = :prenom, 
@@ -89,7 +84,7 @@ try {
         'id_client' => $id_client
     ]);
 
-    $_SESSION['success'] = "La fiche de " . h($prenom) . " " . h($nom) . " a été mise à jour !";
+    $_SESSION['success'] = "La fiche de " . h($prenom) . " " . h($nom) . " a ete mise à jour !";
 
 } catch (PDOException $e) {
     $_SESSION['error'] = "Erreur technique lors de la modification : " . $e->getMessage();

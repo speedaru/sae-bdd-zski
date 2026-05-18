@@ -1,24 +1,22 @@
 <?php
 /**
- * Page d'affichage des réservations - Zarza-Ski
- * Emplacement : src/pages/mes_reservations.php
- * Version épurée, académique et sans framework
+ * page d'affichage des reservations
  */
 
 require_once __DIR__ . '/../includes/header.php';
 
-// Protection de la page : accessible uniquement aux membres connectés
+// accessible uniquement aux membres connectes
 require_login("../pages/mes_reservations.php");
 
 $user_id = $_SESSION['id_user'];
 $error = $_SESSION['error'] ?? null;
 $success = $_SESSION['success'] ?? null;
 
-// Nettoyage des messages flash
+// nettoyage des messages flash
 unset($_SESSION['error'], $_SESSION['success']);
 
 try {
-    // 1. REQUÊTE PRINCIPALE : Récupère les réservations et calcule la somme globale des factures par séjour
+    // REQUETE PRINCIPALE recupere les reservations et calcule la somme globale des factures par sejour
     $sql_main = "SELECT 
                     r.id_reservation, 
                     r.date_debut, 
@@ -37,25 +35,25 @@ try {
     $reservations = $stmt_main->fetchAll(PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    $error = "Une erreur est survenue lors du chargement de vos séjours : " . $e->getMessage();
+    $error = "Une erreur est survenue lors du chargement de vos sejours : " . $e->getMessage();
 }
 ?>
 
 <div class="reservations-container">
-    <!-- Menu Latéral Client -->
+    <!-- menu client -->
     <div class="reservations-sidebar">
         <?php include __DIR__ . '/../includes/sidebar_client.php'; ?>
     </div>
 
-    <!-- Contenu Principal -->
+    <!-- contenu principal -->
     <div class="reservations-content">
         
         <div class="reservations-header">
-            <h2>Mes Séjours & Réservations</h2>
+            <h2>Mes Sejours & Reservations</h2>
             <p>Retrouvez ci-dessous l'historique complet de vos vacances à la station Zarza-Ski ainsi que vos factures.</p>
         </div>
 
-        <!-- Messages d'erreur ou de succès -->
+        <!-- messages d'erreur ou de succes -->
         <?php if ($success): ?>
             <div class="alert alert-success"><?php echo h($success); ?></div>
         <?php endif; ?>
@@ -64,19 +62,19 @@ try {
         <?php endif; ?>
 
         <?php if (empty($reservations)): ?>
-            <!-- Aucun séjour trouvé -->
+            <!-- aucun sejour trouve -->
             <div class="empty-state">
-                <p>Vous n'avez pas encore de réservation de prévue. Prenez d'assaut les pistes !</p>
+                <p>Vous n'avez pas encore de reservation de prevue. Prenez d'assaut les pistes !</p>
                 <p><a href="recherche.php" class="btn-primary">Rechercher une chambre</a></p>
             </div>
         <?php else: ?>
             
-            <!-- Liste des séjours trouvés -->
+            <!-- liste des sejours trouves -->
             <div class="reservations-list">
                 <?php foreach ($reservations as $res): ?>
                     <div class="reservation-box">
                         
-                        <!-- En-tête de la réservation -->
+                        <!-- en-tête de la reservation -->
                         <div class="reservation-box-header">
                             <div class="group-info">
                                 <h3>Groupe : <?php echo h($res['nom_groupe']); ?></h3>
@@ -88,14 +86,14 @@ try {
                                     Total : <strong><?php echo number_format($res['prix_total_sejour'], 0, ',', ' '); ?> €</strong>
                                 </div>
                                 <button class="btn-cancel-stay" onclick="confirmCancelReservation(<?php echo $res['id_reservation']; ?>, '<?php echo h(addslashes($res['nom_groupe'])); ?>')">
-                                    Annuler le séjour
+                                    Annuler le sejour
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Détails des occupants (Requête secondaire) -->
+                        <!-- details des occupants -->
                         <div class="reservation-box-body">
-                            <h4>Répartition des occupants & formules :</h4>
+                            <h4>Repartition des occupants & formules :</h4>
                             
                             <?php
                             try {
@@ -122,12 +120,12 @@ try {
                             ?>
 
                             <?php if (empty($occupants)): ?>
-                                <p class="no-occupants-msg">Aucun proche n'est affecté à ce séjour.</p>
+                                <p class="no-occupants-msg">Aucun proche n'est affecte à ce sejour.</p>
                             <?php else: ?>
                                 <table class="academic-table">
                                     <thead>
                                         <tr>
-                                            <th>Hébergement</th>
+                                            <th>Hebergement</th>
                                             <th>Skieur</th>
                                             <th>Formule</th>
                                             <th class="text-right">Tarif final</th>
@@ -168,7 +166,7 @@ try {
 
 <script>
 function confirmCancelReservation(idReservation, groupName) {
-    if (confirm("Êtes-vous sûr de vouloir annuler définitivement la réservation pour le groupe '" + groupName + "' ?\n\nCette action supprimera également les affectations de chambres ainsi que toutes les factures associées.")) {
+    if (confirm("Êtes-vous sûr de vouloir annuler definitivement la reservation pour le groupe '" + groupName + "' ?\n\nCette action supprimera egalement les affectations de chambres ainsi que toutes les factures associees.")) {
         window.location.href = "../actions/annuler_sejour.php?id=" + idReservation;
     }
 }

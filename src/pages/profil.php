@@ -1,7 +1,6 @@
 <?php
 /**
- * Page de gestion du profil client - Zarza-Ski
- * Emplacement : src/pages/profil.php
+ * page de gestion du profil client
  */
 require_once __DIR__ . '/../includes/header.php';
 
@@ -12,10 +11,10 @@ $client_id = $_SESSION['id_client'] ?? null;
 $error = $_SESSION['error'] ?? null;
 $success = $_SESSION['success'] ?? null;
 
-// Nettoyage des messages flash
+// nettoyage des messages
 unset($_SESSION['error'], $_SESSION['success']);
 
-// 1. CHARGEMENT DES DONNÉES EXISTANTES DEPUIS LA BASE
+// chargement des donnees existantes depuis la base
 try {
     $stmt = $pdo->prepare("SELECT * FROM client WHERE id_client = ?");
     $stmt->execute([$client_id]);
@@ -32,12 +31,11 @@ try {
 
 <div class="profile-container">
     
-    <!-- Navigation latérale (Sidebar) -->
     <div class="profile-sidebar">
         <?php include __DIR__ . '/../includes/sidebar_client.php'; ?>
     </div>
 
-    <!-- Contenu principal -->
+    <!-- contenu principal -->
     <div class="profile-content">
         
         <div class="profile-header">
@@ -45,7 +43,7 @@ try {
             <p>Mettez à jour vos informations de sécurité physique pour préparer vos réservations de matériel.</p>
         </div>
 
-        <!-- Alertes de retour -->
+        <!-- alertes de retour -->
         <?php if ($success != null): ?>
             <div class="alert alert-success">Votre fiche a été mise à jour !</div>
         <?php endif; ?>
@@ -53,7 +51,7 @@ try {
             <div class="alert alert-error"><?php echo h($error); ?></div>
         <?php endif; ?>
 
-        <!-- Encadré du formulaire de modification -->
+        <!-- formulaire de modification -->
         <div class="form-wrapper">
             <?php 
 //            $form_action = "profil.php"; 

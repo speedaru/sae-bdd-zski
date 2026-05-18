@@ -1,8 +1,6 @@
 <?php
 /**
- * Page Carnet de Voyageurs - Zarza-Ski
- * Emplacement : src/pages/carnet.php
- * Version épurée et académique
+ * page carnet de voyageurs
  */
 require_once __DIR__ . '/../includes/header.php';
 
@@ -14,10 +12,10 @@ $edit_voyageur = null;
 $error = $_SESSION['error'] ?? null;
 $success = $_SESSION['success'] ?? null;
 
-// Nettoyage des messages flash
+// nettoyage des messages
 unset($_SESSION['error'], $_SESSION['success']);
 
-// Mode d'édition d'un voyageur spécifique
+// mode d'edition d'un voyageur specifique
 $action = $_GET['action'] ?? '';
 $editing_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
@@ -30,15 +28,15 @@ if ($action === 'edit' && $editing_id > 0) {
         $edit_voyageur = $stmt_edit->fetch(PDO::FETCH_ASSOC);
         
         if (!$edit_voyageur) {
-            $error = "Action non autorisée ou voyageur introuvable.";
+            $error = "Action non autorisee ou voyageur introuvable.";
         }
     } catch (PDOException $e) {
-        $error = "Erreur technique lors du chargement des données.";
+        $error = "Erreur technique lors du chargement des donnees.";
     }
 }
 
 try {
-    // Récupération des skieurs du carnet
+    // recuperation des skieurs du carnet
     $sql = "SELECT c.* FROM client c 
             JOIN gestion_voyageurs gv ON c.id_client = gv.id_client 
             WHERE gv.id_user = :id_user
@@ -48,25 +46,25 @@ try {
     $stmt->execute(['id_user' => $user_id]);
     $voyageurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    $error = "Une erreur technique est survenue lors de la récupération de vos voyageurs.";
+    $error = "Une erreur technique est survenue lors de la recuperation de vos voyageurs.";
 }
 ?>
 
 <div class="carnet-container">
-    <!-- Navigation latérale (Sidebar) -->
+    <!-- sidebar -->
     <div class="carnet-sidebar">
         <?php include __DIR__ . '/../includes/sidebar_client.php'; ?>
     </div>
 
-    <!-- Contenu Principal -->
+    <!-- contenu principal -->
     <div class="carnet-content">
         
         <div class="carnet-header">
             <h2>Ma Tribu — Carnet de Voyageurs</h2>
-            <p>Gérez les membres de votre foyer et vos proches pour préparer et simplifier vos réservations.</p>
+            <p>Gerez les membres de votre foyer et vos proches pour preparer et simplifier vos reservations.</p>
         </div>
 
-        <!-- Alertes -->
+        <!-- alertes -->
         <?php if ($success): ?>
             <div class="alert alert-success"><?php echo h($success); ?></div>
         <?php endif; ?>
@@ -76,21 +74,21 @@ try {
 
         <div class="carnet-grid">
             
-            <!-- BLOC GAUCHE : LISTE DES VOYAGEURS -->
+            <!-- liste des voyageurs -->
             <div class="carnet-list-section">
-                <h3>Membres enregistrés</h3>
+                <h3>Membres enregistres</h3>
                 
                 <?php if (empty($voyageurs)): ?>
                     <div class="empty-state">
-                        <p>Votre carnet de voyageurs est vide. Ajoutez vos proches ci-contre pour pouvoir configurer votre séjour.</p>
+                        <p>Votre carnet de voyageurs est vide. Ajoutez vos proches ci-contre pour pouvoir configurer votre sejour.</p>
                     </div>
                 <?php else: ?>
                     <table class="academic-table">
                         <thead>
                             <tr>
-                                <th>Identité & Contact</th>
+                                <th>Identite & Contact</th>
                                 <th>Niveau</th>
-                                <th>Spécifcations</th>
+                                <th>Specifcations</th>
                                 <th class="text-right">Actions</th>
                             </tr>
                         </thead>
@@ -99,8 +97,8 @@ try {
                                 <tr class="<?php echo ($edit_voyageur && $edit_voyageur['id_client'] === $voy['id_client']) ? 'editing-row' : ''; ?>">
                                     <td>
                                         <span class="skier-name"><?php echo h($voy['nom']) . ' ' . h($voy['prenom']); ?></span>
-                                        <div class="skier-meta">Tél : <?php echo h($voy['num_tel']); ?></div>
-                                        <div class="skier-meta">Né le : <?php echo date_fr($voy['date_naissance']); ?></div>
+                                        <div class="skier-meta">Tel : <?php echo h($voy['num_tel']); ?></div>
+                                        <div class="skier-meta">Ne le : <?php echo date_fr($voy['date_naissance']); ?></div>
                                     </td>
                                     <td>
                                         <span class="badge-level"><?php echo ucfirst(h($voy['niveau_ski'])); ?></span>
@@ -129,7 +127,7 @@ try {
                 <?php endif; ?>
             </div>
 
-            <!-- BLOC DROITE : FORMULAIRE D'AJOUT OU MODIFICATION -->
+            <!-- formulaire d'ajout ou modification -->
             <div class="carnet-form-section">
                 <?php if ($edit_voyageur): ?>
                     <h3 class="form-title edit-mode">Modifier le membre</h3>
@@ -161,7 +159,7 @@ try {
 
 <script>
 function confirmDelete(idClient, fullName) {
-    if (confirm("Êtes-vous sûr de vouloir supprimer " + fullName + " de votre tribu ? Cette action supprimera définitivement sa fiche skieur.")) {
+    if (confirm("Êtes-vous sûr de vouloir supprimer " + fullName + " de votre tribu ? Cette action supprimera definitivement sa fiche skieur.")) {
         window.location.href = "../actions/supprimer_voyageur.php?id=" + idClient;
     }
 }

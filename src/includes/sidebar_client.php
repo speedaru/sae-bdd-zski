@@ -1,11 +1,7 @@
 <?php
-/**
- * Navigation latérale de l'espace client - Structure de tableau classique
- * Emplacement : src/includes/sidebar_client.php
- */
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
-<!-- Liaison de la feuille de style de la navigation client -->
+<!-- liaison de la feuille de style de la navigation client -->
 <link rel="stylesheet" href="/assets/css/sidebar_client.css">
 
 <table class="sidebar-table">

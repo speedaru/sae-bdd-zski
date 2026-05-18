@@ -1,14 +1,9 @@
 <?php
-/**
- * Action PHP - Supprimer Préférence - Zarza-Ski
- * Emplacement : src/actions/supprimer_preference.php
- */
-
 require_once __DIR__ . '/../includes/init.php';
 
 require_login("../index.php");
 
-// Récupère l'URL de redirection si elle existe, sinon retourne à la page par défaut
+// recupere l'url de redirection si elle existe, sinon retourne à la page par defaut
 $redirect_target = isset($_GET['redirect']) ? trim($_GET['redirect']) : '../pages/preferences.php';
 $redirect_target = sanitize_redirect_url($redirect_target);
 $redirect_location = "Location: " . $redirect_target;
@@ -18,13 +13,13 @@ $emetteur  = isset($_GET['id_client']) ? intval($_GET['id_client']) : 0;
 $recepteur = isset($_GET['id_client_1']) ? intval($_GET['id_client_1']) : 0;
 
 if ($emetteur <= 0 || $recepteur <= 0) {
-    $_SESSION['error'] = "Identifiants d'affinité manquants.";
+    $_SESSION['error'] = "Identifiants d'affinite manquants.";
     header($redirect_location);
     exit();
 }
 
 try {
-    // SÉCURITÉ : Vérifier que la relation appartient bien au carnet de l'utilisateur connecté
+    // verifier que la relation appartient bien au carnet de l'utilisateur connecte
     $stmtCheckTribu = $pdo->prepare("
         SELECT COUNT(*) 
         FROM gestion_voyageurs 
@@ -37,19 +32,19 @@ try {
     ]);
 
     if (intval($stmtCheckTribu->fetchColumn()) < 2) {
-        $_SESSION['error'] = "Action non autorisée : Les skieurs de la relation ne vous appartiennent pas.";
+        $_SESSION['error'] = "Action non autorisee : Les skieurs de la relation ne vous appartiennent pas.";
         header($redirect_location);
         exit();
     }
 
-    // SUPPRESSION DE LA LIGNE DANS LA TABLE PREFERENCE
+    // suppression de la ligne dans la table preference
     $stmtDelete = $pdo->prepare("DELETE FROM preference WHERE id_client = :emetteur AND id_client_1 = :recepteur");
     $stmtDelete->execute([
         'emetteur'  => $emetteur,
         'recepteur' => $recepteur
     ]);
 
-    $_SESSION['success'] = "L'affinité a été supprimée de vos préférences.";
+    $_SESSION['success'] = "L'affinite a ete supprimee de vos preferences.";
 
 } catch (PDOException $e) {
     $_SESSION['error'] = "Erreur technique de suppression : " . $e->getMessage();

@@ -1,13 +1,10 @@
 <?php
 /**
- * Page de gestion des préférences de cohabitation - Zarza-Ski
- * Emplacement : src/pages/preferences.php
- * Version épurée, académique et sans framework
+ * page de gestion des préférences de cohabitation
  */
 
 require_once __DIR__ . '/../includes/header.php';
 
-// Protection d'accès
 require_login("../pages/preferences.php");
 
 $user_id = $_SESSION['id_user'];
@@ -24,7 +21,7 @@ $id_emetteur = isset($_GET['id_client']) ? intval($_GET['id_client']) : 0;
 $id_recepteur = isset($_GET['id_client_1']) ? intval($_GET['id_client_1']) : 0;
 
 try {
-    // 1. CHARGEMENT DE TOUS LES VOYAGEURS DU CARNET (Pour alimenter les dropdowns de création)
+    // chargement de tous les voyageurs du carnet
     $stmtVoy = $pdo->prepare("
         SELECT c.* FROM client c
         JOIN gestion_voyageurs gv ON c.id_client = gv.id_client
@@ -34,7 +31,7 @@ try {
     $stmtVoy->execute(['id_user' => $user_id]);
     $voyageurs = $stmtVoy->fetchAll(PDO::FETCH_ASSOC);
 
-    // 2. CHARGEMENT DE LA PRÉFÉRENCE SÉLECTIONNÉE POUR ÉDITION
+    // chargement de la preference sélectionnee pour edition
     if ($action === 'edit' && $id_emetteur > 0 && $id_recepteur > 0) {
         $stmt_edit = $pdo->prepare("
             SELECT p.*,
@@ -60,7 +57,7 @@ try {
         }
     }
 
-    // 3. CHARGEMENT DES RELATIONS EXISTANTES (Double contrôle d'appartenance au carnet)
+    // chargement des relations existantes
     $sql_list = "
         SELECT 
             p.id_client,
@@ -88,12 +85,12 @@ try {
 ?>
 
 <div class="preferences-container">
-    <!-- Barre de navigation latérale de l'Espace Client -->
+    <!-- barre de navigation -->
     <div class="preferences-sidebar">
         <?php include __DIR__ . '/../includes/sidebar_client.php'; ?>
     </div>
 
-    <!-- Contenu Principal -->
+    <!-- contenu principal -->
     <div class="preferences-content">
         
         <div class="preferences-header">
@@ -101,7 +98,7 @@ try {
             <p>Déterminez les affinités ou incompatibilités de cohabitation entre les skieurs de votre foyer pour simplifier la répartition.</p>
         </div>
 
-        <!-- Alertes d'état -->
+        <!-- alertes d'etat -->
         <?php if ($success): ?>
             <div class="alert alert-success"><?php echo h($success); ?></div>
         <?php endif; ?>
@@ -111,7 +108,7 @@ try {
 
         <div class="preferences-grid">
             
-            <!-- BLOC GAUCHE : LISTE DES RELATIONS -->
+            <!-- liste des relations -->
             <div class="preferences-list-section">
                 <h3>Affinités et liaisons configurées</h3>
                 
@@ -166,7 +163,7 @@ try {
                 <?php endif; ?>
             </div>
 
-            <!-- BLOC DROITE : FORMULAIRE DYNAMIQUE -->
+            <!-- formulaire dynamique -->
             <div class="preferences-form-section">
                 <?php if ($pref_edit): ?>
                     <h3 class="form-title edit-mode">Modifier l'affinité</h3>

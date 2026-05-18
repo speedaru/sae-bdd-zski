@@ -1,8 +1,6 @@
 <?php
 /**
- * Page de statistiques pour la direction - Zarza-Ski
- * Emplacement : src/pages/vues.php
- * S'appuie de manière stricte sur les colonnes des vues PostgreSQL.
+ * page de statistiques pour la direction
  */
 
 require_once __DIR__ . '/../includes/header.php';
@@ -15,7 +13,7 @@ $results = [];
 
 try {
     if ($tab === 'frequentation') {
-        // On interroge directement la vue de fréquentation créée en BDD
+        // interroger directement la vue de frequentation
         $sql = "SELECT semaine_debut, semaine_fin, total_skieurs_pistes 
                         FROM vue_frequentation_semaine 
                         ORDER BY semaine_debut ASC";
@@ -27,7 +25,7 @@ try {
         $date_semaine = isset($_POST['date_semaine']) ? trim($_POST['date_semaine']) : null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $num_chambre && $date_semaine) {
-            // On fait une recherche chirurgicale sur la vue des détails des occupants
+            // recherche sur la vue des details des occupants
             $sql = "SELECT client_nom, client_prenom, type_formule 
                     FROM vue_details_occupants_chambre 
                     WHERE num_chambre = :chambre AND semaine_debut = :date";
@@ -40,7 +38,7 @@ try {
         }
 
     } elseif ($tab === 'occupants') {
-        // On récupère tout le contenu de la vue des occupants
+        // recuperer tout le contenu de la vue des occupants
         $sql = "SELECT semaine_debut, num_chambre, batiment, etage, client_nom, client_prenom, type_formule 
                 FROM vue_details_occupants_chambre 
                 ORDER BY semaine_debut ASC, num_chambre ASC, client_nom ASC";
@@ -52,7 +50,6 @@ try {
 }
 ?>
 
-<!-- Liaison à la feuille de style simplifiée externe -->
 <link rel="stylesheet" href="../assets/css/vues.css">
 
 <div class="report-container">
@@ -66,10 +63,10 @@ try {
         <div class="alert-error"><?php echo h($error); ?></div>
     <?php endif; ?>
 
-    <!-- Navigation horizontale épurée par séparateurs de texte -->
+    <!-- navigation horizontale -->
     <nav class="tab-navigation">
         <a href="vues.php?tab=frequentation" class="tab-link <?php echo $tab === 'frequentation' ? 'active-tab' : ''; ?>">
-            Fréquentation Hebdomadaire
+            Frequentation Hebdomadaire
         </a>
         <span class="tab-separator">|</span>
         <a href="vues.php?tab=recherche" class="tab-link <?php echo $tab === 'recherche' ? 'active-tab' : ''; ?>">
@@ -83,21 +80,21 @@ try {
 
     <div class="tab-content-box">
 
-        <!-- ================= ONGLET : FRÉQUENTATION ================= -->
+        <!-- frequentation -->
         <?php if ($tab === 'frequentation'): ?>
             <div class="tab-pane">
-                <h3>Fréquentation hebdomadaire</h3>
-                <p class="description-text">Nombre de skieurs présents par semaine de location.</p>
+                <h3>Frequentation hebdomadaire</h3>
+                <p class="description-text">Nombre de skieurs presents par semaine de location.</p>
                 
                 <?php if (empty($results)): ?>
-                    <p class="no-data-msg">Aucune donnée disponible.</p>
+                    <p class="no-data-msg">Aucune donnee disponible.</p>
                 <?php else: ?>
                     <table class="report-table">
                         <thead>
                             <tr>
-                                <th>Semaine de début</th>
+                                <th>Semaine de debut</th>
                                 <th>Semaine de fin</th>
-                                <th>Nombre de personnes présentes (total_skieurs_pistes)</th>
+                                <th>Nombre de personnes presentes (total_skieurs_pistes)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -113,20 +110,20 @@ try {
                 <?php endif; ?>
             </div>
 
-        <!-- ================= ONGLET : RECHERCHE PAR CHAMBRE ================= -->
+        <!-- onglet recherche par chambre -->
         <?php elseif ($tab === 'recherche'): ?>
             <div class="tab-pane">
                 <h3>Recherche d'occupants</h3>
-                <p class="description-text">Voir qui occupe une chambre a une date précise.</p>
+                <p class="description-text">Voir qui occupe une chambre a une date precise.</p>
                 
                 <form method="POST" action="vues.php?tab=recherche" class="search-form">
                     <div class="form-group-row">
                         <div class="input-item">
-                            <label>Numéro de chambre :</label>
+                            <label>Numero de chambre :</label>
                             <input type="number" name="num_chambre" placeholder="Ex: 227" value="<?php echo isset($_POST['num_chambre']) ? intval($_POST['num_chambre']) : ''; ?>" required>
                         </div>
                         <div class="input-item">
-                            <label>Date de début (Dimanche) :</label>
+                            <label>Date de debut (Dimanche) :</label>
                             <input type="date" name="date_semaine" value="<?php echo isset($_POST['date_semaine']) ? h($_POST['date_semaine']) : ''; ?>" required>
                         </div>
                         <button type="submit" class="btn-search-submit">Lancer l'interrogation</button>
@@ -134,7 +131,7 @@ try {
                 </form>
 
                 <?php if ($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
-                    <h4>Résultats de recherche :</h4>
+                    <h4>Resultats de recherche :</h4>
                     
                     <?php if (empty($results)): ?>
                         <p class="no-data-msg">Aucun occupant n'occupe cette chambre à cette date.</p>
@@ -142,7 +139,7 @@ try {
                         <table class="report-table">
                             <thead>
                                 <tr>
-                                    <th>Prénom</th>
+                                    <th>Prenom</th>
                                     <th>Nom</th>
                                     <th>Formule</th>
                                 </tr>
@@ -161,14 +158,14 @@ try {
                 <?php endif; ?>
             </div>
 
-        <!-- ================= ONGLET : OCCUPANTS COMPLETS ================= -->
+        <!-- onglet occupants complets -->
         <?php elseif ($tab === 'occupants'): ?>
             <div class="tab-pane">
                 <h3>Registre complet des occupants</h3>
                 <p class="description-text">Tableau d'affectation globale.</p>
 
                 <?php if (empty($results)): ?>
-                    <p class="no-data-msg">Aucun enregistrement d'occupation trouvé.</p>
+                    <p class="no-data-msg">Aucun enregistrement d'occupation trouve.</p>
                 <?php else: ?>
                     <table class="report-table">
                         <thead>
@@ -176,9 +173,9 @@ try {
                                 <th>Date Semaine</th>
                                 <th>N° Chambre</th>
                                 <th>Bâtiment</th>
-                                <th>Étage</th>
+                                <th>etage</th>
                                 <th>Nom</th>
-                                <th>Prénom</th>
+                                <th>Prenom</th>
                                 <th>Formule</th>
                             </tr>
                         </thead>
@@ -188,7 +185,7 @@ try {
                                     <td><?php echo date_fr($row['semaine_debut']); ?></td>
                                     <td>Chambre <?php echo intval($row['num_chambre']); ?></td>
                                     <td>Bâtiment <?php echo h($row['batiment']); ?></td>
-                                    <td>Étage <?php echo intval($row['etage']); ?></td>
+                                    <td>etage <?php echo intval($row['etage']); ?></td>
                                     <td><?php echo h($row['client_nom']); ?></td>
                                     <td><?php echo h($row['client_prenom']); ?></td>
                                     <td><?php echo h($row['type_formule']); ?></td>

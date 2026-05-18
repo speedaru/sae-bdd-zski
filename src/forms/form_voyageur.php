@@ -1,8 +1,7 @@
 <?php
 /**
- * Partial : Formulaire d'ajout/édition d'un voyageur - Zarza-Ski
- * Emplacement : src/includes/forms/form_voyageur.php
- * S'adapte de manière DRY aux contextes d'ajout et de modification.
+ * formulaire d'ajout/édition d'un voyageur
+ * s'adapte aux contextes d'ajout et de modification.
  */
 
 $v = $voyageur ?? [
@@ -10,17 +9,15 @@ $v = $voyageur ?? [
     'niveau_ski' => 'débutant', 'taille' => '', 'poids' => '', 'pointure' => ''
 ];
 ?>
-<!-- Liaison de la feuille de style spécifique du formulaire -->
 <link rel="stylesheet" href="/assets/css/form_voyageur.css">
 
 <form action="<?php echo $form_action; ?>" method="POST" class="academic-form">
     
     <?php if (isset($v['id_client']) && $v['id_client'] > 0): ?>
-        <!-- Identifiant masqué indispensable pour l'UPDATE SQL -->
         <input type="hidden" name="id_client" value="<?php echo h($v['id_client']); ?>">
     <?php endif; ?>
 
-    <!-- Ligne : Nom et Prénom -->
+    <!-- nom, prénom -->
     <div class="form-row split-2">
         <div class="form-field">
             <label for="f_nom">Nom</label>
@@ -32,7 +29,7 @@ $v = $voyageur ?? [
         </div>
     </div>
 
-    <!-- Ligne : Adresse de contact -->
+    <!-- adresse contact -->
     <div class="form-field">
         <label for="f_adresse">Adresse</label>
         <?php 
@@ -42,7 +39,7 @@ $v = $voyageur ?? [
         <input type="text" name="adresse" id="f_adresse" placeholder="Ex: 12 Rue de la Montagne, 75000 Paris" value="<?php echo h($display_addr); ?>" required>
     </div>
 
-    <!-- Ligne : Téléphone et Date de naissance -->
+    <!-- num tel et date naissance -->
     <div class="form-row split-2">
         <div class="form-field">
             <label for="f_num_tel">Téléphone</label>
@@ -54,7 +51,7 @@ $v = $voyageur ?? [
         </div>
     </div>
 
-    <!-- Ligne : Niveau de ski (Plein écran) -->
+    <!-- niveau ski -->
     <div class="form-field">
         <label for="f_niveau_ski">Niveau de ski</label>
         <select name="niveau_ski" id="f_niveau_ski">
@@ -68,7 +65,7 @@ $v = $voyageur ?? [
         </select>
     </div>
 
-    <!-- Ligne : Caractéristiques physiques de location (Taille, Poids, Pointure) -->
+    <!-- taille, poids, pointure -->
     <div class="form-row split-3">
         <div class="form-field">
             <label for="f_taille">Taille (m)</label>
@@ -84,7 +81,7 @@ $v = $voyageur ?? [
         </div>
     </div>
 
-    <!-- Ligne : Actions (Annuler / Soumettre) -->
+    <!-- actions annuler / soumettre -->
     <div class="form-actions">
         <?php if (isset($cancel_label)) {
             echo "<a href=\"carnet.php\" class=\"btn-cancel\">" . $cancel_label . "</a>";

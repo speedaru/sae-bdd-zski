@@ -1,9 +1,4 @@
 <?php
-/**
- * Action PHP - Suppression de groupe - Zarza-Ski
- * Emplacement : src/actions/supprimer_groupe.php
- */
-
 require_once __DIR__ . '/../includes/init.php';
 
 require_login("../index.php");
@@ -18,7 +13,7 @@ if (empty($nom_groupe)) {
 }
 
 try {
-    // SÉCURITÉ : Vérifier que l'utilisateur connecté possède bien ce groupe
+    // verifier que l'utilisateur connecte possede bien ce groupe
     $stmtCheck = $pdo->prepare("SELECT 1 FROM groupe WHERE nom_groupe = :nom AND id_user = :id_user");
     $stmtCheck->execute([
         'nom' => $nom_groupe,
@@ -26,19 +21,19 @@ try {
     ]);
 
     if (!$stmtCheck->fetch()) {
-        $_SESSION['error'] = "Action non autorisée : ce groupe ne vous appartient pas.";
+        $_SESSION['error'] = "Action non autorisee : ce groupe ne vous appartient pas.";
         header("Location: ../pages/groupes.php");
         exit();
     }
 
-    // Suppression physique (Cascade PostgreSQL configurée sur ON DELETE CASCADE dans dump1.sql)
+    // suppression physique cascade postgresql configuree sur on delete cascade
     $stmtDelete = $pdo->prepare("DELETE FROM groupe WHERE nom_groupe = :nom AND id_user = :id_user");
     $stmtDelete->execute([
         'nom' => $nom_groupe,
         'id_user' => $user_id
     ]);
 
-    $_SESSION['success'] = "Le groupe '" . h($nom_groupe) . "' et toutes ses dépendances ont été supprimés.";
+    $_SESSION['success'] = "Le groupe '" . h($nom_groupe) . "' et toutes ses dependances ont ete supprimes.";
 
 } catch (PDOException $e) {
     $_SESSION['error'] = "Erreur technique lors de la suppression : " . $e->getMessage();

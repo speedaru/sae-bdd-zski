@@ -1,16 +1,13 @@
 <?php
 /**
- * Partial : Formulaire d'ajout/édition de groupe - Zarza-Ski
- * Emplacement : src/includes/forms/form_groupe.php
+ * formulaire d'ajout/édition de groupe
  */
 $g_name = isset($groupe) ? $groupe['nom_groupe'] : '';
 ?>
-<!-- Liaison de la feuille de style spécifique du formulaire -->
 <link rel="stylesheet" href="/assets/css/form_groupe.css">
 
 <form action="<?php echo $form_action; ?>" method="POST" class="academic-form">
     <?php if (isset($groupe)): ?>
-        <!-- Clé d'origine masquée indispensable pour localiser le groupe lors du UPDATE SQL -->
         <input type="hidden" name="ancien_nom_groupe" value="<?php echo h($groupe['nom_groupe']); ?>">
     <?php endif; ?>
     

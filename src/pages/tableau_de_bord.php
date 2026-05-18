@@ -1,8 +1,6 @@
 <?php
 /**
- * Accueil Espace Client - Zarza-Ski
- * Version épurée et académique
- * Emplacement : src/pages/tableau_de_bord.php
+ * accueil espace client
  */
 require_once __DIR__ . '/../includes/header.php';
 
@@ -10,12 +8,11 @@ require_login("../pages/espace_client.php");
 ?>
 
 <div class="dashboard-container">
-    <!-- Section de navigation de gauche (Sidebar) -->
     <div class="dashboard-sidebar">
         <?php include __DIR__ . '/../includes/sidebar_client.php'; ?>
     </div>
 
-    <!-- Section de contenu principale de droite -->
+    <!-- contenu principale -->
     <div class="dashboard-content">
         <div class="dashboard-welcome-box">
             <h2>Bienvenue dans votre espace, <?php echo htmlspecialchars($_SESSION['username']); ?> !</h2>
@@ -23,14 +20,14 @@ require_login("../pages/espace_client.php");
         </div>
 
         <div class="dashboard-grid">
-            <!-- Option Fiche Skieur / Profil -->
+            <!-- option fiche skieur / profil -->
             <div class="dashboard-option-card">
                 <h3>Mon Profil Skieur</h3>
                 <p>Gérez vos informations personnelles, vos mensurations de sécurité et votre niveau de ski.</p>
                 <a href="profil.php" class="btn-action">Modifier mon profil</a>
             </div>
             
-            <!-- Option Historique des Séjours -->
+            <!-- option historique des séjours -->
             <div class="dashboard-option-card">
                 <h3>Mes Séjours</h3>
                 <p>Consultez l'historique de vos réservations ou modifiez vos préférences d'hébergement.</p>
@@ -38,7 +35,7 @@ require_login("../pages/espace_client.php");
             </div>
         </div>
 
-        <!-- Alerte d'avertissement si le profil skieur est manquant -->
+        <!-- alerte d'avertissement si le profil skieur est manquant -->
         <?php if (!isset($_SESSION['id_client']) || empty($_SESSION['id_client'])): ?>
             <div class="dashboard-alert">
                 <strong>Attention :</strong> Votre profil skieur n'est pas encore complété. 

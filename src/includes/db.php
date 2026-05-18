@@ -2,7 +2,7 @@
 $host = "localhost";
 $port = "5432";
 $db   = "sae_ski_db";
-$user = "postgres"; // Votre utilisateur Postgres
+$user = "postgres";
 $pass = "zarza2026";
 
 try {

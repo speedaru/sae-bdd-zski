@@ -1,9 +1,4 @@
 <?php
-/**
- * Action PHP - Ajouter une chambre au panier
- * Emplacement : src/actions/ajouter_panier.php
- */
-
 require_once __DIR__ . '/../includes/init.php';
 
 require_login(add_current_url_with_args());
@@ -21,7 +16,7 @@ if ($id_chambre <= 0) {
 }
 
 try {
-    // SÉCURITÉ : Vérifier si la chambre existe bien en base
+    // verifier si la chambre existe bien en base
     $stmt = $pdo->prepare("SELECT 1 FROM chambre WHERE num_chambre = ?");
     $stmt->execute([$id_chambre]);
     if (!$stmt->fetch()) {
@@ -30,25 +25,23 @@ try {
         exit();
     }
 
-    // Initialisation du panier en session s'il n'existe pas
+    // initialisation du panier s'il existe pas
     if (!isset($_SESSION['panier']) || !is_array($_SESSION['panier'])) {
         $_SESSION['panier'] = [];
     }
 
-    // Ajout de la chambre si elle n'est pas déjà présente
+    // ajout de la chambre si elle est pas deja presente
     if (!in_array($id_chambre, $_SESSION['panier'])) {
         $_SESSION['panier'][] = $id_chambre;
-        $_SESSION['success'] = "Chambre n°{$id_chambre} ajoutée avec succès à votre sélection.";
+        $_SESSION['success'] = "Chambre n°{$id_chambre} ajoutee avec succes à votre selection.";
     } else {
-        $_SESSION['info'] = "La chambre n°{$id_chambre} est déjà dans votre panier.";
+        $_SESSION['info'] = "La chambre n°{$id_chambre} est dejà dans votre panier.";
     }
 
 } catch (PDOException $e) {
     $_SESSION['error'] = "Une erreur technique est survenue.";
 }
 
-//// Redirection vers la page précédente ou par défaut vers la recherche
-//$referer = $_SERVER['HTTP_REFERER'] ?? '../pages/recherche.php';
-//header("Location: " . $referer);
+// redirection vers la page precedente
 header("Location: " . $redirect_target);
 exit();

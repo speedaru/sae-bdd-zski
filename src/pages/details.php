@@ -16,7 +16,7 @@ if ($chambre == false) {
     <link rel="stylesheet" href="../assets/css/details.css">
     <div class="error-wrapper">
         <h1 class="error-title">ERREUR : La chambre n'existe pas !</h1>
-        <p class="error-text">Le logement demandé est introuvable dans la base de données de notre station.</p>
+        <p class="error-text">Le logement demande est introuvable dans la base de donnees de notre station.</p>
         <p><a href="recherche.php" class="btn-defaut">Retourner à la recherche</a></p>
     </div>
     <?php
@@ -37,22 +37,22 @@ $is_in_panier = in_array($id_chambre, $panier);
     </p>
 
     <div class="titre-page">
-        <h1>Fiche de présentation : Chambre n°<?php echo $chambre['num_chambre']; ?></h1>
+        <h1>Fiche de presentation : Chambre n°<?php echo $chambre['num_chambre']; ?></h1>
         <div class="barre-separation"></div>
     </div>
 
     <table class="table-presentation">
         <tr>
             <td class="colonne-technique">
-                <h3 class="titre-section blue-bg">Caractéristiques techniques</h3>
+                <h3 class="titre-section blue-bg">Caracteristiques techniques</h3>
                 <div class="tech-info-group">
                     <p><strong>Bâtiment :</strong> Bâtiment <?php echo htmlspecialchars($chambre['batiment']); ?></p>
-                    <p><strong>Étage :</strong> Niveau <?php echo $chambre['etage']; ?></p>
+                    <p><strong>etage :</strong> Niveau <?php echo $chambre['etage']; ?></p>
                     <p><strong>Superficie :</strong> <?php echo $chambre['superficie']; ?> m²</p>
-                    <p><strong>Capacité d'accueil :</strong> <?php echo $chambre['nb_lits']; ?> couchages individuels</p>
+                    <p><strong>Capacite d'accueil :</strong> <?php echo $chambre['nb_lits']; ?> couchages individuels</p>
                     <p><strong>Exposition & Panorama :</strong> Vue imprenable sur <?php echo htmlspecialchars($chambre['type_vue']); ?></p>
                     <p>
-                        <strong>Présence d'un balcon extérieur :</strong> 
+                        <strong>Presence d'un balcon exterieur :</strong> 
                         <strong><?php echo $chambre['balcon_present'] ? 'Oui' : 'Non'; ?></strong>
                     </p>
                 </div>
@@ -76,7 +76,7 @@ $is_in_panier = in_array($id_chambre, $panier);
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <p class="remise-notice">Remises familles appliquées au moment de la validation finale.</p>
+                <p class="remise-notice">Remises familles appliquees au moment de la validation finale.</p>
             </td>
         </tr>
     </table>
@@ -88,14 +88,14 @@ $is_in_panier = in_array($id_chambre, $panier);
         
         <?php if ($is_in_panier): ?>
             <a href="../actions/supprimer_panier.php?id=<?php echo $id_chambre; ?>" class="btn-link">
-                <button class="btn-retirer">Retirer de ma sélection</button>
+                <button class="btn-retirer">Retirer de ma selection</button>
             </a>
             <a href="reservation.php" class="btn-link">
-                <button class="btn-valider">Finaliser ma réservation &rarr;</button>
+                <button class="btn-valider">Finaliser ma reservation &rarr;</button>
             </a>
         <?php else: ?>
         <a href="../actions/ajouter_panier.php?id=<?php echo $id_chambre; ?>&redirect=<?php echo urlencode('../pages/details.php?id=' . $id_chambre); ?>" class="btn-link">
-            <button class="btn-ajouter">[+] Ajouter à ma sélection</button>
+            <button class="btn-ajouter">[+] Ajouter à ma selection</button>
         </a>
         <?php endif; ?>
     </div>
