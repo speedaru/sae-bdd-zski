@@ -167,6 +167,58 @@
     color: #1a365d;
 }
 
+/* RESUME MATHÉMATIQUE TRÈS CONCIS (MODIFIÉ) */
+.math-summary {
+    margin-top: 15px;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e0;
+    padding: 12px;
+}
+
+.math-summary-title {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #1a365d;
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.room-math-block {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #cbd5e0;
+}
+
+.room-math-block:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.room-math-name {
+    margin: 0 0 4px 0;
+    font-size: 0.8rem;
+    color: #2d3748;
+}
+
+.math-list {
+    margin: 0;
+    padding-left: 14px;
+    color: #4a5568;
+    font-size: 0.8rem;
+    list-style-type: none;
+}
+
+.math-list li {
+    margin-bottom: 2px;
+}
+
+.room-subtotal {
+    font-weight: bold;
+    color: #1a365d;
+    margin-top: 4px;
+}
+
 /* Liens en bas de page */
 .more-actions {
     margin-top: 20px;
@@ -187,7 +239,7 @@
 /* État vide */
 .empty-state {
     padding: 40px;
-    border: 1px dashed #333333;
+    border: 1px solid #333333;
     background-color: #fafafa;
     text-align: center;
 }
