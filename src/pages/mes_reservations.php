@@ -39,6 +39,8 @@ try {
 }
 ?>
 
+<link rel="stylesheet" href="../assets/css/mes_reservations.css">
+
 <div class="reservations-container">
     <!-- menu client -->
     <div class="reservations-sidebar">
@@ -103,19 +105,35 @@ try {
                                                 ch.etage,
                                                 c.nom AS client_nom,
                                                 c.prenom AS client_prenom,
+                                                c.date_naissance,
                                                 re.type_formule,
-                                                re.formule_prix_final
+                                                re.formule_prix_final,
+                                                f.prix_base
                                             FROM reserver re
                                             INNER JOIN client c ON re.id_client = c.id_client
                                             INNER JOIN chambre ch ON re.num_chambre = ch.num_chambre
+                                            INNER JOIN formule f ON re.type_formule = f.type_formule
                                             WHERE re.id_reservation = :id_reservation
                                             ORDER BY re.num_chambre, c.nom, c.prenom";
 
                                 $stmt_sub = $pdo->prepare($sql_sub);
                                 $stmt_sub->execute(['id_reservation' => $res['id_reservation']]);
                                 $occupants = $stmt_sub->fetchAll(PDO::FETCH_ASSOC);
+
+                                // recuperation des facturations par chambre
+                                $stmt_rooms = $pdo->prepare("
+                                    SELECT f.num_chambre, f.montant_total, ch.nb_lits 
+                                    FROM facturation f 
+                                    INNER JOIN chambre ch ON f.num_chambre = ch.num_chambre 
+                                    WHERE f.id_reservation = :id_reservation
+                                    ORDER BY f.num_chambre ASC
+                                ");
+                                $stmt_rooms->execute(['id_reservation' => $res['id_reservation']]);
+                                $rooms_billed = $stmt_rooms->fetchAll(PDO::FETCH_ASSOC);
+
                             } catch (PDOException $e) {
                                 $occupants = [];
+                                $rooms_billed = [];
                             }
                             ?>
 
@@ -147,6 +165,68 @@ try {
                                         <?php endforeach; ?>
                                     </tbody>
                                 </table>
+
+                                <!-- resume par chambre -->
+                                <div class="math-summary">
+                                    <p class="math-summary-title"><strong>Calculs de facturation par chambre :</strong></p>
+                                    
+                                    <?php foreach ($rooms_billed as $room): 
+                                        $num_ch = $room['num_chambre'];
+                                        $nb_lits = $room['nb_lits'];
+                                        $total_chambre = $room['montant_total'];
+
+                                        // filtrer les skieurs de la chambre
+                                        $room_occupants = array_filter($occupants, function($o) use ($num_ch) {
+                                            return $o['num_chambre'] == $num_ch;
+                                        });
+
+                                        $adulte_count = 0;
+                                        $enfant_count = 0;
+                                        $bebe_count = 0;
+                                        $formules_tarifs = [];
+
+                                        foreach ($room_occupants as $occ) {
+                                            $ref_date = new DateTime($res['date_debut']);
+                                            $birthdate = new DateTime($occ['date_naissance']);
+                                            $age = $ref_date->diff($birthdate)->y;
+
+                                            if ($age < 2) {
+                                                $bebe_count++;
+                                            } elseif ($age < 12) {
+                                                $enfant_count++;
+                                            } else {
+                                                $adulte_count++;
+                                            }
+
+                                            // on regroupe par formule pour résumer simplement les tarifs
+                                            $tarif_detail = $occ['type_formule'] . " (" . ($age < 2 ? 'Bébé' : ($age < 12 ? 'Enfant' : 'Adulte')) . ")";
+                                            if (!isset($formules_tarifs[$tarif_detail])) {
+                                                $formules_tarifs[$tarif_detail] = ['count' => 0, 'prix' => $occ['formule_prix_final']];
+                                            }
+                                            $formules_tarifs[$tarif_detail]['count']++;
+                                        }
+
+                                        $lits_occupes = $adulte_count + $enfant_count;
+                                        $lits_vides = max(0, $nb_lits - $lits_occupes);
+                                        $amende_lits_vides = $lits_vides * 150;
+                                    ?>
+                                        <div class="room-math-block">
+                                            <p class="room-math-name"><strong>Chambre n°<?php echo $num_ch; ?></strong> (<?php echo $nb_lits; ?> lits) :</p>
+                                            <ul class="math-list">
+                                                <?php foreach ($formules_tarifs as $formule_label => $info): ?>
+                                                    <li>• <?php echo $info['count']; ?> x <?php echo $formule_label; ?> : <?php echo $info['count'] * $info['prix']; ?> €</li>
+                                                <?php endforeach; ?>
+                                                <?php if ($bebe_count > 0 || $enfant_count > 0): ?>
+                                                    <li>• Remises : <?php if($enfant_count > 0) echo "Enfant -20% (x".$enfant_count.")"; ?> <?php if($bebe_count > 0) echo "| Bébé Gratuit (x".$bebe_count.")"; ?></li>
+                                                <?php endif; ?>
+                                                <?php if ($lits_vides > 0): ?>
+                                                    <li>• Pénalité : <?php echo $lits_vides; ?> lit(s) vide(s) x 150 € = <?php echo $amende_lits_vides; ?> €</li>
+                                                <?php endif; ?>
+                                                <li class="room-subtotal">Total Chambre : <?php echo number_format($total_chambre, 0, ',', ' '); ?> €</li>
+                                            </ul>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
                             <?php endif; ?>
                         </div>
 
