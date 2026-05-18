@@ -117,6 +117,35 @@ CREATE TABLE preference (
 );
 
 -- ==========================================================
+-- 6. CRÉATION DES VUES DEMANDÉES PAR LE SUJET (PAGE 2)
+-- ==========================================================
+
+-- VUE 1 : Nombre de personnes présentes par semaine
+CREATE OR REPLACE VIEW vue_frequentation_semaine AS
+SELECT 
+    r.date_debut AS semaine_debut,
+    r.date_fin AS semaine_fin,
+    COUNT(re.id_client) AS total_skieurs_pistes
+FROM reservation r
+LEFT JOIN reserver re ON r.id_reservation = re.id_reservation
+GROUP BY r.id_reservation, r.date_debut, r.date_fin;
+
+-- VUE 2 & 3 : Liste complète et détails des occupants par chambre et par semaine
+CREATE OR REPLACE VIEW vue_details_occupants_chambre AS
+SELECT 
+    r.date_debut AS semaine_debut, 
+    re.num_chambre, 
+    ch.batiment, 
+    ch.etage, 
+    c.nom AS client_nom, 
+    c.prenom AS client_prenom, 
+    re.type_formule 
+FROM reserver re
+INNER JOIN reservation r ON re.id_reservation = r.id_reservation
+INNER JOIN client c ON re.id_client = c.id_client
+INNER JOIN chambre ch ON re.num_chambre = ch.num_chambre;
+
+-- ==========================================================
 -- 5. JEU D'ESSAI RÉVISÉ
 -- ==========================================================
 

@@ -7,7 +7,7 @@
 
 require_once __DIR__ . '/../includes/header.php';
 
-require_role('gestionnaire');
+require_role('gestionnaire', "../pages/vues.php");
 
 $tab = $_GET['tab'] ?? 'frequentation';
 $error = null;
@@ -15,15 +15,10 @@ $results = [];
 
 try {
     if ($tab === 'frequentation') {
-        // 1. Nombre de personnes présentes par semaine (Jointure réservation -> réserver)
-        $sql = "SELECT 
-                    r.date_debut AS semaine_debut,
-                    r.date_fin AS semaine_fin,
-                    COUNT(re.id_client) AS total_skieurs_pistes
-                FROM reservation r
-                LEFT JOIN reserver re ON r.id_reservation = re.id_reservation
-                GROUP BY r.id_reservation, r.date_debut, r.date_fin
-                ORDER BY r.date_debut ASC";
+        // On interroge directement la vue de fréquentation créée en BDD
+        $sql = "SELECT semaine_debut, semaine_fin, total_skieurs_pistes 
+                        FROM vue_frequentation_semaine 
+                        ORDER BY semaine_debut ASC";
         $stmt = $pdo->query($sql);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -32,15 +27,10 @@ try {
         $date_semaine = isset($_POST['date_semaine']) ? trim($_POST['date_semaine']) : null;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $num_chambre && $date_semaine) {
-            // 2. Recherche des occupants d'une chambre pour une date précise
-            $sql = "SELECT 
-                        c.nom AS client_nom, 
-                        c.prenom AS client_prenom, 
-                        re.type_formule 
-                    FROM reserver re
-                    INNER JOIN client c ON re.id_client = c.id_client
-                    INNER JOIN reservation r ON re.id_reservation = r.id_reservation
-                    WHERE re.num_chambre = :chambre AND r.date_debut = :date";
+            // On fait une recherche chirurgicale sur la vue des détails des occupants
+            $sql = "SELECT client_nom, client_prenom, type_formule 
+                    FROM vue_details_occupants_chambre 
+                    WHERE num_chambre = :chambre AND semaine_debut = :date";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 'chambre' => $num_chambre,
@@ -50,20 +40,10 @@ try {
         }
 
     } elseif ($tab === 'occupants') {
-        // 3. Liste complète et globale de tous les occupants de toutes les chambres
-        $sql = "SELECT 
-                    r.date_debut AS semaine_debut, 
-                    re.num_chambre, 
-                    ch.batiment, 
-                    ch.etage, 
-                    c.nom AS client_nom, 
-                    c.prenom AS client_prenom, 
-                    re.type_formule 
-                FROM reserver re
-                INNER JOIN reservation r ON re.id_reservation = r.id_reservation
-                INNER JOIN client c ON re.id_client = c.id_client
-                INNER JOIN chambre ch ON re.num_chambre = ch.num_chambre
-                ORDER BY r.date_debut ASC, re.num_chambre ASC, c.nom ASC";
+        // On récupère tout le contenu de la vue des occupants
+        $sql = "SELECT semaine_debut, num_chambre, batiment, etage, client_nom, client_prenom, type_formule 
+                FROM vue_details_occupants_chambre 
+                ORDER BY semaine_debut ASC, num_chambre ASC, client_nom ASC";
         $stmt = $pdo->query($sql);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

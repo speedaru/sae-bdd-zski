@@ -30,7 +30,7 @@ function require_role($required_role, $redirect_path = "../index.php") {
     // 1. On vérifie d'abord si l'utilisateur est connecté
     if (!isset($_SESSION['id_user']) || !isset($_SESSION['role'])) {
         $_SESSION['error'] = "Veuillez vous connecter pour accéder à cette page.";
-        header("Location: ../auth/login.php");
+        header("Location: ../auth/login.php?redirect=" . urlencode(add_current_args($redirect_path)));
         exit;
     }
 

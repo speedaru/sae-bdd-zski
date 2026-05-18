@@ -19,11 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->beginTransaction();
 
             $sql1 = "INSERT INTO client (nom, prenom, adresse, num_tel, niveau_ski, taille, poids, pointure, date_naissance) 
-                     VALUES (?, ?, 'À renseigner', '0000000000', 'débutant', 0, 0, 0, '2000-01-01')";
+                     VALUES (?, ?, 'À renseigner', '0000000000', 'débutant', 0, 0, 0, '2000-01-01')
+                     RETURNING id_client";
             $q1 = $pdo->prepare($sql1);
             $q1->execute([$nom, $prenom]);
 
-            $id = $pdo->lastInsertId();
+            $id = $q1->fetchColumn();
 
             $hash = password_hash($p, PASSWORD_DEFAULT);
             $sql2 = "INSERT INTO compte_utilisateur (username, mdp_hash, role, id_client) 
@@ -42,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($e->getCode() === '23505') {
                 $err = "Ce nom d'utilisateur est déjà utilisé.";
             } else {
-                $err = "Erreur technique lors de l'inscription.";
+                $err = "Erreur technique lors de l'inscription. Error " . $e->getCode();
             }
         }
     }
