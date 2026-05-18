@@ -1,0 +1,239 @@
+/**
+ * Zarza-Ski - Styles épurés pour l'en-tête (Header)
+ * Emplacement : src/assets/css/header.css
+ */
+
+.academic-header {
+    background-color: #222222; /* Ton sombre unifié avec le footer */
+    border-bottom: 1px solid #444444;
+    color: #ffffff;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+/* Regroupement gauche : Logo + Navigation */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.header-brand {
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: #90cdf4; /* Bleu clair contrastant pour fond sombre */
+    white-space: nowrap;
+}
+
+.header-brand:hover {
+    color: #ffffff;
+}
+
+.header-nav-container {
+    display: flex;
+}
+
+.header-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.header-nav-link {
+    color: #cccccc;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.95rem;
+    padding: 4px 0;
+}
+
+.header-nav-link:hover,
+.header-nav-link.active {
+    color: #ffffff;
+    border-bottom: 2px solid #90cdf4;
+}
+
+/* Regroupement droite : Panier + Menu utilisateur */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Bouton du panier */
+.header-cart-btn {
+    background: none;
+    border: 1px solid #666666;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-sizing: border-box;
+}
+
+.header-cart-btn:hover {
+    background-color: #333333;
+    border-color: #90cdf4;
+}
+
+.header-cart-badge {
+    background-color: #ef4444;
+    color: #ffffff;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* Dropdown utilisateur en CSS pur */
+.header-user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.header-dropdown-trigger {
+    background-color: #333333;
+    color: #ffffff;
+    border: 1px solid #555555;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.header-dropdown-trigger:hover {
+    background-color: #444444;
+    border-color: #90cdf4;
+}
+
+.header-dropdown-trigger .arrow {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.header-dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: #222222;
+    min-width: 180px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #444444;
+}
+
+.header-dropdown-menu li a {
+    color: #cccccc;
+    padding: 10px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.header-dropdown-menu li a:hover {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+/* Lien rouge pour déconnexion */
+.header-dropdown-menu li a.logout-action {
+    color: #fca5a5;
+}
+
+.header-dropdown-menu li a.logout-action:hover {
+    background-color: #c53030;
+    color: #ffffff;
+}
+
+.header-dropdown-menu .separator {
+    height: 1px;
+    background-color: #444444;
+    margin: 4px 0;
+}
+
+/* Afficher le menu au survol du conteneur parent */
+.header-user-dropdown:hover .header-dropdown-menu {
+    display: block;
+}
+
+/* Boutons anonymes (Inscription / Connexion) */
+.header-link-login {
+    color: #cccccc;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.header-link-login:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.header-btn-register {
+    background-color: #1a365d;
+    color: #ffffff;
+    border: 1px solid #1a365d;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+}
+
+.header-btn-register:hover {
+    background-color: #2b6cb0;
+    border-color: #2b6cb0;
+}
+
+/* Conteneur de page principal standard */
+.academic-main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+/* Adaptation responsive de l'en-tête */
+@media (max-width: 768px) {
+    .academic-header {
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .header-left {
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+        align-items: center;
+    }
+
+    .header-nav {
+        gap: 12px;
+    }
+
+    .header-right {
+        width: 100%;
+        justify-content: center;
+    }
+}

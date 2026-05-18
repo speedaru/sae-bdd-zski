@@ -1,0 +1,85 @@
+/**
+ * Zarza-Ski - Styles académiques épurés pour le pied de page (Footer)
+ * Emplacement : src/assets/css/footer.css
+ */
+
+.academic-footer {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #dddddd;
+    border-top: 1px solid #444444;
+    background-color: #222222; /* Teinte sombre */
+    padding: 24px 24px;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column; /* Centrage vertical des blocs pour équilibrer */
+    justify-content: center;
+    align-items: center;
+    gap: 12px; /* Espacement régulier */
+    font-size: 0.85rem;
+    box-sizing: border-box;
+    text-align: center; /* Centrage du texte */
+}
+
+.footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center; /* Centrage horizontal des lignes de texte */
+}
+
+.footer-copy {
+    margin: 0;
+    font-weight: normal;
+}
+
+/* Accentuation de couleur sobre et claire pour fond sombre */
+.footer-brand {
+    font-weight: bold;
+    color: #90cdf4; /* Bleu plus clair pour le contraste */
+}
+
+.footer-credits {
+    color: #aaaaaa;
+    font-size: 0.75rem;
+}
+
+.footer-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-links li a {
+    text-decoration: none;
+    color: #cccccc;
+    font-weight: bold;
+    transition: color 0.15s ease;
+}
+
+.footer-links li a:hover {
+    color: #ffffff; /* Brillance au survol */
+    text-decoration: underline;
+}
+
+.footer-separator {
+    color: #666666;
+    font-size: 0.85rem;
+    user-select: none;
+}
+
+/* Rendu mobile fluide (déjà centré par défaut maintenant) */
+@media (max-width: 600px) {
+    .academic-footer {
+        padding: 20px 16px;
+    }
+}

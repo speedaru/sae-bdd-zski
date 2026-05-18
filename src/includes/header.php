@@ -1,7 +1,8 @@
 <?php
 /**
  * Header Global - Zarza-Ski
- * Gère l'affichage dynamique des menus et l'ouverture de session.
+ * Gère l'affichage dynamique des menus et l'ouverture de session - Version Académique Épurée.
+ * Emplacement : src/includes/header.php
  */
 require_once 'init.php';
 ?>
@@ -13,10 +14,9 @@ require_once 'init.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zarza-Ski - <?php echo ucfirst(str_replace('_', ' ', $current_page)); ?></title>
 
-    <!-- CSS COMMUN (Framework + Common) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS COMMUN ÉPURÉ SANS FRAMEWORKS -->
     <link rel="stylesheet" href="/assets/css/common.css"> 
+    <link rel="stylesheet" href="/assets/css/header.css"> 
 
     <!-- CSS DYNAMIQUE (Chargé uniquement si le fichier existe pour cette page) -->
     <?php 
@@ -28,62 +28,55 @@ require_once 'init.php';
 
 <body class="page-<?php echo $current_page; ?>">
 
-    <header class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="<?php echo $base_url; ?>index.php">
-                <i class="fas fa-mountain me-2"></i>Zarza-Ski
+    <header class="academic-header">
+        <!-- Section Gauche : Marque et Liens de Navigation -->
+        <div class="header-left">
+            <a class="header-brand" href="<?php echo $base_url; ?>index.php">
+                ▲ Zarza-Ski
             </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="topNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo $current_page == 'index' ? 'active' : ''; ?>" href="<?php echo $base_url; ?>index.php">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo $current_page == 'recherche' ? 'active' : ''; ?>" href="<?php echo $base_url; ?>pages/recherche.php">Réserver</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo $current_page == 'vues' ? 'active' : ''; ?>" href="<?php echo $base_url; ?>pages/vues.php">Vues</a>
-                    </li>
+            <nav class="header-nav-container">
+                <ul class="header-nav">
+                    <li><a class="header-nav-link <?php echo $current_page == 'index' ? 'active' : ''; ?>" href="<?php echo $base_url; ?>index.php">Accueil</a></li>
+                    <li><a class="header-nav-link <?php echo $current_page == 'recherche' ? 'active' : ''; ?>" href="<?php echo $base_url; ?>pages/recherche.php">Réserver</a></li>
+                    <li><a class="header-nav-link <?php echo $current_page == 'vues' ? 'active' : ''; ?>" href="<?php echo $base_url; ?>pages/vues.php">Vues</a></li>
                 </ul>
+            </nav>
+        </div>
 
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <?php if (isset($_SESSION['id_user'])): ?>
-                        <!-- NOUVEAU : Affichage dynamique du Panier -->
-                        <li class="nav-item me-2">
-                            <a class="btn btn-outline-light btn-sm position-relative px-3" href="<?php echo $base_url; ?>pages/reservation.php">
-                                <i class="fas fa-shopping-cart me-1"></i> Mon Panier
-                                <?php 
-                                $panier_count = get_panier_count();
-                                if ($panier_count > 0): 
-                                ?>
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                        <?php echo $panier_count; ?>
-                                    </span>
-                                <?php endif; ?>
-                            </a>
-                        </li>
-
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle me-1"></i> <?php echo h($_SESSION['username']); ?>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow">
-                                <li><a class="dropdown-item" href="<?php echo $base_url; ?>pages/tableau_de_bord.php">Mon espace client</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="<?php echo $base_url; ?>auth/logout.php?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>">Déconnexion</a></li>
-                            </ul>
-                        </li>
-                    <?php else: ?>
-                        <li class="nav-item"><a class="nav-link" href="<?php echo $base_url; ?>auth/login.php?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>">Connexion</a></li>
-                        <li class="nav-item"><a class="btn btn-primary btn-sm ms-2" href="<?php echo $base_url; ?>auth/register.php">Inscription</a></li>
+        <!-- Section Droite : Panier et Espace Client -->
+        <div class="header-right">
+            <?php if (isset($_SESSION['id_user'])): ?>
+                <!-- Affichage du Panier -->
+                <a class="header-cart-btn" href="<?php echo $base_url; ?>pages/reservation.php">
+                    🛒 Mon Panier
+                    <?php 
+                    $panier_count = get_panier_count();
+                    if ($panier_count > 0): 
+                    ?>
+                        <span class="header-cart-badge">
+                            <?php echo $panier_count; ?>
+                        </span>
                     <?php endif; ?>
-                </ul>
-            </div>
+                </a>
+
+                <!-- Dropdown Espace Client en CSS Pur -->
+                <div class="header-user-dropdown">
+                    <button class="header-dropdown-trigger">
+                        👤 <?php echo h($_SESSION['username']); ?> <span class="arrow">&#9662;</span>
+                    </button>
+                    <ul class="header-dropdown-menu">
+                        <li><a href="<?php echo $base_url; ?>pages/tableau_de_bord.php">Mon espace client</a></li>
+                        <li class="separator"></li>
+                        <li><a class="logout-action" href="<?php echo $base_url; ?>auth/logout.php?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>">Déconnexion</a></li>
+                    </ul>
+                </div>
+            <?php else: ?>
+                <!-- Liens de connexion anonyme -->
+                <a class="header-link-login" href="<?php echo $base_url; ?>auth/login.php?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>">Connexion</a>
+                <a class="header-btn-register" href="<?php echo $base_url; ?>auth/register.php">Inscription</a>
+            <?php endif; ?>
         </div>
     </header>
-    <main class="container py-4">
+
+    <!-- Conteneur principal de page -->
+    <main class="academic-main-container">

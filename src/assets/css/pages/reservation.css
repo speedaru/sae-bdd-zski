@@ -7,113 +7,54 @@
 
 .reservation-container {
     max-width: 1100px;
-    margin: 0 auto;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    color: #2c3e50;
+    margin: 20px auto;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333333;
 }
 
-/* 1. SECTIONS ET CARTONS */
+/* En-tête */
+.reservation-header-box {
+    margin-bottom: 24px;
+    border-bottom: 2px solid #1a365d;
+    padding-bottom: 10px;
+}
+
+.reservation-header-box h1 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #1a365d;
+    text-transform: uppercase;
+}
+
+.reservation-header-box .subtitle {
+    margin: 4px 0 0 0;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+/* 1. SECTIONS ET ENCADRÉS */
 .section-box {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 24px;
+    background-color: #ffffff;
+    border: 1px solid #333333;
+    padding: 20px;
     margin-bottom: 24px;
 }
 
 .section-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #1e293b;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #1a365d;
+    margin-top: 0;
     margin-bottom: 16px;
-    border-bottom: 2px solid #3b82f6;
-    padding-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    border-bottom: 1px solid #333333;
+    padding-bottom: 6px;
 }
 
-/* 2. CHALETS / CHAMBRES DU PANIER */
-.chambre-card {
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    margin-bottom: 20px;
-    background: #f8fafc;
-    overflow: hidden;
-}
-
-.chambre-header {
-    background: #f1f5f9;
-    padding: 12px 18px;
-    border-bottom: 1px solid #cbd5e1;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.chambre-info {
-    font-weight: 600;
-    color: #334155;
-}
-
-.chambre-capacity {
-    font-size: 0.85rem;
-    background: #e2e8f0;
-    padding: 4px 10px;
-    border-radius: 4px;
-    color: #475569;
-}
-
-.btn-delete-chambre {
-    font-size: 0.85rem;
-    color: #ef4444;
-    text-decoration: none;
-    font-weight: 600;
-    border: 1px solid #fee2e2;
-    padding: 4px 10px;
-    border-radius: 4px;
-    background: #fef2f2;
-    transition: all 0.2s;
-}
-
-.btn-delete-chambre:hover {
-    background: #ef4444;
-    color: #ffffff;
-    border-color: #ef4444;
-}
-
-/* 3. TABLEAUX D'AFFECTATION */
-.table-affectation {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    background: #ffffff;
-}
-
-.table-affectation th, 
-.table-affectation td {
-    padding: 10px 14px;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-.table-affectation th {
-    background: #f8fafc;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #64748b;
-}
-
-.table-affectation tr:hover {
-    background: #f1f5f9;
-}
-
-/* 4. FORMULAIRES ET BOUTONS */
+/* Alignement sous forme de grille simple */
 .form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
 }
 
 .form-group {
@@ -123,73 +64,212 @@
 }
 
 .form-label {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #475569;
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #1a365d;
 }
 
 .form-input, .form-select {
+    padding: 8px 10px;
+    border: 1px solid #777777;
+    font-size: 0.9rem;
+    background-color: #ffffff;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: #2b6cb0;
+}
+
+.field-help {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+/* Section de boutons de gestion de tribu */
+.action-tribu-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.btn-action-tribu {
+    font-size: 0.8rem;
+    background-color: #ffffff;
+    color: #1a365d;
+    border: 1px solid #1a365d;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-action-tribu:hover {
+    background-color: #f1f5f9;
+}
+
+/* 2. CHALETS / HÉBERGEMENTS */
+.chambre-card {
+    border: 1px solid #333333;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+}
+
+.chambre-header {
+    background-color: #edf2f7;
+    border-bottom: 1px solid #333333;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chambre-info {
+    font-size: 0.9rem;
+    color: #2d3748;
+}
+
+.chambre-capacity {
+    background-color: #cbd5e0;
+    color: #1a202c;
+    font-weight: bold;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    margin-left: 6px;
+}
+
+/* Suppression de chambre épurée */
+.btn-delete-chambre {
+    font-size: 0.8rem;
+    color: #c53030;
+    text-decoration: none;
+    font-weight: bold;
+    border: 1px solid #c53030;
+    padding: 4px 8px;
+    background-color: #ffffff;
+}
+
+.btn-delete-chambre:hover {
+    background-color: #fff5f5;
+}
+
+/* TABLEAU D'AFFECTATION */
+.table-scroll-wrapper {
+    overflow-x: auto;
+    padding: 12px;
+}
+
+.table-affectation {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.table-affectation th, .table-affectation td {
+    border: 1px solid #333333;
     padding: 8px 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    background: #ffffff;
-    color: #1e293b;
-    font-size: 0.95rem;
+    text-align: left;
+}
+
+.table-affectation th {
+    background-color: #f7fafc;
+    color: #4a5568;
+    font-weight: bold;
+}
+
+.col-affect {
+    width: 80px;
+    text-align: center !important;
+}
+
+.col-affect input[type="checkbox"] {
+    transform: scale(1.15);
+    cursor: pointer;
+}
+
+.skier-name {
+    font-weight: bold;
+    color: #2d3748;
+}
+
+.skier-dob {
+    font-size: 0.75rem;
+    color: #718096;
+    margin-left: 8px;
+}
+
+.select-formule-room {
+    max-width: 250px;
+}
+
+/* 3. VALIDATION FINALE */
+.billing-notices {
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e0;
+    padding: 16px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.notice-title {
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #2d3748;
+}
+
+.notice-list {
+    margin: 0;
+    padding-left: 20px;
+    color: #4a5568;
+}
+
+.notice-list li {
+    margin-bottom: 4px;
+}
+
+.notice-footer {
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-style: italic;
+    color: #718096;
 }
 
 .btn-submit-container {
     text-align: right;
-    margin-top: 24px;
 }
 
 .btn-submit-main {
-    background: #10b981;
+    background-color: #1a365d;
     color: #ffffff;
-    border: none;
-    padding: 14px 28px;
-    border-radius: 6px;
-    font-size: 1.1rem;
-    font-weight: 700;
+    border: 1px solid #1a365d;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
-    transition: all 0.2s;
 }
 
 .btn-submit-main:hover {
-    background: #059669;
+    background-color: #2b6cb0;
+    border-color: #2b6cb0;
 }
 
-.btn-action-tribu {
-    font-size: 0.85rem;
-    background: #e0f2fe;
-    color: #0284c7;
-    border: 1px solid #bae6fd;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.2s;
-}
-
-.btn-action-tribu:hover {
-    background: #0284c7;
-    color: #ffffff;
-}
-
-/* 5. MODALES ÉPURÉES SANS BOOTSTRAP */
+/* 4. MODALES ACADÉMIQUES EN CSS PUR */
 .custom-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(15, 23, 42, 0.6);
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10000;
-    padding: 20px;
+    z-index: 2000;
 }
 
 .custom-modal-overlay.hidden {
@@ -197,58 +277,111 @@
 }
 
 .custom-modal-box {
-    background: #ffffff;
-    border-radius: 8px;
-    width: 100%;
-    max-width: 600px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    overflow: hidden;
+    background-color: #ffffff;
+    border: 1px solid #333333;
+    width: 90%;
+    max-width: 500px;
+}
+
+.custom-modal-box.modal-wide {
+    max-width: 700px;
 }
 
 .custom-modal-header {
-    background: #f8fafc;
-    padding: 16px 20px;
-    border-bottom: 1px solid #e2e8f0;
+    background-color: #edf2f7;
+    border-bottom: 1px solid #333333;
+    padding: 12px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .custom-modal-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #1e293b;
     margin: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #1a365d;
 }
 
 .custom-modal-close {
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: #94a3b8;
+    font-weight: bold;
+    color: #4a5568;
     cursor: pointer;
     line-height: 1;
 }
 
 .custom-modal-close:hover {
-    color: #475569;
+    color: #000000;
 }
 
 .custom-modal-body {
-    padding: 20px;
-    background: #ffffff;
+    padding: 16px;
+    background-color: #ffffff;
 }
 
+/* Erreurs AJAX */
 .modal-ajax-errors {
-    background: #fef2f2;
-    border: 1px solid #fca5a5;
-    color: #b91c1c;
-    padding: 10px 14px;
-    border-radius: 6px;
-    margin-bottom: 15px;
-    font-size: 0.9rem;
+    border: 1px solid #c53030;
+    background-color: #fff5f5;
+    color: #c53030;
+    padding: 10px;
+    margin-bottom: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
 }
 
 .modal-ajax-errors.hidden {
     display: none !important;
+}
+
+/* Panier vide */
+.empty-panier-container {
+    max-width: 600px;
+    margin: 50px auto;
+    text-align: center;
+    border: 1px solid #333333;
+    background-color: #ffffff;
+    padding: 40px;
+}
+
+.empty-panier-container h3 {
+    margin-top: 0;
+    font-size: 1.25rem;
+    color: #1a365d;
+}
+
+.empty-panier-container p {
+    color: #4a5568;
+    margin-bottom: 20px;
+}
+
+/* Alertes globales */
+.alert {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    border: 1px solid transparent;
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background-color: #f0fff4;
+    border-color: #c6f6d5;
+    color: #22543d;
+}
+
+.alert-error {
+    background-color: #fff5f5;
+    border-color: #fed7d7;
+    color: #742a2a;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.text-center {
+    text-align: center;
 }
